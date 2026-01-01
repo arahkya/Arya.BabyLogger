@@ -21,8 +21,22 @@
                      Spacing="15">
             <Entry Placeholder="ปริมาณนม (มล.)"
                    Keyboard="Numeric"/>
-            <Entry Placeholder="เวลาที่ป้อนนม"
-                   Keyboard="Text"/>
+
+            <Grid ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Column="0"
+                    Text="เวลา:"
+                    VerticalOptions="Center"/>
+                <DatePicker Grid.Column="1"/>
+                <TimePicker Grid.Column="3"/>
+            </Grid>
+
             <Picker Title="ประเภทนม">
                 <Picker.Items>
                     <x:String>นมแม่</x:String>
