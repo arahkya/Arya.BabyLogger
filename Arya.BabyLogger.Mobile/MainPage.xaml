@@ -1,7 +1,57 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Arya.BabyLogger.Mobile.MainPage">
+             x:Class="Arya.BabyLogger.Mobile.MainPage"
+             BackgroundColor="#F5F7FB">
+
+    <ContentPage.Resources>
+        <FontImageSource x:Key="FeedIcon"
+                         Glyph="🍼"
+                         Color="#FF8C42"
+                         Size="32"/>
+        <FontImageSource x:Key="DiaperIcon"
+                         Glyph="🧷"
+                         Color="#4BB3FD"
+                         Size="32"/>
+        <FontImageSource x:Key="SleepIcon"
+                         Glyph="💤"
+                         Color="#7A6FF0"
+                         Size="32"/>
+        <FontImageSource x:Key="OtherIcon"
+                         Glyph="✨"
+                         Color="#00B89B"
+                         Size="32"/>
+
+        <Shadow x:Key="MenuButtonShadow"
+                Radius="12"
+                Opacity="0.2"
+                Brush="#33000000"
+                Offset="0,6"/>
+
+        <Shadow x:Key="CardShadow"
+                Radius="10"
+                Opacity="0.12"
+                Brush="#19000000"
+                Offset="0,4"/>
+
+        <Style x:Key="MenuButtonStyle"
+               TargetType="Button">
+            <Setter Property="TextColor"
+                    Value="#1E1E2A"/>
+            <Setter Property="FontAttributes"
+                    Value="Bold"/>
+            <Setter Property="FontSize"
+                    Value="15"/>
+            <Setter Property="CornerRadius"
+                    Value="16"/>
+            <Setter Property="Padding"
+                    Value="16,14"/>
+            <Setter Property="ContentLayout"
+                    Value="Top,10"/>
+            <Setter Property="Shadow"
+                    Value="{StaticResource MenuButtonShadow}"/>
+        </Style>
+    </ContentPage.Resources>
 
     <Grid ColumnSpacing="10"
           RowSpacing="10"
@@ -9,8 +59,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="100"/>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="100*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -21,35 +70,72 @@
         <Button
             Grid.Row="0"
             Grid.Column="0"
-            Text="ป้อนนม"/>
+            Style="{StaticResource MenuButtonStyle}"
+            Text="ป้อนนม"
+            ImageSource="{StaticResource FeedIcon}"
+            BackgroundColor="#FFF1E5"/>
 
         <Button
             Grid.Row="0"
             Grid.Column="1"
-            Text="เปลี่ยนผ้าอ้อม"/>
+            Style="{StaticResource MenuButtonStyle}"
+            Text="เปลี่ยนผ้าอ้อม"
+            ImageSource="{StaticResource DiaperIcon}"
+            BackgroundColor="#E6F4FF"/>
 
         <Button
             Grid.Row="1"
             Grid.Column="0"
-            Text="นอน"/>
+            Style="{StaticResource MenuButtonStyle}"
+            Text="นอน"
+            ImageSource="{StaticResource SleepIcon}"
+            BackgroundColor="#EEE9FF"/>
 
         <Button
             Grid.Row="1"
             Grid.Column="1"
-            Text="อื่นๆ"/>
+            Style="{StaticResource MenuButtonStyle}"
+            Text="อื่นๆ"
+            ImageSource="{StaticResource OtherIcon}"
+            BackgroundColor="#E6FFF7"/>
 
-        <Label
-            Grid.Row="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            VerticalOptions="End"
-            Text="Select Date"/>
-
-        <DatePicker
-            Grid.Row="3"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            HorizontalOptions="FillAndExpand"/>
+        <Frame Grid.Row="2"
+               Grid.ColumnSpan="2"
+               Margin="0,4,0,0"
+               Padding="12 5 12 12"
+               CornerRadius="12"
+               BackgroundColor="#FFFFFF"
+               VerticalOptions="End"
+               BorderColor="#E2E8F0"
+               HasShadow="False">
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="35"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0"
+                       Text="เลือกวันที่"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       TextColor="#0F172A"/>
+                <DatePicker Grid.Column="1"
+                            HorizontalOptions="FillAndExpand"
+                            BackgroundColor="#F8FAFC"
+                            TextColor="#0F172A"
+                            Margin="0,0,0,0"/>
+                <ImageButton Grid.Column="2"
+                             WidthRequest="15"
+                             HeightRequest="15"
+                             Padding="6"
+                             BackgroundColor="Transparent"
+                             Source="ellipsis_vertical.png"
+                             HorizontalOptions="End"
+                             VerticalOptions="Center"
+                             CornerRadius="8">
+                </ImageButton>
+            </Grid>
+        </Frame>
 
         <CollectionView
             Grid.Row="4"
@@ -60,17 +146,110 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame
-                        Padding="10"
-                        Margin="5"
-                        BorderColor="LightGray"
-                        CornerRadius="5">
-                        <StackLayout>
-                            <Label
-                                Text="{Binding EventType}"
-                                FontAttributes="Bold"/>
-                            <Label
-                                Text="{Binding EventTime, StringFormat='{}{0:dd MMM yyyy HH:mm}'}"/>
-                        </StackLayout>
+                        Padding="12"
+                        Margin="8,6"
+                        HasShadow="True"
+                        Shadow="{StaticResource CardShadow}"
+                        BorderColor="#E2E8F0"
+                        CornerRadius="14"
+                        BackgroundColor="#FFFFFF">
+                        <Grid ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Frame Grid.Column="0"
+                                   WidthRequest="44"
+                                   HeightRequest="44"
+                                   CornerRadius="22"
+                                   Padding="0"
+                                   HasShadow="False"
+                                   BackgroundColor="#EEF2FF"
+                                   BorderColor="Transparent">
+                                <Image WidthRequest="26"
+                                       HeightRequest="26"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Source="{StaticResource OtherIcon}">
+                                    <Image.Triggers>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Feeding">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource FeedIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Bottle">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource FeedIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Dream Feed">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource FeedIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Midnight Feeding">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource FeedIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Early Morning Feed">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource FeedIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Solid Tasting">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource FeedIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Diaper Change">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource DiaperIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Sleep">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource SleepIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Nap">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource SleepIcon}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding EventType}"
+                                                     Value="Stroller Nap">
+                                            <Setter Property="Source"
+                                                    Value="{StaticResource SleepIcon}"/>
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+                            </Frame>
+
+                            <VerticalStackLayout Grid.Column="1"
+                                                 Spacing="4">
+                                <Label
+                                    Text="{Binding EventType}"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    TextColor="#0F172A"/>
+                                <Label
+                                    Text="{Binding EventTime, StringFormat='{}{0:dd MMM yyyy HH:mm}'}"
+                                    FontSize="13"
+                                    TextColor="#64748B"/>
+                            </VerticalStackLayout>
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
