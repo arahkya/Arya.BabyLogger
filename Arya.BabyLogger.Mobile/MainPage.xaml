@@ -55,11 +55,12 @@
 
     <Grid ColumnSpacing="10"
           RowSpacing="10"
-          Padding="20">
+          Padding="20"
+          BackgroundColor="#FFFFFF">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="100"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="100*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -100,15 +101,18 @@
             ImageSource="{StaticResource OtherIcon}"
             BackgroundColor="#E6FFF7"/>
 
-        <Frame Grid.Row="2"
-               Grid.ColumnSpan="2"
-               Margin="0,4,0,0"
-               Padding="12 5 12 12"
-               CornerRadius="12"
-               BackgroundColor="#FFFFFF"
-               VerticalOptions="End"
-               BorderColor="#E2E8F0"
-               HasShadow="False">
+        <Border Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Margin="0,4,0,0"
+                Padding="12 5 12 12"
+                BackgroundColor="#FFFFFF"
+                Stroke="#E2E8F0"
+                VerticalOptions="Center">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12"/>
+            </Border.StrokeShape>
+
             <Grid ColumnSpacing="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -136,38 +140,42 @@
                              CornerRadius="8">
                 </ImageButton>
             </Grid>
-        </Frame>
+        </Border>
 
         <CollectionView
             Grid.Row="4"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             VerticalOptions="FillAndExpand"
+            BackgroundColor="White "
             ItemsSource="{Binding BabyEvents}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame
+                    <Border
                         Padding="12"
                         Margin="8,6"
-                        HasShadow="True"
                         Shadow="{StaticResource CardShadow}"
-                        BorderColor="#E2E8F0"
-                        CornerRadius="14"
                         BackgroundColor="#FFFFFF">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+
                         <Grid ColumnSpacing="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Frame Grid.Column="0"
-                                   WidthRequest="44"
-                                   HeightRequest="44"
-                                   CornerRadius="22"
-                                   Padding="0"
-                                   HasShadow="False"
-                                   BackgroundColor="#EEF2FF"
-                                   BorderColor="Transparent">
+                            <Border Grid.Column="0"
+                                    WidthRequest="44"
+                                    HeightRequest="44"
+                                    Padding="0"
+                                    Stroke="#E2E8F0"
+                                    BackgroundColor="#EEF2FF">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8"/>
+                                </Border.StrokeShape>
                                 <Image WidthRequest="26"
                                        HeightRequest="26"
                                        HorizontalOptions="Center"
@@ -236,7 +244,7 @@
                                         </DataTrigger>
                                     </Image.Triggers>
                                 </Image>
-                            </Frame>
+                            </Border>
 
                             <VerticalStackLayout Grid.Column="1"
                                                  Spacing="4">
@@ -251,7 +259,7 @@
                                     TextColor="#64748B"/>
                             </VerticalStackLayout>
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
