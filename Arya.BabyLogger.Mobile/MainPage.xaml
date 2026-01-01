@@ -73,7 +73,8 @@
             Style="{StaticResource MenuButtonStyle}"
             Text="ป้อนนม"
             ImageSource="{StaticResource FeedIcon}"
-            BackgroundColor="#FFF1E5"/>
+            BackgroundColor="#FFF1E5"
+            Clicked="OnFeedingButtonClicked"/>
 
         <Button
             Grid.Row="0"
@@ -115,7 +116,7 @@
                     <ColumnDefinition Width="35"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0"
-                       Text="เลือกวันที่"
+                       Text="วันที่"
                        FontAttributes="Bold"
                        VerticalOptions="Center"
                        TextColor="#0F172A"/>
