@@ -7,8 +7,8 @@
     Title="Arya.BabyLogger.Mobile">
 
     <ShellContent
-        Title="Home"
+        Title="Baby Logger"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="MainPage"/>
 
 </Shell>
