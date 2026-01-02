@@ -1,0 +1,6 @@
+@Arya.BabyLogger.WebApi_HostAddress = http://localhost:5001
+
+GET {{Arya.BabyLogger.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
