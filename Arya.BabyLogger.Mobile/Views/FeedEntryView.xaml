@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Arya.BabyLogger.Mobile.Views.Feeding"
+             x:Class="Arya.BabyLogger.Mobile.Views.FeedEntryView"
+             x:DataType="viewModels:FeedEntryViewModel"
+             xmlns:viewModels="clr-namespace:Arya.BabyLogger.Mobile.ViewModels"
              Title="Feeding">
     <Grid>
         <Grid.RowDefinitions>
@@ -20,7 +22,8 @@
                      Padding="20"
                      Spacing="15">
             <Entry Placeholder="ปริมาณนม (มล.)"
-                   Keyboard="Numeric"/>
+                   Keyboard="Numeric"
+                   Text="{Binding Amount}"/>
 
             <Grid ColumnSpacing="10">
                 <Grid.ColumnDefinitions>
@@ -33,15 +36,17 @@
                     Grid.Column="0"
                     Text="เวลา:"
                     VerticalOptions="Center"/>
-                <DatePicker Grid.Column="1"/>
-                <TimePicker Grid.Column="3"/>
+                <DatePicker Grid.Column="1"
+                            Date="{Binding Date}"/>
+                <TimePicker Grid.Column="3"
+                            Time="{Binding Time}"/>
             </Grid>
 
-            <Picker Title="ประเภทนม">
+            <Picker Title="ประเภทนม"
+                    SelectedItem="{Binding FeedType}">
                 <Picker.Items>
                     <x:String>นมแม่</x:String>
                     <x:String>นมผง</x:String>
-                    <x:String>นมสูตร</x:String>
                 </Picker.Items>
             </Picker>
 
@@ -52,7 +57,8 @@
                 </Border.StrokeShape>
                 <Editor Placeholder="หมายเหตุเพิ่มเติม"
                         AutoSize="TextChanges"
-                        HeightRequest="200"/>
+                        HeightRequest="200"
+                        Text="{Binding Notes}"/>
             </Border>
         </StackLayout>
 
@@ -63,13 +69,14 @@
                      Spacing="15">
             <Button Text="บันทึก"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center"/>
+                    VerticalOptions="Center"
+                    Command="{Binding SaveFeedingEntryCommand}"/>
             <Button Text="ยกเลิก"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
                     BackgroundColor="LightGray"
                     TextColor="Gray"
-                    Clicked="CancelButton_Clicked"/>
+                    Command="{Binding CancelFeedingEntryCommand}"/>
         </StackLayout>
     </Grid>
 </ContentPage> 

@@ -7,6 +7,6 @@ public partial class AppShell : Shell
 	{
 		InitializeComponent();
 
-		Routing.RegisterRoute(nameof(Feeding), typeof(Feeding));
+		Routing.RegisterRoute(nameof(FeedEntryView), typeof(FeedEntryView));
 	}
 }

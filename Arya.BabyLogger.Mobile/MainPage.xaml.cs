@@ -13,6 +13,6 @@ public partial class MainPage : ContentPage
 
 	private async void OnFeedingButtonClicked(object sender, EventArgs e)
 	{
-		await Navigation.PushModalAsync(new Feeding());
+		await Navigation.PushModalAsync(new FeedEntryView());
 	}
 }
