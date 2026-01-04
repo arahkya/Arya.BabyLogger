@@ -14,15 +14,16 @@ public partial class FeedEntryViewModel : ObservableObject
         Type = CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
         Amount = 0,
         Unit = CreateFeedEntryRequest.Units.Milliliters.ToString(),
-        Notes = string.Empty
+        Note = string.Empty
     };
+    private Guid? feedEntryId;
 
-    public string Notes
+    public string Note
     {
-        get => feedEntry.Notes ?? string.Empty;
+        get => feedEntry.Note ?? string.Empty;
         set
         {
-            feedEntry.Notes = value;
+            feedEntry.Note = value;
             OnPropertyChanged();
         }
     }
@@ -67,6 +68,8 @@ public partial class FeedEntryViewModel : ObservableObject
         set => SetProperty(ref feedType, value);
     }
 
+    public bool ShowDeleteButton { get; set; } = false;
+
     public FeedEntryViewModel()
     {
         feedType = "นมแม่";
@@ -98,5 +101,52 @@ public partial class FeedEntryViewModel : ObservableObject
     public static async Task CancelFeedingEntryAsync()
     {
         await Shell.Current.Navigation.PopModalAsync();
+    }
+
+    [RelayCommand]
+    public async Task DeleteFeedingEntryAsync()
+    {
+        if (!feedEntryId.HasValue)
+        {
+            return;
+        }
+
+        var httpClient = new HttpClient();
+        var response = await httpClient.DeleteAsync($"http://localhost:5001/api/feed/{feedEntryId.Value}");
+        response.EnsureSuccessStatusCode();
+
+        await Shell.Current.Navigation.PopModalAsync();
+    }
+
+    public async Task LoadFeedEventByIdAsync(Guid value)
+    {
+        var httpClient = new HttpClient();
+        var response = await httpClient.GetFromJsonAsync<CreateFeedEntryRequest>($"http://localhost:5001/api/feed/{value}");
+        if (response == null)
+        {
+            return;
+        }
+        feedEntryId = value;
+
+        feedEntry.Time = response.Time;
+        feedEntry.Note = response.Note ?? string.Empty;
+        feedEntry.Amount = response.Amount;
+        feedEntry.Unit = response.Unit;
+        feedEntry.Type = response.Type;
+
+        FeedType = response.Type switch
+        {
+            "BreastMilk" => "นมแม่",
+            "FormulaMilk" => "นมผง",
+            _ => "นมแม่"
+        };
+
+        ShowDeleteButton = true;
+
+        OnPropertyChanged(nameof(Date));
+        OnPropertyChanged(nameof(Time));
+        OnPropertyChanged(nameof(Note));
+        OnPropertyChanged(nameof(Amount));
+        OnPropertyChanged(nameof(ShowDeleteButton));
     }
 }

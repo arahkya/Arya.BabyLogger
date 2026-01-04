@@ -19,7 +19,7 @@ public class FeedService(BabyLoggerDbContext dbContext) : IFeedService
         {
             Id = Guid.NewGuid(),
             Time = new DateTime(entry.Time.Year, entry.Time.Month, entry.Time.Day, entry.Time.Hour, entry.Time.Minute, entry.Time.Second),
-            Note = entry.Notes,
+            Note = entry.Note,
             Amount = entry.Amount,
             Unit = entry.Unit.ToString(),
             Type = entry.Type.ToString()
@@ -51,5 +51,22 @@ public class FeedService(BabyLoggerDbContext dbContext) : IFeedService
         };
 
         return Task.FromResult(response);
+    }
+
+    public async Task<Db.FeedEntity?> GetFeedEntryByIdAsync(Guid id)
+    {
+        return await dbContext.Feeds.FindAsync(id);
+    }
+
+    public async Task DleteFeedEntryAsync(Guid id)
+    {
+        var feedEntity = await dbContext.Feeds.FindAsync(id);
+        if (feedEntity is null)
+        {
+            return;
+        }
+
+        dbContext.Feeds.Remove(feedEntity);
+        await dbContext.SaveChangesAsync();
     }
 }

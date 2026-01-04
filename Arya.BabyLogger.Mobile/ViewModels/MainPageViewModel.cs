@@ -2,18 +2,27 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net.Http.Json;
 using Arya.BabyLogger.Shared.Feed;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Arya.BabyLogger.Mobile.ViewModels;
 
-public class MainPageViewModel
+public partial class MainPageViewModel : ObservableObject
 {
     private static readonly HttpClient HttpClient = new();
 
-    public class BabyEvent
+    public partial class BabyEvent : ObservableObject
     {
+        public required Guid Id { get; set; }
         public required string EventType { get; set; }
         public required string SubTitle { get; set; }
         public required string Title { get; set; }
+
+        [RelayCommand]
+        public async Task SelectEventAsync(Guid Id)
+        {
+            await Shell.Current.Navigation.PushModalAsync(new Views.FeedEntryView(Id));
+        }
     }
 
     public ObservableCollection<BabyEvent> BabyEvents { get; set; } = [];
@@ -57,7 +66,6 @@ public class MainPageViewModel
     //     BabyEvents.Add(new BabyEvent { EventType = "เปลี่ยนผ้าอ้อม", EventTime = now.AddHours(-27) });
     // }
 
-
     public async void LoadEvents()
     {
         var events = await ListFeedResponseAsync();
@@ -82,7 +90,7 @@ public class MainPageViewModel
         var events = new List<BabyEvent>(response.Items.Count);
         foreach (var item in response.Items)
         {
-            events.Add(new BabyEvent { Title = item.Title, SubTitle = item.Time.ToString("d MMM yyyy HH:mm", new CultureInfo("th-TH")), EventType = item.Type });
+            events.Add(new BabyEvent { Id = item.Id, Title = item.Title, SubTitle = item.Time.ToString("d MMM yyyy HH:mm", new CultureInfo("th-TH")), EventType = item.Type });
         }
 
         return events;

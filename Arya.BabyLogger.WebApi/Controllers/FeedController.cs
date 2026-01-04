@@ -32,4 +32,33 @@ public class FeedController : ControllerBase
 
         return Ok(entries);
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetFeedEntryById([FromRoute] Guid id)
+    {
+        var entry = await _feedService.GetFeedEntryByIdAsync(id);
+
+        if (entry is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(entry);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateFeedEntry([FromRoute] Guid id)
+    {
+        await _feedService.DleteFeedEntryAsync(id);
+
+        return Ok();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteFeedEntry([FromRoute] Guid id)
+    {
+        await _feedService.DleteFeedEntryAsync(id);
+
+        return Ok();
+    }
 }

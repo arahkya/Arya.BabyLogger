@@ -58,7 +58,7 @@
                 <Editor Placeholder="หมายเหตุเพิ่มเติม"
                         AutoSize="TextChanges"
                         HeightRequest="200"
-                        Text="{Binding Notes}"/>
+                        Text="{Binding Note}"/>
             </Border>
         </StackLayout>
 
@@ -70,13 +70,23 @@
             <Button Text="บันทึก"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
+                    WidthRequest="80"
                     Command="{Binding SaveFeedingEntryCommand}"/>
             <Button Text="ยกเลิก"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
                     BackgroundColor="LightGray"
+                    WidthRequest="80"
                     TextColor="Gray"
                     Command="{Binding CancelFeedingEntryCommand}"/>
+            <Button Text="ลบ"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    IsVisible="{Binding ShowDeleteButton}"
+                    BackgroundColor="Red"
+                    WidthRequest="80"
+                    TextColor="White"
+                    Command="{Binding DeleteFeedingEntryCommand}"/>
         </StackLayout>
     </Grid>
 </ContentPage> 

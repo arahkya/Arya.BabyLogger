@@ -147,7 +147,7 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             VerticalOptions="FillAndExpand"
-            BackgroundColor="White "
+            BackgroundColor="White"
             ItemsSource="{Binding BabyEvents}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -156,6 +156,10 @@
                         Margin="8,6"
                         Shadow="{StaticResource CardShadow}"
                         BackgroundColor="#FFFFFF">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectEventCommand}"
+                                                  CommandParameter="{Binding Id}"/>
+                        </Border.GestureRecognizers>
 
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="12"/>
