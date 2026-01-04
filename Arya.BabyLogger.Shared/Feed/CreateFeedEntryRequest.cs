@@ -1,6 +1,6 @@
-﻿namespace Arya.BabyLogger.Shared.Models;
+﻿namespace Arya.BabyLogger.Shared.Feed;
 
-public class FeedEntryModel
+public class CreateFeedEntryRequest
 {
     public enum FeedTypes
     {
@@ -17,6 +17,6 @@ public class FeedEntryModel
     public DateTimeOffset Time { get; set; }
     public string? Notes { get; set; }
     public double Amount { get; set; }
-    public Units Unit { get; set; }
-    public FeedTypes Type { get; set; }
+    public required string Unit { get; set; }
+    public required string Type { get; set; }
 }

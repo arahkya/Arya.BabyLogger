@@ -1,8 +1,19 @@
+using Arya.BabyLogger.WebApi.Db;
+using Arya.BabyLogger.WebApi.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddDbContext<BabyLoggerDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("BabyLoggerDb") ?? throw new InvalidOperationException("Connection string 'BabyLoggerDb' not found."));
+});
+builder.Services.AddControllers();
+
+builder.Services.AddTransient<IFeedService, FeedService>();
 
 var app = builder.Build();
 
@@ -21,7 +32,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -32,6 +43,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapControllers();
 
 app.Run();
 

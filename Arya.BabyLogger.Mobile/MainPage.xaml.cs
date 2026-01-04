@@ -1,4 +1,5 @@
-﻿using Arya.BabyLogger.Mobile.Views;
+﻿using Arya.BabyLogger.Mobile.ViewModels;
+using Arya.BabyLogger.Mobile.Views;
 
 namespace Arya.BabyLogger.Mobile;
 
@@ -9,6 +10,13 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 
 		BindingContext = new ViewModels.MainPageViewModel();
+	}
+
+	protected override void OnAppearing()
+	{
+		base.OnAppearing();
+
+		((MainPageViewModel)BindingContext).LoadEvents();
 	}
 
 	private async void OnFeedingButtonClicked(object sender, EventArgs e)

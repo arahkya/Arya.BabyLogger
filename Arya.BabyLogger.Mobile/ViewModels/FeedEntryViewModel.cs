@@ -1,6 +1,6 @@
 namespace Arya.BabyLogger.Mobile.ViewModels;
 
-using Arya.BabyLogger.Shared.Models;
+using Arya.BabyLogger.Shared.Feed;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -8,12 +8,12 @@ using System.Net.Http.Json;
 
 public partial class FeedEntryViewModel : ObservableObject
 {
-    private readonly FeedEntryModel feedEntry = new()
+    private readonly CreateFeedEntryRequest feedEntry = new()
     {
         Time = DateTime.Now,
-        Type = FeedEntryModel.FeedTypes.BreastMilk,
+        Type = CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
         Amount = 0,
-        Unit = FeedEntryModel.Units.Milliliters,
+        Unit = CreateFeedEntryRequest.Units.Milliliters.ToString(),
         Notes = string.Empty
     };
 
@@ -75,13 +75,13 @@ public partial class FeedEntryViewModel : ObservableObject
     [RelayCommand]
     public async Task SaveFeedingEntryAsync()
     {
-        feedEntry.Unit = FeedEntryModel.Units.Milliliters;
+        feedEntry.Unit = CreateFeedEntryRequest.Units.Milliliters.ToString();
 
         feedEntry.Type = FeedType switch
         {
-            "นมแม่" => FeedEntryModel.FeedTypes.BreastMilk,
-            "นมผง" => FeedEntryModel.FeedTypes.FormulaMilk,
-            _ => FeedEntryModel.FeedTypes.BreastMilk,
+            "นมแม่" => CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
+            "นมผง" => CreateFeedEntryRequest.FeedTypes.FormulaMilk.ToString(),
+            _ => CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
         };
 
         const string UrlEndpoint = "http://localhost:5001/api/feed";

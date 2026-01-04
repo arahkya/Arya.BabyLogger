@@ -184,13 +184,13 @@
                                     <Image.Triggers>
                                         <DataTrigger TargetType="Image"
                                                      Binding="{Binding EventType}"
-                                                     Value="ป้อนนม">
+                                                     Value="BreastMilk">
                                             <Setter Property="Source"
                                                     Value="{StaticResource FeedIcon}"/>
                                         </DataTrigger>
                                         <DataTrigger TargetType="Image"
                                                      Binding="{Binding EventType}"
-                                                     Value="ขวดนม">
+                                                     Value="FormulaMilk">
                                             <Setter Property="Source"
                                                     Value="{StaticResource FeedIcon}"/>
                                         </DataTrigger>
@@ -249,12 +249,12 @@
                             <VerticalStackLayout Grid.Column="1"
                                                  Spacing="4">
                                 <Label
-                                    Text="{Binding EventType}"
+                                    Text="{Binding Title}"
                                     FontAttributes="Bold"
                                     FontSize="16"
                                     TextColor="#0F172A"/>
                                 <Label
-                                    Text="{Binding EventTime, StringFormat='{}{0:dd MMM yyyy HH:mm}'}"
+                                    Text="{Binding SubTitle}"
                                     FontSize="13"
                                     TextColor="#64748B"/>
                             </VerticalStackLayout>

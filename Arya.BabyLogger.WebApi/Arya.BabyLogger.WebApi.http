@@ -1,6 +1,16 @@
-@Arya.BabyLogger.WebApi_HostAddress = http://localhost:5001
+@WebApi_HostAddress = http://localhost:5001
 
-GET {{Arya.BabyLogger.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{WebApi_HostAddress}}/api/feed
+Content-Type: application/json
+
+{
+  "time": "2026-01-03T12:42:00",
+  "notes": "Left side, good latch",
+  "amount": 70,
+  "unit": "Milliliters",
+  "type": "BreastMilk"
+}
 
 ###
+
+GET {{WebApi_HostAddress}}/api/feed
