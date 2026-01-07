@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Net.Http.Json;
 
-public partial class FeedEntryViewModel : ObservableObject
+public partial class FeedEntryViewModel(HttpClient httpClient) : ObservableObject
 {
     private readonly CreateFeedEntryRequest feedEntry = new()
     {
@@ -60,7 +60,7 @@ public partial class FeedEntryViewModel : ObservableObject
         }
     }
 
-    private string feedType;
+    private string feedType = "นมแม่";
 
     public string FeedType
     {
@@ -69,11 +69,6 @@ public partial class FeedEntryViewModel : ObservableObject
     }
 
     public bool ShowDeleteButton { get; set; } = false;
-
-    public FeedEntryViewModel()
-    {
-        feedType = "นมแม่";
-    }
 
     [RelayCommand]
     public async Task SaveFeedingEntryAsync()
@@ -87,10 +82,7 @@ public partial class FeedEntryViewModel : ObservableObject
             _ => CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
         };
 
-        const string UrlEndpoint = "http://localhost:5001/api/feed";
-
-        var httpClient = new HttpClient();
-        var response = await httpClient.PostAsJsonAsync(UrlEndpoint, feedEntry);
+        var response = await httpClient.PostAsJsonAsync("feed", feedEntry);
 
         response.EnsureSuccessStatusCode();
 
@@ -111,8 +103,7 @@ public partial class FeedEntryViewModel : ObservableObject
             return;
         }
 
-        var httpClient = new HttpClient();
-        var response = await httpClient.DeleteAsync($"http://localhost:5001/api/feed/{feedEntryId.Value}");
+        var response = await httpClient.DeleteAsync($"feed/{feedEntryId.Value}");
         response.EnsureSuccessStatusCode();
 
         await Shell.Current.Navigation.PopModalAsync();
@@ -120,8 +111,7 @@ public partial class FeedEntryViewModel : ObservableObject
 
     public async Task LoadFeedEventByIdAsync(Guid value)
     {
-        var httpClient = new HttpClient();
-        var response = await httpClient.GetFromJsonAsync<CreateFeedEntryRequest>($"http://localhost:5001/api/feed/{value}");
+        var response = await httpClient.GetFromJsonAsync<CreateFeedEntryRequest>($"feed/{value}");
         if (response == null)
         {
             return;

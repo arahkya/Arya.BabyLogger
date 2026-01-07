@@ -5,11 +5,14 @@ namespace Arya.BabyLogger.Mobile;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage()
+	private readonly HttpClient httpClient;
+
+	public MainPage(MainPageViewModel viewModel, HttpClient httpClient)
 	{
 		InitializeComponent();
 
-		BindingContext = new ViewModels.MainPageViewModel();
+		BindingContext = viewModel;
+		this.httpClient = httpClient;
 	}
 
 	protected override void OnAppearing()
@@ -21,6 +24,6 @@ public partial class MainPage : ContentPage
 
 	private async void OnFeedingButtonClicked(object sender, EventArgs e)
 	{
-		await Navigation.PushModalAsync(new FeedEntryView());
+		await Shell.Current.Navigation.PushModalAsync(new FeedEntryView(new FeedEntryViewModel(httpClient)));
 	}
 }

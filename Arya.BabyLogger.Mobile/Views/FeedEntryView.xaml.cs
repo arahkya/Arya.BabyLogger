@@ -1,26 +1,27 @@
+using Arya.BabyLogger.Mobile.ViewModels;
+
 namespace Arya.BabyLogger.Mobile.Views;
 
 public partial class FeedEntryView : ContentPage
 {
-	private readonly Guid? _eventId;
+	public Guid? EventId { get; set; }
 
-	public FeedEntryView(Guid? eventId = null)
+	public FeedEntryView(FeedEntryViewModel viewModel)
 	{
 		InitializeComponent();
 
-		_eventId = eventId;
-		BindingContext = new ViewModels.FeedEntryViewModel();
+		BindingContext = viewModel;
 	}
 
 	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
 
-		if (!_eventId.HasValue)
+		if (!EventId.HasValue)
 		{
 			return;
 		}
 
-		await ((ViewModels.FeedEntryViewModel)BindingContext).LoadFeedEventByIdAsync(_eventId.Value);
+		await ((ViewModels.FeedEntryViewModel)BindingContext).LoadFeedEventByIdAsync(EventId.Value);
 	}
 }

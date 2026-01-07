@@ -1,17 +1,18 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using System.Net.Http.Json;
+using System.Net.Sockets;
 using Arya.BabyLogger.Shared.Feed;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arya.BabyLogger.Mobile.ViewModels;
 
-public partial class MainPageViewModel : ObservableObject
+public partial class MainPageViewModel(HttpClient httpClient) : ObservableObject
 {
-    private static readonly HttpClient HttpClient = new();
-
-    public partial class BabyEvent : ObservableObject
+    public partial class BabyEvent(HttpClient httpClient) : ObservableObject
     {
         public required Guid Id { get; set; }
         public required string EventType { get; set; }
@@ -21,7 +22,7 @@ public partial class MainPageViewModel : ObservableObject
         [RelayCommand]
         public async Task SelectEventAsync(Guid Id)
         {
-            await Shell.Current.Navigation.PushModalAsync(new Views.FeedEntryView(Id));
+            await Shell.Current.Navigation.PushModalAsync(new Views.FeedEntryView(new FeedEntryViewModel(httpClient)) { EventId = Id });
         }
     }
 
@@ -79,20 +80,22 @@ public partial class MainPageViewModel : ObservableObject
 
     private async Task<List<BabyEvent>> ListFeedResponseAsync()
     {
-        const string UrlEndpoint = "http://localhost:5001/api/feed";
-
-        var response = await HttpClient.GetFromJsonAsync<ListFeedResponse>(UrlEndpoint);
-        if (response?.Items == null || response.Items.Count == 0)
+        try
         {
+            var listFeedResponse = await httpClient.GetFromJsonAsync<ListFeedResponse>("feed");
+            var events = new List<BabyEvent>(listFeedResponse?.Items.Count ?? 0);
+
+            foreach (var item in listFeedResponse?.Items ?? [])
+            {
+                events.Add(new BabyEvent(httpClient) { Id = item.Id, Title = item.Title, SubTitle = item.Time.ToString("d MMM yyyy HH:mm", new CultureInfo("th-TH")), EventType = item.Type });
+            }
+
+            return events;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error fetching feed data: {ex.Message}");
             return [];
         }
-
-        var events = new List<BabyEvent>(response.Items.Count);
-        foreach (var item in response.Items)
-        {
-            events.Add(new BabyEvent { Id = item.Id, Title = item.Title, SubTitle = item.Time.ToString("d MMM yyyy HH:mm", new CultureInfo("th-TH")), EventType = item.Type });
-        }
-
-        return events;
     }
 }
