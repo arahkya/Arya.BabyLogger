@@ -11,9 +11,9 @@ public partial class FeedEntryViewModel(HttpClient httpClient) : ObservableObjec
     private readonly CreateFeedEntryRequest feedEntry = new()
     {
         Time = DateTime.Now,
-        Type = CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
+        Type = FeedTypes.BreastMilk.ToString(),
         Amount = 0,
-        Unit = CreateFeedEntryRequest.Units.Milliliters.ToString(),
+        Unit = FeedUnits.Milliliters.ToString(),
         Note = string.Empty
     };
     private Guid? feedEntryId;
@@ -68,21 +68,47 @@ public partial class FeedEntryViewModel(HttpClient httpClient) : ObservableObjec
         set => SetProperty(ref feedType, value);
     }
 
+    public bool ShowSaveButton { get; set; } = true;
+
     public bool ShowDeleteButton { get; set; } = false;
 
     [RelayCommand]
     public async Task SaveFeedingEntryAsync()
     {
-        feedEntry.Unit = CreateFeedEntryRequest.Units.Milliliters.ToString();
+        feedEntry.Unit = FeedUnits.Milliliters.ToString();
 
         feedEntry.Type = FeedType switch
         {
-            "นมแม่" => CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
-            "นมผง" => CreateFeedEntryRequest.FeedTypes.FormulaMilk.ToString(),
-            _ => CreateFeedEntryRequest.FeedTypes.BreastMilk.ToString(),
+            "นมแม่" => FeedTypes.BreastMilk.ToString(),
+            "นมผง" => FeedTypes.FormulaMilk.ToString(),
+            _ => FeedTypes.BreastMilk.ToString(),
         };
 
         var response = await httpClient.PostAsJsonAsync("feed", feedEntry);
+
+        response.EnsureSuccessStatusCode();
+
+        await Shell.Current.Navigation.PopModalAsync();
+    }
+
+    [RelayCommand]
+    public async Task UpdateFeedingEntryAsync()
+    {
+        if (!feedEntryId.HasValue)
+        {
+            return;
+        }
+
+        feedEntry.Unit = FeedUnits.Milliliters.ToString();
+
+        feedEntry.Type = FeedType switch
+        {
+            "นมแม่" => FeedTypes.BreastMilk.ToString(),
+            "นมผง" => FeedTypes.FormulaMilk.ToString(),
+            _ => FeedTypes.BreastMilk.ToString(),
+        };
+
+        var response = await httpClient.PutAsJsonAsync($"feed/{feedEntryId.Value}", feedEntry);
 
         response.EnsureSuccessStatusCode();
 
@@ -132,11 +158,13 @@ public partial class FeedEntryViewModel(HttpClient httpClient) : ObservableObjec
         };
 
         ShowDeleteButton = true;
+        ShowSaveButton = false;
 
         OnPropertyChanged(nameof(Date));
         OnPropertyChanged(nameof(Time));
         OnPropertyChanged(nameof(Note));
         OnPropertyChanged(nameof(Amount));
         OnPropertyChanged(nameof(ShowDeleteButton));
+        OnPropertyChanged(nameof(ShowSaveButton));
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace Arya.BabyLogger.Shared.Feed;
+namespace Arya.BabyLogger.Shared.Feed;
 
-public class CreateFeedEntryRequest
+public class UpdateFeedEntryRequest
 {
     public DateTimeOffset Time { get; set; }
     public string? Note { get; set; }

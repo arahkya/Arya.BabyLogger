@@ -13,4 +13,17 @@ Content-Type: application/json
 
 ###
 
+PUT {{WebApi_HostAddress}}/api/feed/29632C8A-782C-4BC0-9301-BA82265B0C5F
+Content-Type: application/json
+
+{
+  "time": "2026-01-04T03:42:00",
+  "note": "Test00001",
+  "amount": 105,
+  "unit": "Milliliters",
+  "type": "BreastMilk"
+}
+
+###
+
 GET {{WebApi_HostAddress}}/api/feed

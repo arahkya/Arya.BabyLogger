@@ -47,9 +47,9 @@ public class FeedController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateFeedEntry([FromRoute] Guid id)
+    public async Task<IActionResult> UpdateFeedEntry([FromRoute] Guid id, [FromBody] UpdateFeedEntryRequest request)
     {
-        await _feedService.DleteFeedEntryAsync(id);
+        await _feedService.UpdateFeedEntryAsync(id, request);
 
         return Ok();
     }
@@ -57,7 +57,7 @@ public class FeedController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteFeedEntry([FromRoute] Guid id)
     {
-        await _feedService.DleteFeedEntryAsync(id);
+        await _feedService.DeleteFeedEntryAsync(id);
 
         return Ok();
     }

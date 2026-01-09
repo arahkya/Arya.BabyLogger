@@ -70,8 +70,17 @@
             <Button Text="บันทึก"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
+                    IsVisible="{Binding ShowSaveButton}"
                     WidthRequest="80"
                     Command="{Binding SaveFeedingEntryCommand}"/>
+
+            <Button Text="ปรับปรุง"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    IsVisible="{Binding ShowDeleteButton}"
+                    WidthRequest="120"
+                    Command="{Binding UpdateFeedingEntryCommand}"/>
+
             <Button Text="ยกเลิก"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"

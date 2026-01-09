@@ -58,7 +58,7 @@ public class FeedService(BabyLoggerDbContext dbContext) : IFeedService
         return await dbContext.Feeds.FindAsync(id);
     }
 
-    public async Task DleteFeedEntryAsync(Guid id)
+    public async Task DeleteFeedEntryAsync(Guid id)
     {
         var feedEntity = await dbContext.Feeds.FindAsync(id);
         if (feedEntity is null)
@@ -67,6 +67,23 @@ public class FeedService(BabyLoggerDbContext dbContext) : IFeedService
         }
 
         dbContext.Feeds.Remove(feedEntity);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateFeedEntryAsync(Guid id, UpdateFeedEntryRequest request)
+    {
+        var feedEntity = await dbContext.Feeds.FindAsync(id);
+        if (feedEntity is null)
+        {
+            return;
+        }
+
+        feedEntity.Time = new DateTime(request.Time.Year, request.Time.Month, request.Time.Day, request.Time.Hour, request.Time.Minute, request.Time.Second);
+        feedEntity.Note = request.Note;
+        feedEntity.Amount = request.Amount;
+        feedEntity.Unit = request.Unit.ToString();
+        feedEntity.Type = request.Type.ToString();
+
         await dbContext.SaveChangesAsync();
     }
 }
