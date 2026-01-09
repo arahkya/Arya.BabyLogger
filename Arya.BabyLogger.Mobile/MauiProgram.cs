@@ -70,17 +70,14 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<HttpClient>(p =>
 		{
-			var httpClient = new HttpClient(CreateHandler());
+			var httpClient = new HttpClient(CreateHandler())
+			{
+				BaseAddress = new Uri("https://baby-logger.arahk.com/api/"),
 
-#if DEBUG
-			httpClient.BaseAddress = new Uri("http://localhost:5001/api/");
-#else
-			httpClient.BaseAddress = new Uri("https://baby-logger.arahk.com/api/");
-#endif
-
-			httpClient.Timeout = TimeSpan.FromSeconds(30);
-			httpClient.DefaultRequestVersion = HttpVersion.Version11;
-			httpClient.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+				Timeout = TimeSpan.FromSeconds(30),
+				DefaultRequestVersion = HttpVersion.Version11,
+				DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+			};
 
 			return httpClient;
 		});
