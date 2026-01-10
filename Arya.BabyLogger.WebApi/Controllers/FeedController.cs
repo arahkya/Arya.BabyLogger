@@ -28,7 +28,14 @@ public class FeedController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllFeedEntries()
     {
-        var entries = await _feedService.GetAllFeedEntriesAsync();
+        var startDate = HttpContext.Request.Headers.ContainsKey("Start-Date")
+            ? DateTime.Parse(HttpContext.Request.Headers["Start-Date"])
+            : DateTime.MinValue;
+        var endDate = HttpContext.Request.Headers.ContainsKey("End-Date")
+            ? DateTime.Parse(HttpContext.Request.Headers["End-Date"]).Date.AddDays(1).AddTicks(-1)
+            : DateTime.MaxValue;
+
+        var entries = await _feedService.GetAllFeedEntriesAsync(startDate, endDate);
 
         return Ok(entries);
     }

@@ -6,7 +6,7 @@ namespace Arya.BabyLogger.WebApi.Services;
 public interface IFeedService
 {
     Task<Guid> CreateFeedEntryAsync(CreateFeedEntryRequest entry);
-    Task<ListFeedResponse> GetAllFeedEntriesAsync();
+    Task<ListFeedResponse> GetAllFeedEntriesAsync(DateTime startDate, DateTime endDate);
     Task<FeedEntity?> GetFeedEntryByIdAsync(Guid id);
     Task UpdateFeedEntryAsync(Guid id, UpdateFeedEntryRequest request);
     Task DeleteFeedEntryAsync(Guid id);

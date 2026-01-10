@@ -26,46 +26,18 @@ public partial class MainPageViewModel(HttpClient httpClient) : ObservableObject
         }
     }
 
-    public ObservableCollection<BabyEvent> BabyEvents { get; set; } = [];
-    // public MainPageViewModel()
-    // {
-    //     // Sample data
-    //     var now = DateTime.Now;
+    private DateTime filterDate = DateTime.Now;
+    public DateTime FilterDate
+    {
+        get => filterDate;
+        set
+        {
+            SetProperty(ref filterDate, value);
+            LoadEvents();
+        }
+    }
 
-    //     BabyEvents.Add(new BabyEvent { EventType = "ป้อนนม", EventTime = now.AddMinutes(-20) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "เปลี่ยนผ้าอ้อม", EventTime = now.AddMinutes(-40) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "งีบ", EventTime = now.AddHours(-1.5) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "นอนคว่ำ", EventTime = now.AddHours(-2) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ขวดนม", EventTime = now.AddHours(-2.5) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "เรอ", EventTime = now.AddHours(-3) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "เล่น", EventTime = now.AddHours(-3.5) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "เดินเล่น", EventTime = now.AddHours(-4) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ป้อนนม", EventTime = now.AddHours(-5) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "เปลี่ยนผ้าอ้อม", EventTime = now.AddHours(-5.5) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "งีบ", EventTime = now.AddHours(-6) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "อาบน้ำ", EventTime = now.AddHours(-7) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ห่อตัว", EventTime = now.AddHours(-7.5) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "วัดอุณหภูมิ", EventTime = now.AddHours(-8) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "วิตามินดี", EventTime = now.AddHours(-8.5) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ชั่งน้ำหนัก", EventTime = now.AddHours(-9) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "พบแพทย์", EventTime = now.AddHours(-10) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ฉีดวัคซีน", EventTime = now.AddHours(-11) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ชิมอาหารบด", EventTime = now.AddHours(-12) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ย้ายลงเตียง", EventTime = now.AddHours(-13) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ตื่น", EventTime = now.AddHours(-14) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ยืดเส้น", EventTime = now.AddHours(-15) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ป้อนนมระหว่างหลับ", EventTime = now.AddHours(-16) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ป้อนนมเที่ยงคืน", EventTime = now.AddHours(-18) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "งีบในรถเข็น", EventTime = now.AddHours(-19) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "นั่งคาร์ซีท", EventTime = now.AddHours(-20) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "เปลี่ยนชุด", EventTime = now.AddHours(-21) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ปั๊มนม", EventTime = now.AddHours(-22) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "กอดอุ่น", EventTime = now.AddHours(-23) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "อ่านนิทาน", EventTime = now.AddHours(-24) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "กล่อมเพลง", EventTime = now.AddHours(-25) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "ป้อนนมเช้ามืด", EventTime = now.AddHours(-26) });
-    //     BabyEvents.Add(new BabyEvent { EventType = "เปลี่ยนผ้าอ้อม", EventTime = now.AddHours(-27) });
-    // }
+    public ObservableCollection<BabyEvent> BabyEvents { get; set; } = [];
 
     public async void LoadEvents()
     {
@@ -82,7 +54,15 @@ public partial class MainPageViewModel(HttpClient httpClient) : ObservableObject
     {
         try
         {
-            var listFeedResponse = await httpClient.GetFromJsonAsync<ListFeedResponse>("feed");
+            var selectFilterDate = FilterDate;
+            var request = new HttpRequestMessage(HttpMethod.Get, "feed");
+            var startDate = new DateTime(selectFilterDate.Year, selectFilterDate.Month, selectFilterDate.Day, 0, 0, 0);
+
+            var endDate = new DateTime(selectFilterDate.Year, selectFilterDate.Month, selectFilterDate.Day, 23, 59, 59);
+            request.Headers.Add("Start-Date", startDate.ToString("o"));
+            request.Headers.Add("End-Date", endDate.ToString("o"));
+
+            var listFeedResponse = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<ListFeedResponse>();
             var events = new List<BabyEvent>(listFeedResponse?.Items.Count ?? 0);
 
             foreach (var item in listFeedResponse?.Items ?? [])

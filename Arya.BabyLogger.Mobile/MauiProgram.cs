@@ -73,6 +73,7 @@ public static class MauiProgram
 			var httpClient = new HttpClient(CreateHandler())
 			{
 				BaseAddress = new Uri("https://baby-logger.arahk.com/api/"),
+				//BaseAddress = new Uri("http://localhost:5001/api/"),
 
 				Timeout = TimeSpan.FromSeconds(30),
 				DefaultRequestVersion = HttpVersion.Version11,

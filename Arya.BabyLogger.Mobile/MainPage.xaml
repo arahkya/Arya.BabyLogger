@@ -126,6 +126,7 @@
                        TextColor="#0F172A"/>
                 <DatePicker Grid.Column="1"
                             HorizontalOptions="FillAndExpand"
+                            Date="{Binding FilterDate}"
                             BackgroundColor="#F8FAFC"
                             TextColor="#0F172A"
                             Margin="0,0,0,0"/>

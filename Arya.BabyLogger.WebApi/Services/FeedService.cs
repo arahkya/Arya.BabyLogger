@@ -31,9 +31,10 @@ public class FeedService(BabyLoggerDbContext dbContext) : IFeedService
         return feedEntity.Id;
     }
 
-    public Task<ListFeedResponse> GetAllFeedEntriesAsync()
+    public Task<ListFeedResponse> GetAllFeedEntriesAsync(DateTime startDate, DateTime endDate)
     {
         var feedEntities = dbContext.Feeds
+            .Where(f => f.Time >= startDate && f.Time <= endDate)
             .OrderByDescending(f => f.Time)
             .ToList();
 
