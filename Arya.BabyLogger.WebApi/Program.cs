@@ -14,6 +14,7 @@ builder.Services.AddDbContext<BabyLoggerDbContext>(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddTransient<IFeedService, FeedService>();
+builder.Services.AddTransient<IExcretionService, ExcretionService>();
 
 var app = builder.Build();
 

@@ -1,0 +1,46 @@
+@baseUrl = http://localhost:5001
+@excretionId = 5d488030-5412-46e5-9c73-60f8cdd49a83
+
+### Create Excretion
+POST {{baseUrl}}/api/excretion
+Content-Type: application/json
+
+{
+  "excretionDateTime": "2026-01-12T14:30:00",
+  "excretionLevel": 5,
+  "excretionColor": "#FFA500",
+  "consistency": "Soft",
+  "note": "After lunch"
+}
+
+### List Excretions - All Records
+GET {{baseUrl}}/api/excretion
+
+### List Excretions - Last 7 Days
+GET {{baseUrl}}/api/excretion
+Start-Date: 2026-01-05
+End-Date: 2026-01-12
+
+### List Excretions - Last 24 Hours
+GET {{baseUrl}}/api/excretion
+Start-Date: 2026-01-11
+End-Date: 2026-01-12
+
+### Get Excretion by ID
+GET {{baseUrl}}/api/excretion/{{excretionId}}
+
+### Update Excretion
+PUT {{baseUrl}}/api/excretion/{{excretionId}}
+Content-Type: application/json
+
+{
+  "id": "5d488030-5412-46e5-9c73-60f8cdd49a83",
+  "excretionDateTime": "2026-01-12T16:45:00",
+  "excretionLevel": 7,
+  "excretionColor": "#FF6347",
+  "consistency": "Hard",
+  "note": "Updated - Slightly firm"
+}
+
+### Delete Excretion
+DELETE {{baseUrl}}/api/excretion/{{excretionId}}

@@ -27,3 +27,5 @@ Content-Type: application/json
 ###
 
 GET {{WebApi_HostAddress}}/api/feed
+Start-Date: 2026-01-01
+End-Date: 2026-01-10
