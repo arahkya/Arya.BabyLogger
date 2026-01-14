@@ -1,0 +1,35 @@
+@baseUrl = http://localhost:5001
+@sleepId = d1763b66-2149-4fd5-92df-1466461dd5e8
+
+### Create Sleep
+POST {{baseUrl}}/api/sleep
+Content-Type: application/json
+
+{
+  "startTime": "2026-01-12T22:00:00Z",
+  "endTime": "2026-01-13T01:30:00Z",
+  "note": "Overnight sleep"
+}
+
+### List Sleeps - All Records
+GET {{baseUrl}}/api/sleep
+
+### List Sleeps - Date Range
+GET {{baseUrl}}/api/sleep?startDate=2026-01-10T00:00:00Z&endDate=2026-01-12T23:59:59Z
+
+### Get Sleep by ID
+GET {{baseUrl}}/api/sleep/{{sleepId}}
+
+### Update Sleep
+PUT {{baseUrl}}/api/sleep/{{sleepId}}
+Content-Type: application/json
+
+{
+  "id": "2cf1e7b1-0b70-4c7e-9e8b-4c8a9cda8f0a",
+  "startTime": "2026-01-12T22:15:00Z",
+  "endTime": "2026-01-13T01:45:00Z",
+  "note": "Updated overnight sleep"
+}
+
+### Delete Sleep
+DELETE {{baseUrl}}/api/sleep/{{sleepId}}

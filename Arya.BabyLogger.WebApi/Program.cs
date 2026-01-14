@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddTransient<IFeedService, FeedService>();
 builder.Services.AddTransient<IExcretionService, ExcretionService>();
+builder.Services.AddTransient<ISleepService, SleepService>();
 
 var app = builder.Build();
 

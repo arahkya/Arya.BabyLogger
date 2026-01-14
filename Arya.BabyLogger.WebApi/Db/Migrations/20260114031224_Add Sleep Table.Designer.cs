@@ -3,6 +3,7 @@ using System;
 using Arya.BabyLogger.WebApi.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Arya.BabyLogger.WebApi.Db.Migrations
 {
     [DbContext(typeof(BabyLoggerDbContext))]
-    partial class BabyLoggerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260114031224_Add Sleep Table")]
+    partial class AddSleepTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
