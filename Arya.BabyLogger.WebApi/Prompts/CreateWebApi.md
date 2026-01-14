@@ -96,7 +96,7 @@ Validation handling in controller:
 - Use variables for `baseUrl` and a sample `sleepId`.
 
 ## EF Core Migration
-- Execute command
+- Ask User to Execute command
 ```
-cd Arya.BabyLogger.WebApi/ && dotnet ef migrations -o Db/Migrations "Add {{DomainName}} Table" && dotnet ef database update
+cd Arya.BabyLogger.WebApi/ && dotnet ef migrations -o Db/Migrations add "Add {{DomainName}} Table" && dotnet ef database update
 ```
