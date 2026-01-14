@@ -7,6 +7,7 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     public DbSet<FeedEntity> Feeds { get; set; } = null!;
     public DbSet<ExcretionEntity> Excretions { get; set; } = null!;
     public DbSet<SleepEntity> Sleeps { get; set; } = null!;
+    public DbSet<BreastPumpEntity> BreastPumps { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,12 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
         // Seed Sleep data - 20 records covering 7 days back from January 12, 2026
         var sleepSeedData = GenerateSleepSeedData();
         modelBuilder.Entity<SleepEntity>().HasData(sleepSeedData);
+
+        modelBuilder.Entity<BreastPumpEntity>().HasIndex(p => p.PumpTime);
+
+        // Seed Breast Pump data - 20 records covering 7 days back from January 12, 2026
+        var breastPumpSeedData = GenerateBreastPumpSeedData();
+        modelBuilder.Entity<BreastPumpEntity>().HasData(breastPumpSeedData);
     }
 
     private static List<ExcretionEntity> GenerateExcretionSeedData()
@@ -127,6 +134,59 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
             new() { Id = sleepIds[17], SleepStartTime = baseDate.AddDays(-5).AddHours(6), SleepEndTime = baseDate.AddDays(-5).AddHours(7).AddMinutes(10), Note = "Morning nap" },
             new() { Id = sleepIds[18], SleepStartTime = baseDate.AddDays(-6).AddHours(0), SleepEndTime = baseDate.AddDays(-6).AddHours(2).AddMinutes(30), Note = "Overnight sleep" },
             new() { Id = sleepIds[19], SleepStartTime = baseDate.AddDays(-6).AddHours(3), SleepEndTime = baseDate.AddDays(-6).AddHours(4), Note = "Night wake" }
+        };
+    }
+
+    private static List<BreastPumpEntity> GenerateBreastPumpSeedData()
+    {
+        var baseDate = new DateTime(2026, 1, 12, 0, 0, 0, DateTimeKind.Utc);
+
+        var pumpIds = new[]
+        {
+            Guid.Parse("33333333-3333-3333-3333-333333333301"),
+            Guid.Parse("33333333-3333-3333-3333-333333333302"),
+            Guid.Parse("33333333-3333-3333-3333-333333333303"),
+            Guid.Parse("33333333-3333-3333-3333-333333333304"),
+            Guid.Parse("33333333-3333-3333-3333-333333333305"),
+            Guid.Parse("33333333-3333-3333-3333-333333333306"),
+            Guid.Parse("33333333-3333-3333-3333-333333333307"),
+            Guid.Parse("33333333-3333-3333-3333-333333333308"),
+            Guid.Parse("33333333-3333-3333-3333-333333333309"),
+            Guid.Parse("33333333-3333-3333-3333-333333333310"),
+            Guid.Parse("33333333-3333-3333-3333-333333333311"),
+            Guid.Parse("33333333-3333-3333-3333-333333333312"),
+            Guid.Parse("33333333-3333-3333-3333-333333333313"),
+            Guid.Parse("33333333-3333-3333-3333-333333333314"),
+            Guid.Parse("33333333-3333-3333-3333-333333333315"),
+            Guid.Parse("33333333-3333-3333-3333-333333333316"),
+            Guid.Parse("33333333-3333-3333-3333-333333333317"),
+            Guid.Parse("33333333-3333-3333-3333-333333333318"),
+            Guid.Parse("33333333-3333-3333-3333-333333333319"),
+            Guid.Parse("33333333-3333-3333-3333-333333333320")
+        };
+
+        return new List<BreastPumpEntity>
+        {
+            new() { Id = pumpIds[0], PumpTime = baseDate.AddHours(5).AddMinutes(15), AmountML = 120, Note = "Morning pump" },
+            new() { Id = pumpIds[1], PumpTime = baseDate.AddHours(8).AddMinutes(45), AmountML = 90, Note = "Mid-morning" },
+            new() { Id = pumpIds[2], PumpTime = baseDate.AddHours(12).AddMinutes(10), AmountML = 110, Note = "Noon session" },
+            new() { Id = pumpIds[3], PumpTime = baseDate.AddHours(15).AddMinutes(30), AmountML = 100, Note = "Afternoon pump" },
+            new() { Id = pumpIds[4], PumpTime = baseDate.AddHours(19).AddMinutes(5), AmountML = 130, Note = "Evening pump" },
+            new() { Id = pumpIds[5], PumpTime = baseDate.AddDays(-1).AddHours(6), AmountML = 115, Note = "Morning pump" },
+            new() { Id = pumpIds[6], PumpTime = baseDate.AddDays(-1).AddHours(9).AddMinutes(20), AmountML = 95, Note = "Mid-morning" },
+            new() { Id = pumpIds[7], PumpTime = baseDate.AddDays(-1).AddHours(13), AmountML = 105, Note = "Noon session" },
+            new() { Id = pumpIds[8], PumpTime = baseDate.AddDays(-1).AddHours(16).AddMinutes(10), AmountML = 100, Note = "Afternoon pump" },
+            new() { Id = pumpIds[9], PumpTime = baseDate.AddDays(-1).AddHours(20).AddMinutes(5), AmountML = 125, Note = "Evening pump" },
+            new() { Id = pumpIds[10], PumpTime = baseDate.AddDays(-2).AddHours(5).AddMinutes(30), AmountML = 118, Note = "Morning pump" },
+            new() { Id = pumpIds[11], PumpTime = baseDate.AddDays(-2).AddHours(9), AmountML = 92, Note = "Mid-morning" },
+            new() { Id = pumpIds[12], PumpTime = baseDate.AddDays(-2).AddHours(12).AddMinutes(40), AmountML = 108, Note = "Noon session" },
+            new() { Id = pumpIds[13], PumpTime = baseDate.AddDays(-2).AddHours(15).AddMinutes(50), AmountML = 98, Note = "Afternoon pump" },
+            new() { Id = pumpIds[14], PumpTime = baseDate.AddDays(-2).AddHours(19), AmountML = 132, Note = "Evening pump" },
+            new() { Id = pumpIds[15], PumpTime = baseDate.AddDays(-3).AddHours(6).AddMinutes(10), AmountML = 112, Note = "Morning pump" },
+            new() { Id = pumpIds[16], PumpTime = baseDate.AddDays(-3).AddHours(9).AddMinutes(35), AmountML = 88, Note = "Mid-morning" },
+            new() { Id = pumpIds[17], PumpTime = baseDate.AddDays(-3).AddHours(13).AddMinutes(5), AmountML = 107, Note = "Noon session" },
+            new() { Id = pumpIds[18], PumpTime = baseDate.AddDays(-3).AddHours(16).AddMinutes(25), AmountML = 97, Note = "Afternoon pump" },
+            new() { Id = pumpIds[19], PumpTime = baseDate.AddDays(-3).AddHours(20).AddMinutes(15), AmountML = 128, Note = "Evening pump" }
         };
     }
 }

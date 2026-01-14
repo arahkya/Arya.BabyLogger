@@ -1,0 +1,35 @@
+@baseUrl = http://localhost:5001
+@breastPumpId = 0d64ad54-aa45-4232-913b-c65843562e73
+
+### Create Breast Pump
+POST {{baseUrl}}/api/breastpump
+Content-Type: application/json
+
+{
+  "pumpTime": "2026-01-12T08:30:00Z",
+  "amountML": 120,
+  "note": "Morning pump"
+}
+
+### List Breast Pumps - All Records
+GET {{baseUrl}}/api/breastpump
+
+### List Breast Pumps - Date Range
+GET {{baseUrl}}/api/breastpump?startDate=2026-01-10T00:00:00Z&endDate=2026-01-12T23:59:59Z
+
+### Get Breast Pump by ID
+GET {{baseUrl}}/api/breastpump/{{breastPumpId}}
+
+### Update Breast Pump
+PUT {{baseUrl}}/api/breastpump/{{breastPumpId}}
+Content-Type: application/json
+
+{
+  "id": "33333333-3333-3333-3333-333333333301",
+  "pumpTime": "2026-01-12T09:00:00Z",
+  "amountML": 130,
+  "note": "Updated morning pump"
+}
+
+### Delete Breast Pump
+DELETE {{baseUrl}}/api/breastpump/{{breastPumpId}}
