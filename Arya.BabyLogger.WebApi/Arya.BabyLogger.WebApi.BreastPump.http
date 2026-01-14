@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:5001
+@baseUrl = https://baby-logger.arahk.com
 @breastPumpId = 0d64ad54-aa45-4232-913b-c65843562e73
 
 ### Create Breast Pump
