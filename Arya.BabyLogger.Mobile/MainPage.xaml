@@ -5,14 +5,10 @@
              BackgroundColor="#F5F7FB">
 
     <ContentPage.Resources>
-        <FontImageSource x:Key="FeedIcon"
-                         Glyph="🍼"
-                         Color="#FF8C42"
-                         Size="32"/>
-        <FontImageSource x:Key="DiaperIcon"
-                         Glyph="🧷"
-                         Color="#4BB3FD"
-                         Size="32"/>
+        <FileImageSource x:Key="MotherBreastPumpImage"
+                         File="mother_breast_pumping.png"/>
+        <FileImageSource x:Key="MilkBottleImage"
+                         File="milk_bottle.png"/>
         <FontImageSource x:Key="SleepIcon"
                          Glyph="💤"
                          Color="#7A6FF0"
@@ -73,7 +69,7 @@
             Grid.Column="0"
             Style="{StaticResource MenuButtonStyle}"
             Text="ป้อนนม"
-            ImageSource="{StaticResource FeedIcon}"
+            ImageSource="{StaticResource MilkBottleImage}"
             BackgroundColor="#FFF1E5"
             Clicked="OnFeedingButtonClicked"/>
 
@@ -81,9 +77,10 @@
             Grid.Row="0"
             Grid.Column="1"
             Style="{StaticResource MenuButtonStyle}"
-            Text="เปลี่ยนผ้าอ้อม"
-            ImageSource="{StaticResource DiaperIcon}"
-            BackgroundColor="#E6F4FF"/>
+            Text="ปั๊มนม"
+            ImageSource="{StaticResource MotherBreastPumpImage}"
+            BackgroundColor="#E6F4FF"
+            Clicked="OnBreastPumpButtonClicked"/>
 
         <Button
             Grid.Row="1"

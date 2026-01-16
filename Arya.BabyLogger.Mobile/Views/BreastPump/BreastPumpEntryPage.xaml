@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Arya.BabyLogger.Mobile.Views.BreastPump.BreastPumpEntryPage"
+             xmlns:viewModels="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.BreastPump"
+             x:DataType="viewModels:BreastPumpEntryViewModel"
+             Title="BreastPumpEntryPage">
+    <VerticalStackLayout>
+        <Label Text="บันทึกการปั๊มนม"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               Margin="0,10"/>
+
+        <Grid Grid.Row="1"
+              Padding="20"
+              RowSpacing="15"
+              ColumnSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="30*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="ปริมาณนม (มล.)"
+                   Grid.ColumnSpan="2"/>
+            <Entry Placeholder="ปริมาณนม (มล.)"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="2"
+                   Keyboard="Numeric"
+                   Text="{Binding AmountML}"/>
+
+            <Label Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   Text="เวลา:"/>
+            <DatePicker Grid.Row="3"
+                        Date="{Binding PumpDate}"/>
+            <TimePicker Grid.Row="3"
+                        Grid.Column="1"
+                        Time="{Binding PumpTime}"/>
+            <Label Grid.Row="4"
+                   Text="Note:"
+                   Grid.ColumnSpan="2"/>
+            <Editor Grid.Row="5"
+                    Grid.ColumnSpan="2"
+                    Placeholder="หมายเหตุเพิ่มเติม"
+                    AutoSize="TextChanges"
+                    HeightRequest="150"
+                    Text="{Binding Note}"/>
+        </Grid>
+
+        <HorizontalStackLayout Grid.Row="2"
+                               HorizontalOptions="Center"
+                               Spacing="20"
+                               Margin="0,10">
+            <Button Text="บันทึก"
+                    IsVisible="{Binding IsAddMode}"
+                    WidthRequest="100"
+                    Command="{Binding SaveCommand}"/>
+            <Button Text="บันทึก"
+                    IsVisible="{Binding IsEditMode}"
+                    WidthRequest="100"
+                    Command="{Binding UpdateCommand}"/>
+            <Button Text="ลบ"
+                    IsVisible="{Binding IsEditMode}"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    WidthRequest="100"
+                    Command="{Binding DeleteCommand}"/>
+            <Button Text="ยกเลิก"
+                    WidthRequest="100"
+                    BackgroundColor="LightGray"
+                    TextColor="Gray"
+                    Command="{Binding CancelCommand}"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,18 +1,21 @@
 @baseUrl = https://baby-logger.arahk.com
-@breastPumpId = 0d64ad54-aa45-4232-913b-c65843562e73
+@breastPumpId = 525c18a5-22ee-48a3-a630-da6a3632df7a
 
 ### Create Breast Pump
 POST {{baseUrl}}/api/breastpump
 Content-Type: application/json
 
 {
-  "pumpTime": "2026-01-12T08:30:00Z",
+  "pumpTime": "2026-01-16T08:30:00Z",
   "amountML": 120,
   "note": "Morning pump"
 }
 
 ### List Breast Pumps - All Records
 GET {{baseUrl}}/api/breastpump
+
+###
+GET {{baseUrl}}/api/breastpump?startDate=2026-01-08T22:18:40Z&endDate=2026-01-15T22:18:40Z
 
 ### List Breast Pumps - Date Range
 GET {{baseUrl}}/api/breastpump?startDate=2026-01-10T00:00:00Z&endDate=2026-01-12T23:59:59Z
