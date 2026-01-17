@@ -188,61 +188,7 @@
                                                      Binding="{Binding EventType}"
                                                      Value="BreastMilk">
                                             <Setter Property="Source"
-                                                    Value="{StaticResource FeedIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="FormulaMilk">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource FeedIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="ป้อนนมระหว่างหลับ">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource FeedIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="ป้อนนมเที่ยงคืน">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource FeedIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="ป้อนนมเช้ามืด">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource FeedIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="ชิมอาหารบด">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource FeedIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="เปลี่ยนผ้าอ้อม">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource DiaperIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="นอน">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource SleepIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="งีบ">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource SleepIcon}"/>
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding EventType}"
-                                                     Value="งีบในรถเข็น">
-                                            <Setter Property="Source"
-                                                    Value="{StaticResource SleepIcon}"/>
+                                                    Value="{StaticResource MilkBottleImage}"/>
                                         </DataTrigger>
                                     </Image.Triggers>
                                 </Image>
