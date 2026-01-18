@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using Arya.BabyLogger.Mobile.ViewModels;
+using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
+using Arya.BabyLogger.Mobile.ViewModels.Feed;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 
@@ -83,6 +85,10 @@ public static class MauiProgram
 			return httpClient;
 		});
 		builder.Services.AddTransient<MainPageViewModel>();
+		builder.Services.AddTransient<FeedListViewModel>();
+		builder.Services.AddTransient<FeedEntryViewModel>();
+		builder.Services.AddTransient<BreastPumpListViewModel>();
+		builder.Services.AddTransient<BreastPumpEntryViewModel>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

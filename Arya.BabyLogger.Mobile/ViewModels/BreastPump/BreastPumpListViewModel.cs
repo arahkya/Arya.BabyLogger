@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
-public partial class BreastPumpItemViewModel(HttpClient client) : ObservableObject
+public partial class BreastPumpItemViewModel : ObservableObject
 {
     public Guid Id { get; set; }
     public DateTimeOffset PumpTime { get; set; }
@@ -18,7 +18,10 @@ public partial class BreastPumpItemViewModel(HttpClient client) : ObservableObje
     [RelayCommand]
     public async Task ItemSelectedAsync()
     {
-        var viewModel = new BreastPumpEntryViewModel(Id, client);
+        var viewModel = App.Services.GetRequiredService<BreastPumpEntryViewModel>();
+        viewModel.ListItemId = Id;
+        await viewModel.LoadDataAsync();
+
         var page = new BreastPumpEntryPage(viewModel);
 
         await Shell.Current.Navigation.PushModalAsync(page);
@@ -66,7 +69,7 @@ public partial class BreastPumpListViewModel : ObservableObject
     [RelayCommand]
     public async Task AddNewBreastPumpAsync()
     {
-        var viewModel = new BreastPumpEntryViewModel(Guid.Empty, httpClient);
+        var viewModel = App.Services.GetRequiredService<BreastPumpEntryViewModel>();
         var page = new BreastPumpEntryPage(viewModel);
 
         await Shell.Current.Navigation.PushModalAsync(page);
@@ -84,7 +87,7 @@ public partial class BreastPumpListViewModel : ObservableObject
 
         var items = await response.Content.ReadFromJsonAsync<BreastPumpListItemsResponse>();
         var groupedItems = items!.Items
-            .Select(i => new BreastPumpItemViewModel(httpClient)
+            .Select(i => new BreastPumpItemViewModel
             {
                 Id = i.Id,
                 PumpTime = i.PumpTime,

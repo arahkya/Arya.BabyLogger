@@ -4,11 +4,11 @@ namespace Arya.BabyLogger.Mobile.Views.BreastPump;
 
 public partial class BreastPumpListPage : ContentPage
 {
-	public BreastPumpListPage(BreastPumpListViewModel viewModel)
+	public BreastPumpListPage()
 	{
 		InitializeComponent();
 
-		BindingContext = viewModel;
+		BindingContext = App.Services.GetRequiredService<BreastPumpListViewModel>();
 	}
 
 	protected override async void OnAppearing()

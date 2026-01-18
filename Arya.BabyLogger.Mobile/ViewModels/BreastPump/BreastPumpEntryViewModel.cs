@@ -5,13 +5,19 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
-public partial class BreastPumpEntryViewModel(Guid listItemId, HttpClient client) : ObservableObject
+public partial class BreastPumpEntryViewModel(HttpClient client) : ObservableObject
 {
     public bool IsEditMode => _listItemId != Guid.Empty;
     public bool IsAddMode => _listItemId == Guid.Empty;
 
-    private readonly Guid _listItemId = listItemId;
+    private Guid _listItemId = Guid.Empty;
     private BreastPumpDetailResponse? _breastDetailResponse;
+
+    public Guid ListItemId
+    {
+        get => _listItemId;
+        set => SetProperty(ref _listItemId, value);
+    }
 
     public Guid Id
     {

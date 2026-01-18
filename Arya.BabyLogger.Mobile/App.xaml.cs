@@ -4,6 +4,8 @@ namespace Arya.BabyLogger.Mobile;
 
 public partial class App : Application
 {
+	public static IServiceProvider Services => Current?.Handler?.MauiContext?.Services ?? throw new InvalidOperationException("Service provider is not available.");
+
 	public App()
 	{
 		InitializeComponent();

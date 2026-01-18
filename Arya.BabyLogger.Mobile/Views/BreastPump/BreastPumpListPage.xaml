@@ -6,16 +6,13 @@
              xmlns:viewModels="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.BreastPump"
              Title="ปั๊มนม">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="เพิ่ม"
+                     Command="{Binding AddNewBreastPumpCommand}"/>
+    </ContentPage.ToolbarItems>
+
     <CollectionView ItemsSource="{Binding BreastPumpItemsGroup}"
                     IsGrouped="True">
-        <CollectionView.HeaderTemplate>
-            <DataTemplate>
-                <StackLayout Padding="10">
-                    <Button Text="เพิ่มการปั๊มนม"
-                            Command="{Binding AddNewBreastPumpCommand, Source={RelativeSource AncestorType={x:Type viewModels:BreastPumpListViewModel}}}"/>
-                </StackLayout>
-            </DataTemplate>
-        </CollectionView.HeaderTemplate>
         <CollectionView.GroupHeaderTemplate>
             <DataTemplate x:DataType="viewModels:BreastPumpGroupViewModel">
                 <Grid BackgroundColor="LightGray"
