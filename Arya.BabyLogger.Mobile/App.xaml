@@ -6,9 +6,12 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <FileImageSource x:Key="BreastPumpIcon"
+                             File="mother_breast_pumping.png"/>
+            <x:String x:Key="AppName">BabyLogger</x:String>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

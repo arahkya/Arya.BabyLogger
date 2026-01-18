@@ -4,7 +4,7 @@
              x:Class="Arya.BabyLogger.Mobile.Views.Feed.FeedListPage"
              xmlns:viewmodels="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.Feed"
              x:DataType="{x:Type viewmodels:FeedListViewModel}"
-             Title="ป้อนนม">
+             Title="{StaticResource AppName}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="เพิ่ม"
                      Command="{Binding AddCommand}"/>

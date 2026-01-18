@@ -4,57 +4,182 @@
              x:Class="Arya.BabyLogger.Mobile.Views.BreastPump.BreastPumpListPage"
              x:DataType="viewModels:BreastPumpListViewModel"
              xmlns:viewModels="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.BreastPump"
-             Title="ปั๊มนม">
+             Title="{StaticResource AppName}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PageBg">#F6F4F1</Color>
+            <Color x:Key="CardBg">#FFFFFF</Color>
+            <Color x:Key="CardStroke">#E6E1DA</Color>
+            <Color x:Key="AccentText">#2D2A26</Color>
+            <Color x:Key="MutedText">#6E655B</Color>
+            <Color x:Key="HeaderBg">#EFE9E1</Color>
+
+            <Style x:Key="SectionTitle"
+                   TargetType="Label">
+                <Setter Property="FontSize"
+                        Value="22"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <Setter Property="TextColor"
+                        Value="{StaticResource AccentText}"/>
+            </Style>
+            <Style x:Key="SectionSubtitle"
+                   TargetType="Label">
+                <Setter Property="FontSize"
+                        Value="13"/>
+                <Setter Property="TextColor"
+                        Value="{StaticResource MutedText}"/>
+            </Style>
+            <Style x:Key="CardBorder"
+                   TargetType="Border">
+                <Setter Property="BackgroundColor"
+                        Value="{StaticResource CardBg}"/>
+                <Setter Property="Stroke"
+                        Value="{StaticResource CardStroke}"/>
+                <Setter Property="StrokeThickness"
+                        Value="1"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="16"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding"
+                        Value="14"/>
+                <Setter Property="Margin"
+                        Value="8,6"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="เพิ่ม"
                      Command="{Binding AddNewBreastPumpCommand}"/>
     </ContentPage.ToolbarItems>
 
-    <CollectionView ItemsSource="{Binding BreastPumpItemsGroup}"
-                    IsGrouped="True">
-        <CollectionView.GroupHeaderTemplate>
-            <DataTemplate x:DataType="viewModels:BreastPumpGroupViewModel">
-                <Grid BackgroundColor="LightGray"
-                      Padding="5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Text="{Binding GroupTitle}"
-                           FontAttributes="Bold"/>
-                    <Label Text="{Binding TotalAmountInMl, StringFormat='Total: {0} ml'}"
-                           Grid.Column="1"
-                           FontAttributes="Bold"/>
+    <Grid BackgroundColor="{StaticResource PageBg}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Padding="20,16,20,6">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Style="{StaticResource SectionTitle}"
+                   Text="บันทึกการปั๊มนม"/>
+            <Label Grid.Row="1"
+                   Style="{StaticResource SectionSubtitle}"
+                   Text="แตะรายการเพื่อดูรายละเอียด หรือกดเพิ่มเพื่อบันทึกใหม่"/>
+        </Grid>
+
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding BreastPumpItemsGroup}"
+                        IsGrouped="True"
+                        SelectionMode="None"
+                        Margin="12,4,12,12">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="viewModels:BreastPumpGroupViewModel">
+                    <Border BackgroundColor="{StaticResource HeaderBg}"
+                            Stroke="{StaticResource CardStroke}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="12"
+                            Margin="4,10,4,6">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackLayout Spacing="2">
+                                <Label Text="{Binding GroupTitle}"
+                                       FontAttributes="Bold"
+                                       FontSize="14"
+                                       TextColor="{StaticResource AccentText}"/>
+                                <Label Text="สรุปประจำวัน"
+                                       FontSize="12"
+                                       TextColor="{StaticResource MutedText}"/>
+                            </StackLayout>
+                            <StackLayout Grid.Column="1"
+                                         HorizontalOptions="End"
+                                         Spacing="2">
+                                <Label Text="{Binding TotalAmountInMl, StringFormat='{0} ml'}"
+                                       FontAttributes="Bold"
+                                       FontSize="16"
+                                       TextColor="{StaticResource AccentText}"
+                                       HorizontalTextAlignment="End"/>
+                                <Label Text="รวมทั้งหมด"
+                                       FontSize="11"
+                                       TextColor="{StaticResource MutedText}"
+                                       HorizontalTextAlignment="End"/>
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:BreastPumpItemViewModel">
+                    <Border Style="{StaticResource CardBorder}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding ItemSelectedCommand}"
+                                CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto"
+                              ColumnSpacing="12"
+                              VerticalOptions="Center">
+                            <Border BackgroundColor="#F3EDE6"
+                                    Stroke="#E5DDD2"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="8"
+                                    WidthRequest="40"
+                                    HeightRequest="40">
+                                <Image Source="{StaticResource BreastPumpIcon}"
+                                       WidthRequest="35"
+                                       HeightRequest="35"/>
+                            </Border>
+                            <StackLayout Grid.Column="1"
+                                         Spacing="2">
+                                <Label Text="{Binding PumpTimeString}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AccentText}"/>
+                                <Label Text="เวลาบันทึก"
+                                       FontSize="12"
+                                       TextColor="{StaticResource MutedText}"/>
+                            </StackLayout>
+                            <StackLayout Grid.Column="2"
+                                         HorizontalOptions="End"
+                                         Spacing="2">
+                                <Label Text="{Binding AmountInMl, StringFormat='{0} ml'}"
+                                       FontAttributes="Bold"
+                                       FontSize="18"
+                                       TextColor="{StaticResource AccentText}"
+                                       HorizontalTextAlignment="End"/>
+                                <Label Text="ปริมาณ"
+                                       FontSize="12"
+                                       TextColor="{StaticResource MutedText}"
+                                       HorizontalTextAlignment="End"/>
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Grid Padding="24">
+                    <Border Style="{StaticResource CardBorder}">
+                        <StackLayout Spacing="6">
+                            <Label Text="ยังไม่มีรายการปั๊มนม"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AccentText}"/>
+                            <Label Text="กดปุ่มเพิ่มเพื่อบันทึกครั้งแรกของวันนี้"
+                                   FontSize="12"
+                                   TextColor="{StaticResource MutedText}"/>
+                        </StackLayout>
+                    </Border>
                 </Grid>
-            </DataTemplate>
-        </CollectionView.GroupHeaderTemplate>
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="viewModels:BreastPumpItemViewModel">
-                <Border Margin="5"
-                        Padding="10"
-                        Stroke="LightGray">
-
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Command="{Binding ItemSelectedCommand}"
-                            CommandParameter="{Binding .}"/>
-                    </Border.GestureRecognizers>
-
-                    <Grid
-                        HorizontalOptions="FillAndExpand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Text="{Binding PumpTimeString}"/>
-                        <Label Text="{Binding AmountInMl, StringFormat='{0} ml'}"
-                               FontAttributes="Bold"
-                               Grid.Column="1"/>
-                    </Grid>
-                </Border>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
 
 </ContentPage>
