@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http.Json;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
@@ -28,10 +29,31 @@ public partial class BreastPumpItemViewModel : ObservableObject
     }
 }
 
-public class BreastPumpGroupViewModel(string groupTitle, BreastPumpItemViewModel[] items) : ObservableCollection<BreastPumpItemViewModel>(items)
+public class BreastPumpGroupViewModel : ObservableCollection<BreastPumpItemViewModel>
 {
-    public string GroupTitle { get; set; } = groupTitle;
+    private string _groupTitle = string.Empty;
+    public string GroupTitle
+    {
+        get => _groupTitle;
+        set
+        {
+            _groupTitle = value;
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(GroupTitle)));
+        }
+    }
+
     public double TotalAmountInMl => this.Sum(i => i.AmountInMl);
+
+    public BreastPumpGroupViewModel(string groupTitle, BreastPumpItemViewModel[] items) : base(items)
+    {
+        GroupTitle = groupTitle;
+    }
+
+    protected override void OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        base.OnCollectionChanged(e);
+        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(TotalAmountInMl)));
+    }
 }
 
 public partial class BreastPumpListViewModel : ObservableObject
@@ -95,11 +117,14 @@ public partial class BreastPumpListViewModel : ObservableObject
             })
             .GroupBy(i => i.PumpTime.ToString("yyyy-MM-dd"));
 
-        BreastPumpItemsGroup.Clear();
-
-        foreach (var group in groupedItems)
+        MainThread.BeginInvokeOnMainThread(() =>
         {
-            BreastPumpItemsGroup.Add(new BreastPumpGroupViewModel(group.Key, [.. group.OrderBy(i => i.PumpTime)]));
-        }
+            BreastPumpItemsGroup.Clear();
+
+            foreach (var group in groupedItems)
+            {
+                BreastPumpItemsGroup.Add(new BreastPumpGroupViewModel(group.Key, [.. group.OrderBy(i => i.PumpTime)]));
+            }
+        });
     }
 }

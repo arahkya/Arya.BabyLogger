@@ -88,29 +88,37 @@
                             StrokeShape="RoundRectangle 14"
                             Padding="12"
                             Margin="4,10,4,6">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackLayout Spacing="2">
-                                <Label Text="{Binding GroupTitle}"
-                                       FontAttributes="Bold"
-                                       FontSize="14"
-                                       TextColor="{StaticResource AccentText}"/>
-                                <Label Text="สรุปประจำวัน"
-                                       FontSize="12"
-                                       TextColor="{StaticResource MutedText}"/>
-                            </StackLayout>
-                            <StackLayout Grid.Column="1"
-                                         HorizontalOptions="End"
-                                         Spacing="2">
-                                <Label Text="{Binding TotalAmountInMl, StringFormat='{0} ml'}"
-                                       FontAttributes="Bold"
-                                       FontSize="16"
-                                       TextColor="{StaticResource AccentText}"
-                                       HorizontalTextAlignment="End"/>
-                                <Label Text="รวมทั้งหมด"
-                                       FontSize="11"
-                                       TextColor="{StaticResource MutedText}"
-                                       HorizontalTextAlignment="End"/>
-                            </StackLayout>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Text="{Binding GroupTitle}"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   Grid.Row="0"
+                                   TextColor="{StaticResource AccentText}"/>
+                            <Label Text="สรุปประจำวัน"
+                                   FontSize="12"
+                                   Grid.Row="1"
+                                   TextColor="{StaticResource MutedText}"/>
+
+                            <Label Text="{Binding TotalAmountInMl, StringFormat='{0} ml'}"
+                                   Grid.Row="0"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="{StaticResource AccentText}"
+                                   HorizontalTextAlignment="End"/>
+                            <Label Text="รวมทั้งหมด"
+                                   Grid.Row="1"
+                                   FontSize="11"
+                                   TextColor="{StaticResource MutedText}"
+                                   HorizontalTextAlignment="End"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -181,5 +189,4 @@
             </CollectionView.EmptyView>
         </CollectionView>
     </Grid>
-
 </ContentPage>
