@@ -71,11 +71,18 @@ public partial class BreastPumpListViewModel : ObservableObject
     {
         get
         {
-            var minutes = (int)(NextPumpTime - DateTime.Now).TotalMinutes;
+            var timeDiff = NextPumpTime - DateTime.Now;
+            var hours = (int)timeDiff.TotalHours;
+            var minutes = timeDiff.Minutes;
 
             if (minutes < 0)
             {
-                return $"เลยเวลามาแล้ว {Math.Abs(minutes)} นาที";
+                if (hours == 0)
+                {
+                    return $"เลยเวลามาแล้ว {Math.Abs(minutes)} นาที";
+                }
+
+                return $"เลยเวลามาแล้ว {Math.Abs(hours)} ชั่วโมง {Math.Abs(minutes)} นาที";
             }
 
             if (minutes == 0)
@@ -83,7 +90,12 @@ public partial class BreastPumpListViewModel : ObservableObject
                 return "ถึงเวลาปั๊มนมแล้ว";
             }
 
-            return $"{minutes} นาที";
+            if (hours == 0)
+            {
+                return $"{minutes} นาที";
+            }
+
+            return $"{hours} ชั่วโมง {minutes} นาที";
         }
     }
 
