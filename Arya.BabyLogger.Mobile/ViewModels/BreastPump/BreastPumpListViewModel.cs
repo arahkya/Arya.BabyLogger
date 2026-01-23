@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http.Json;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
@@ -58,6 +57,36 @@ public class BreastPumpGroupViewModel : ObservableCollection<BreastPumpItemViewM
 
 public partial class BreastPumpListViewModel : ObservableObject
 {
+    private int _timeIntervalInHours = 4;
+    public int TimeIntervalInHours => _timeIntervalInHours;
+
+    private DateTime _nextPumpTime;
+    public DateTime NextPumpTime
+    {
+        get => _nextPumpTime;
+        set => SetProperty(ref _nextPumpTime, value);
+    }
+
+    public string RemainingMinutesTilNextPump
+    {
+        get
+        {
+            var minutes = (int)(NextPumpTime - DateTime.Now).TotalMinutes;
+
+            if (minutes < 0)
+            {
+                return $"เลยเวลามาแล้ว {Math.Abs(minutes)} นาที";
+            }
+
+            if (minutes == 0)
+            {
+                return "ถึงเวลาปั๊มนมแล้ว";
+            }
+
+            return $"{minutes} นาที";
+        }
+    }
+
     private DateTimeOffset _startDate = DateTimeOffset.Now.AddDays(-7);
     private DateTimeOffset _endDate = DateTimeOffset.Now;
     public DateTimeOffset StartDate
@@ -126,5 +155,9 @@ public partial class BreastPumpListViewModel : ObservableObject
                 BreastPumpItemsGroup.Add(new BreastPumpGroupViewModel(group.Key, [.. group.OrderBy(i => i.PumpTime)]));
             }
         });
+
+        NextPumpTime = items.Items.FirstOrDefault()?.PumpTime.AddHours(TimeIntervalInHours).DateTime ?? DateTime.Now.AddHours(TimeIntervalInHours);
+
+        OnPropertyChanged(nameof(RemainingMinutesTilNextPump));
     }
 }

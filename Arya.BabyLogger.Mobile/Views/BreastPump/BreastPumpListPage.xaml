@@ -13,7 +13,6 @@
             <Color x:Key="CardStroke">#E6E1DA</Color>
             <Color x:Key="AccentText">#2D2A26</Color>
             <Color x:Key="MutedText">#6E655B</Color>
-            <Color x:Key="HeaderBg">#EFE9E1</Color>
 
             <Style x:Key="SectionTitle"
                    TargetType="Label">
@@ -67,60 +66,109 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Style="{StaticResource SectionTitle}"
                    Text="บันทึกการปั๊มนม"/>
             <Label Grid.Row="1"
                    Style="{StaticResource SectionSubtitle}"
                    Text="แตะรายการเพื่อดูรายละเอียด หรือกดเพิ่มเพื่อบันทึกใหม่"/>
+
+            <Border Grid.Row="2"
+                    BackgroundColor="#FFE4942A"
+                    Stroke="{StaticResource CardStroke}"
+                    StrokeThickness="1"
+                    Padding="0"
+                    Margin="0,12,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="14"/>
+                </Border.StrokeShape>
+                <Grid RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Text="ถึงเวลาปั้มนมในอีก"
+                           FontSize="12"
+                           TextColor="White"
+                           Padding="12,12,12,0"
+                           Grid.ColumnSpan="2"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding RemainingMinutesTilNextPump}"
+                           Grid.Row="1"
+                           Grid.ColumnSpan="2"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="Black"
+                           Padding="12,0,12,0"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding NextPumpTime}"
+                           Grid.Row="2"
+                           Grid.Column="0"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           Padding="12,0,12,9"
+                           Margin="0,0,0,0"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding TimeIntervalInHours, StringFormat='(รอบละ {0} ชั่วโมง)'}"
+                           Grid.Row="2"
+                           Grid.Column="1"
+                           FontSize="12"
+                           TextColor="White"
+                           Padding="0,0,12,9"
+                           HorizontalTextAlignment="End"
+                           HorizontalOptions="End"/>
+                </Grid>
+            </Border>
         </Grid>
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding BreastPumpItemsGroup}"
                         IsGrouped="True"
                         SelectionMode="None"
-                        Margin="12,4,12,12">
+                        Margin="12,16,12,12">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="viewModels:BreastPumpGroupViewModel">
-                    <Border BackgroundColor="{StaticResource HeaderBg}"
-                            Stroke="{StaticResource CardStroke}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 14"
-                            Padding="12"
-                            Margin="4,10,4,6">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                    <Grid
+                        Padding="12"
+                        ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                            <Label Text="{Binding GroupTitle}"
-                                   FontAttributes="Bold"
-                                   FontSize="14"
-                                   Grid.Row="0"
-                                   TextColor="{StaticResource AccentText}"/>
-                            <Label Text="สรุปประจำวัน"
-                                   FontSize="12"
-                                   Grid.Row="1"
-                                   TextColor="{StaticResource MutedText}"/>
+                        <Label Text="{Binding GroupTitle}"
+                               FontAttributes="Bold"
+                               FontSize="14"
+                               Grid.Row="0"
+                               TextColor="{StaticResource AccentText}"/>
+                        <Label Text="สรุปประจำวัน"
+                               FontSize="12"
+                               Grid.Row="1"
+                               TextColor="{StaticResource MutedText}"/>
 
-                            <Label Text="{Binding TotalAmountInMl, StringFormat='{0} ml'}"
-                                   Grid.Row="0"
-                                   FontAttributes="Bold"
-                                   FontSize="16"
-                                   TextColor="{StaticResource AccentText}"
-                                   HorizontalTextAlignment="End"/>
-                            <Label Text="รวมทั้งหมด"
-                                   Grid.Row="1"
-                                   FontSize="11"
-                                   TextColor="{StaticResource MutedText}"
-                                   HorizontalTextAlignment="End"/>
-                        </Grid>
-                    </Border>
+                        <Label Text="{Binding TotalAmountInMl, StringFormat='{0} ml'}"
+                               Grid.Row="0"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               TextColor="{StaticResource AccentText}"
+                               HorizontalTextAlignment="End"/>
+                        <Label Text="รวมทั้งหมด"
+                               Grid.Row="1"
+                               FontSize="11"
+                               TextColor="{StaticResource MutedText}"
+                               HorizontalTextAlignment="End"/>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.GroupHeaderTemplate>
             <CollectionView.ItemTemplate>
