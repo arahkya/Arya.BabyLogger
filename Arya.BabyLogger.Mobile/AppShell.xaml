@@ -9,14 +9,6 @@
     Title="Arya.BabyLogger.Mobile">
 
     <TabBar>
-        <Tab Title="ป้อนนม"
-             Icon="milk_bottle.png">
-            <ShellContent
-                Title="Baby Logger"
-                ContentTemplate="{DataTemplate feedview:FeedListPage}"
-                Icon="milk_bottle.png"
-                Route="FeedListPage"/>
-        </Tab>
         <Tab Title="ปั๊มนม"
              Icon="mother_breast_pumping.png">
             <ShellContent
@@ -24,6 +16,14 @@
                 ContentTemplate="{DataTemplate breastpumpview:BreastPumpListPage}"
                 Icon="mother_breast_pumping.png"
                 Route="BreastPumpListPage"/>
+        </Tab>
+        <Tab Title="ป้อนนม"
+             Icon="milk_bottle.png">
+            <ShellContent
+                Title="Baby Logger"
+                ContentTemplate="{DataTemplate feedview:FeedListPage}"
+                Icon="milk_bottle.png"
+                Route="FeedListPage"/>
         </Tab>
     </TabBar>
 
