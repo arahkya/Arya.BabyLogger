@@ -5,6 +5,8 @@ using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Arya.BabyLogger.Mobile.Services;
+using CommunityToolkit.Maui.ApplicationModel;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
@@ -113,10 +115,14 @@ public partial class BreastPumpListViewModel : ObservableObject
     }
 
     private readonly HttpClient httpClient;
+    private readonly ILocalNotificationService localNotificationService;
+    private readonly IBadge badge;
 
-    public BreastPumpListViewModel(HttpClient httpClient)
+    public BreastPumpListViewModel(HttpClient httpClient, IBadge badge, ILocalNotificationService localNotificationService)
     {
         this.httpClient = httpClient;
+        this.localNotificationService = localNotificationService;
+        this.badge = badge;
 
         PropertyChanged += async (s, e) =>
         {
@@ -140,6 +146,8 @@ public partial class BreastPumpListViewModel : ObservableObject
 
     public async Task LoadDataAsync()
     {
+        badge.SetCount(0);
+
         var startDate = new DateTimeOffset(StartDate.Year, StartDate.Month, StartDate.Day, 0, 0, 0, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:ssZ", new CultureInfo("en-US"));
         var endDate = new DateTimeOffset(EndDate.Year, EndDate.Month, EndDate.Day, 23, 59, 59, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:ssZ", new CultureInfo("en-US"));
         var url = $"breastpump?startDate={startDate}&endDate={endDate}";
@@ -171,5 +179,31 @@ public partial class BreastPumpListViewModel : ObservableObject
         NextPumpTime = items.Items.FirstOrDefault()?.PumpTime.AddHours(TimeIntervalInHours).DateTime ?? DateTime.Now.AddHours(TimeIntervalInHours);
 
         OnPropertyChanged(nameof(RemainingMinutesTilNextPump));
+
+        await localNotificationService.CancelAllNotificationsAsync();
+
+        if (await localNotificationService.IsPendingNotificationAsync())
+            return;
+
+        var timeInterval = 15;
+
+        var remainingTime = NextPumpTime.Subtract(DateTime.Now);
+
+        if (remainingTime.TotalMinutes < timeInterval)
+        {
+            timeInterval = 2;
+        }
+
+        var notifyTime = DateTime.Now.AddMinutes(remainingTime.TotalMinutes - timeInterval);
+
+        if (remainingTime.TotalMinutes < 0)
+        {
+            notifyTime = DateTime.Now.AddMinutes(timeInterval);
+        }
+
+        await localNotificationService.ShowNotificationAsync(
+            "เวลาปั๊มนมแล้ว",
+            "ถึงเวลาปั๊มนมอีกครั้งแล้ว อย่าลืมปั๊มนมให้น้องนะครับ",
+            notifyTime);
     }
 }

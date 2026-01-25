@@ -4,6 +4,7 @@ using Arya.BabyLogger.Mobile.ViewModels;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 using Arya.BabyLogger.Mobile.ViewModels.Feed;
 using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.ApplicationModel;
 using Microsoft.Extensions.Logging;
 
 namespace Arya.BabyLogger.Mobile;
@@ -89,6 +90,12 @@ public static class MauiProgram
 		builder.Services.AddTransient<FeedEntryViewModel>();
 		builder.Services.AddTransient<BreastPumpListViewModel>();
 		builder.Services.AddTransient<BreastPumpEntryViewModel>();
+
+		builder.Services.AddSingleton<IBadge>(Badge.Default);
+
+#if IOS
+		builder.Services.AddSingleton<Services.ILocalNotificationService, Platforms.iOS.LocalNotificationService>();
+#endif
 
 #if DEBUG
 		builder.Logging.AddDebug();
