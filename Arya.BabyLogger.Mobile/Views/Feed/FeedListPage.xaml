@@ -70,7 +70,7 @@
         <Border Grid.Row="0"
                 Grid.ColumnSpan="2"
                 Margin="0,4,0,0"
-                Padding="12 5 12 12"
+                Padding="12, 5, 12, 12"
                 BackgroundColor="#FFFFFF"
                 Stroke="#E2E8F0"
                 VerticalOptions="Center">

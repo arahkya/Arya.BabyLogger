@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Sockets;
+using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.ViewModels;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 using Arya.BabyLogger.Mobile.ViewModels.Feed;
@@ -73,11 +75,12 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<HttpClient>(p =>
 		{
+			const string webApiUrl = BuildConstraints.WebApiUrl;
+			Debug.WriteLine($"Running with WebApi at {webApiUrl}");
+			
 			var httpClient = new HttpClient(CreateHandler())
 			{
-				BaseAddress = new Uri("https://baby-logger.arahk.com/api/"),
-				//BaseAddress = new Uri("http://localhost:5001/api/"),
-
+				BaseAddress = new Uri(webApiUrl),
 				Timeout = TimeSpan.FromSeconds(30),
 				DefaultRequestVersion = HttpVersion.Version11,
 				DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
