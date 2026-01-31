@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.ViewModels;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
@@ -73,6 +74,8 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
+		builder.Services.AddSingleton<Channel<bool>>(p => Channel.CreateUnbounded<bool>());
+		
 		builder.Services.AddSingleton<HttpClient>(p =>
 		{
 			const string webApiUrl = BuildConstraints.WebApiUrl;
