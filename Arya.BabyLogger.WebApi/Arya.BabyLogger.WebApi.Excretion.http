@@ -1,9 +1,11 @@
 @baseUrl = http://localhost:5001
+@AuthToken = REPLACE_WITH_JWT
 @excretionId = 5d488030-5412-46e5-9c73-60f8cdd49a83
 
 ### Create Excretion
 POST {{baseUrl}}/api/excretion
 Content-Type: application/json
+Authorization: Bearer {{AuthToken}}
 
 {
   "excretionDateTime": "2026-01-12T14:30:00",
@@ -15,23 +17,28 @@ Content-Type: application/json
 
 ### List Excretions - All Records
 GET {{baseUrl}}/api/excretion
+Authorization: Bearer {{AuthToken}}
 
 ### List Excretions - Last 7 Days
 GET {{baseUrl}}/api/excretion
+Authorization: Bearer {{AuthToken}}
 Start-Date: 2026-01-05
 End-Date: 2026-01-12
 
 ### List Excretions - Last 24 Hours
 GET {{baseUrl}}/api/excretion
+Authorization: Bearer {{AuthToken}}
 Start-Date: 2026-01-11
 End-Date: 2026-01-12
 
 ### Get Excretion by ID
 GET {{baseUrl}}/api/excretion/{{excretionId}}
+Authorization: Bearer {{AuthToken}}
 
 ### Update Excretion
 PUT {{baseUrl}}/api/excretion/{{excretionId}}
 Content-Type: application/json
+Authorization: Bearer {{AuthToken}}
 
 {
   "id": "5d488030-5412-46e5-9c73-60f8cdd49a83",
@@ -44,3 +51,4 @@ Content-Type: application/json
 
 ### Delete Excretion
 DELETE {{baseUrl}}/api/excretion/{{excretionId}}
+Authorization: Bearer {{AuthToken}}

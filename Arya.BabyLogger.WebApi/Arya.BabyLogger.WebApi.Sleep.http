@@ -1,9 +1,11 @@
 @baseUrl = http://localhost:5001
+@AuthToken = REPLACE_WITH_JWT
 @sleepId = d1763b66-2149-4fd5-92df-1466461dd5e8
 
 ### Create Sleep
 POST {{baseUrl}}/api/sleep
 Content-Type: application/json
+Authorization: Bearer {{AuthToken}}
 
 {
   "startTime": "2026-01-12T22:00:00Z",
@@ -13,16 +15,20 @@ Content-Type: application/json
 
 ### List Sleeps - All Records
 GET {{baseUrl}}/api/sleep
+Authorization: Bearer {{AuthToken}}
 
 ### List Sleeps - Date Range
 GET {{baseUrl}}/api/sleep?startDate=2026-01-10T00:00:00Z&endDate=2026-01-12T23:59:59Z
+Authorization: Bearer {{AuthToken}}
 
 ### Get Sleep by ID
 GET {{baseUrl}}/api/sleep/{{sleepId}}
+Authorization: Bearer {{AuthToken}}
 
 ### Update Sleep
 PUT {{baseUrl}}/api/sleep/{{sleepId}}
 Content-Type: application/json
+Authorization: Bearer {{AuthToken}}
 
 {
   "id": "2cf1e7b1-0b70-4c7e-9e8b-4c8a9cda8f0a",
@@ -33,3 +39,4 @@ Content-Type: application/json
 
 ### Delete Sleep
 DELETE {{baseUrl}}/api/sleep/{{sleepId}}
+Authorization: Bearer {{AuthToken}}

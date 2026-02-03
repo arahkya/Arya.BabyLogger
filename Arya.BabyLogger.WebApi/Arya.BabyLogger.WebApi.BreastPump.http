@@ -1,9 +1,11 @@
-@baseUrl = https://baby-logger.arahk.com
+@baseUrl = http://localhost:5001
+@AuthToken = REPLACE_WITH_JWT
 @breastPumpId = 525c18a5-22ee-48a3-a630-da6a3632df7a
 
 ### Create Breast Pump
 POST {{baseUrl}}/api/breastpump
 Content-Type: application/json
+Authorization: Bearer {{AuthToken}}
 
 {
   "pumpTime": "2026-01-16T08:30:00Z",
@@ -13,19 +15,24 @@ Content-Type: application/json
 
 ### List Breast Pumps - All Records
 GET {{baseUrl}}/api/breastpump
+Authorization: Bearer {{AuthToken}}
 
 ###
 GET {{baseUrl}}/api/breastpump?startDate=2026-01-08T22:18:40Z&endDate=2026-01-15T22:18:40Z
+Authorization: Bearer {{AuthToken}}
 
 ### List Breast Pumps - Date Range
 GET {{baseUrl}}/api/breastpump?startDate=2026-01-10T00:00:00Z&endDate=2026-01-12T23:59:59Z
+Authorization: Bearer {{AuthToken}}
 
 ### Get Breast Pump by ID
 GET {{baseUrl}}/api/breastpump/{{breastPumpId}}
+Authorization: Bearer {{AuthToken}}
 
 ### Update Breast Pump
 PUT {{baseUrl}}/api/breastpump/{{breastPumpId}}
 Content-Type: application/json
+Authorization: Bearer {{AuthToken}}
 
 {
   "id": "33333333-3333-3333-3333-333333333301",
@@ -36,3 +43,4 @@ Content-Type: application/json
 
 ### Delete Breast Pump
 DELETE {{baseUrl}}/api/breastpump/{{breastPumpId}}
+Authorization: Bearer {{AuthToken}}
