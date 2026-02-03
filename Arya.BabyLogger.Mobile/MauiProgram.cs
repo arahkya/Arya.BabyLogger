@@ -3,9 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Services;
-using Arya.BabyLogger.Mobile.ViewModels;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
-using Arya.BabyLogger.Mobile.ViewModels.Feed;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.ApplicationModel;
 using Microsoft.Extensions.Logging;
@@ -23,15 +21,15 @@ public static class MauiProgram
 	{
 		var isWifi = Connectivity.Current.ConnectionProfiles.Contains(ConnectionProfile.WiFi);
 
-		var ScoketHandlerItem = new SocketsHttpHandler
+		var socketHandlerItem = new SocketsHttpHandler
 		{
 			AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Brotli,
 			EnableMultipleHttp2Connections = true,
 			PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
 			ConnectTimeout = TimeSpan.FromSeconds(15),
 
-			// Wi-Fi detech proxy/PAC
-			UseProxy = !isWifi ? true : false,
+			// Wi-Fi detect proxy/PAC
+			UseProxy = !isWifi,
 
 			// HTTP/2 keep-alive ping 
 			KeepAlivePingDelay = TimeSpan.FromSeconds(20),
@@ -42,24 +40,26 @@ public static class MauiProgram
 		if (isWifi)
 		{
 			// Wi-Fi’de IPv6/ route to force IPv4 
-			ScoketHandlerItem.ConnectCallback = async (ctx, ct) =>
+			socketHandlerItem.ConnectCallback = async (ctx, ct) =>
 			{
 				var host = ctx.DnsEndPoint.Host;
 				var port = ctx.DnsEndPoint.Port;
-
-				var addrs = await Dns.GetHostAddressesAsync(host);
-				var v4 = Array.Find(addrs, a => a.AddressFamily == AddressFamily.InterNetwork);
-				if (v4 == default)
-					v4 = addrs.Length > 0 ? addrs[0] : throw new SocketException((int)SocketError.HostNotFound);
-
+				var addresses = await Dns.GetHostAddressesAsync(host, CancellationToken.None);
+				var v4 = Array.Find(addresses, a => a.AddressFamily == AddressFamily.InterNetwork) ?? (addresses.Length > 0 ? addresses[0] : throw new SocketException((int)SocketError.HostNotFound));
 				var sock = new Socket(v4.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-				using var reg = ct.Register(() => { try { sock.Dispose(); } catch { } });
+				
+				await using var reg = ct.Register(() => { try { sock.Dispose(); }
+					catch
+					{
+						// ignored
+					}
+				});
 				await sock.ConnectAsync(new IPEndPoint(v4, port), ct);
 				return new NetworkStream(sock, ownsSocket: true);
 			};
 		}
 
-		return ScoketHandlerItem;
+		return socketHandlerItem;
 	}
 
 	public static MauiApp CreateMauiApp()
@@ -74,9 +74,9 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
-		builder.Services.AddSingleton<Channel<bool>>(p => Channel.CreateUnbounded<bool>());
+		builder.Services.AddSingleton<Channel<bool>>(_ => Channel.CreateUnbounded<bool>());
 		
-		builder.Services.AddSingleton<HttpClient>(p =>
+		builder.Services.AddSingleton<HttpClient>(_ =>
 		{
 			const string webApiUrl = BuildConstraints.WebApiUrl;
 			Debug.WriteLine($"Running with WebApi at {webApiUrl}");
@@ -91,16 +91,14 @@ public static class MauiProgram
 
 			return httpClient;
 		});
-		builder.Services.AddTransient<MainPageViewModel>();
-		builder.Services.AddTransient<FeedListViewModel>();
-		builder.Services.AddTransient<FeedEntryViewModel>();
+		
 		builder.Services.AddTransient<BreastPumpListViewModel>();
 		builder.Services.AddTransient<BreastPumpEntryViewModel>();
 
-		builder.Services.AddSingleton<IBadge>(Badge.Default);
+		builder.Services.AddSingleton(Badge.Default);
 
 #if IOS
-		builder.Services.AddSingleton<Services.ILocalNotificationService, Platforms.iOS.LocalNotificationService>();
+		builder.Services.AddSingleton<ILocalNotificationService, Platforms.iOS.LocalNotificationService>();
 #endif
 
 #if DEBUG

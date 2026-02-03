@@ -3,7 +3,7 @@ using System.Threading.Channels;
 
 namespace Arya.BabyLogger.Mobile;
 
-public partial class App : Application
+public partial class App
 {
 	public static IServiceProvider Services => Current?.Handler?.MauiContext?.Services ?? throw new InvalidOperationException("Service provider is not available.");
 
@@ -21,7 +21,7 @@ public partial class App : Application
 	{
 		var windows = new Window(new AppShell());
 
-		windows.Activated += async (sender, args) =>
+		windows.Activated += async (_, _) =>
 		{
 			Debug.WriteLine("Window Activated");
 			

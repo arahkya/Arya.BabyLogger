@@ -3,28 +3,12 @@
     x:Class="Arya.BabyLogger.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:feedview="clr-namespace:Arya.BabyLogger.Mobile.Views.Feed"
-    xmlns:breastpumpview="clr-namespace:Arya.BabyLogger.Mobile.Views.BreastPump"
-    xmlns:local="clr-namespace:Arya.BabyLogger.Mobile"
+    xmlns:breastPumpView="clr-namespace:Arya.BabyLogger.Mobile.Views.BreastPump"
     Title="Arya.BabyLogger.Mobile">
 
-    <TabBar>
-        <Tab Title="ปั๊มนม"
-             Icon="mother_breast_pumping.png">
-            <ShellContent
-                Title="Breast Pump"
-                ContentTemplate="{DataTemplate breastpumpview:BreastPumpListPage}"
-                Icon="mother_breast_pumping.png"
-                Route="BreastPumpListPage"/>
-        </Tab>
-        <Tab Title="ป้อนนม"
-             Icon="milk_bottle.png">
-            <ShellContent
-                Title="Baby Logger"
-                ContentTemplate="{DataTemplate feedview:FeedListPage}"
-                Icon="milk_bottle.png"
-                Route="FeedListPage"/>
-        </Tab>
-    </TabBar>
-
+    <ShellContent
+        Title="Breast Pump"
+        ContentTemplate="{DataTemplate breastPumpView:BreastPumpListPage}"
+        Icon="mother_breast_pumping.png"
+        Route="BreastPumpListPage"/>
 </Shell>
