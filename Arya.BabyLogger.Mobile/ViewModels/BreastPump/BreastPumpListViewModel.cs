@@ -10,63 +10,17 @@ using CommunityToolkit.Maui.ApplicationModel;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
-public partial class BreastPumpItemViewModel : ObservableObject
-{
-    public Guid Id { get; set; }
-    public DateTimeOffset PumpTime { get; set; }
-    public string PumpTimeString => PumpTime.ToString("HH:mm");
-    public double AmountInMl { get; set; }
-
-    [RelayCommand]
-    public async Task ItemSelectedAsync()
-    {
-        var viewModel = App.Services.GetRequiredService<BreastPumpEntryViewModel>();
-        viewModel.ListItemId = Id;
-        await viewModel.LoadDataAsync();
-
-        var page = new BreastPumpEntryPage(viewModel);
-
-        await Shell.Current.Navigation.PushModalAsync(page);
-    }
-}
-
-public class BreastPumpGroupViewModel : ObservableCollection<BreastPumpItemViewModel>
-{
-    private string _groupTitle = string.Empty;
-    public string GroupTitle
-    {
-        get => _groupTitle;
-        set
-        {
-            _groupTitle = value;
-            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(GroupTitle)));
-        }
-    }
-
-    public double TotalAmountInMl => this.Sum(i => i.AmountInMl);
-
-    public BreastPumpGroupViewModel(string groupTitle, BreastPumpItemViewModel[] items) : base(items)
-    {
-        GroupTitle = groupTitle;
-    }
-
-    protected override void OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        base.OnCollectionChanged(e);
-        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(TotalAmountInMl)));
-    }
-}
-
 public partial class BreastPumpListViewModel : ObservableObject
 {
-    private int _timeIntervalInHours = 4;
-    public int TimeIntervalInHours => _timeIntervalInHours;
-
-    private DateTime _nextPumpTime;
+    public static int TimeIntervalInHours => 4;
+    private readonly HttpClient _httpClient;
+    private readonly ILocalNotificationService _localNotificationService;
+    private readonly IBadge _badgeService;
+    
     public DateTime NextPumpTime
     {
-        get => _nextPumpTime;
-        set => SetProperty(ref _nextPumpTime, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public string RemainingMinutesTilNextPump
@@ -114,19 +68,17 @@ public partial class BreastPumpListViewModel : ObservableObject
         set => SetProperty(ref _endDate, value);
     }
 
-    private readonly HttpClient httpClient;
-    private readonly ILocalNotificationService localNotificationService;
-    private readonly IBadge badge;
+    
 
-    public BreastPumpListViewModel(HttpClient httpClient, IBadge badge, ILocalNotificationService localNotificationService)
+    public BreastPumpListViewModel(HttpClient httpClient, IBadge badgeService, ILocalNotificationService localNotificationService)
     {
-        this.httpClient = httpClient;
-        this.localNotificationService = localNotificationService;
-        this.badge = badge;
+        _httpClient = httpClient;
+        _localNotificationService = localNotificationService;
+        _badgeService = badgeService;
 
-        PropertyChanged += async (s, e) =>
+        PropertyChanged += async (_, e) =>
         {
-            if (e.PropertyName == nameof(EndDate) || e.PropertyName == nameof(StartDate))
+            if (e.PropertyName is nameof(EndDate) or nameof(StartDate))
             {
                 await LoadDataAsync();
             }
@@ -136,7 +88,7 @@ public partial class BreastPumpListViewModel : ObservableObject
     public ObservableCollection<BreastPumpGroupViewModel> BreastPumpItemsGroup { get; } = [];
 
     [RelayCommand]
-    public async Task AddNewBreastPumpAsync()
+    private async Task AddNewBreastPumpAsync()
     {
         var viewModel = App.Services.GetRequiredService<BreastPumpEntryViewModel>();
         var page = new BreastPumpEntryPage(viewModel);
@@ -146,13 +98,13 @@ public partial class BreastPumpListViewModel : ObservableObject
 
     public async Task LoadDataAsync()
     {
-        badge.SetCount(0);
+        _badgeService.SetCount(0);
 
         var startDate = new DateTimeOffset(StartDate.Year, StartDate.Month, StartDate.Day, 0, 0, 0, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:ssZ", new CultureInfo("en-US"));
         var endDate = new DateTimeOffset(EndDate.Year, EndDate.Month, EndDate.Day, 23, 59, 59, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:ssZ", new CultureInfo("en-US"));
         var url = $"breastpump?startDate={startDate}&endDate={endDate}";
         var request = new HttpRequestMessage(HttpMethod.Get, url);
-        var response = await httpClient.SendAsync(request);
+        var response = await _httpClient.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
 
@@ -180,9 +132,9 @@ public partial class BreastPumpListViewModel : ObservableObject
 
         OnPropertyChanged(nameof(RemainingMinutesTilNextPump));
 
-        await localNotificationService.CancelAllNotificationsAsync();
+        await _localNotificationService.CancelAllNotificationsAsync();
 
-        if (await localNotificationService.IsPendingNotificationAsync())
+        if (await _localNotificationService.IsPendingNotificationAsync())
             return;
 
         var timeInterval = 15;
@@ -201,7 +153,7 @@ public partial class BreastPumpListViewModel : ObservableObject
             notifyTime = DateTime.Now.AddMinutes(timeInterval);
         }
 
-        await localNotificationService.ShowNotificationAsync(
+        await _localNotificationService.ShowNotificationAsync(
             "เวลาปั๊มนมแล้ว",
             "ถึงเวลาปั๊มนมอีกครั้งแล้ว อย่าลืมปั๊มนมให้น้องนะครับ",
             notifyTime);
