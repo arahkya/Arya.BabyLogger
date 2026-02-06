@@ -19,7 +19,8 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<IFeedService, FeedService>();
 builder.Services.AddTransient<IExcretionService, ExcretionService>();
 builder.Services.AddTransient<ISleepService, SleepService>();
-builder.Services.AddTransient<IBreastPumpService, BreastPumpService>(); 
+builder.Services.AddTransient<IBreastPumpService, BreastPumpService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var signingKey = jwtSection["SigningKey"];
@@ -59,30 +60,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.MapControllers().RequireAuthorization();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
