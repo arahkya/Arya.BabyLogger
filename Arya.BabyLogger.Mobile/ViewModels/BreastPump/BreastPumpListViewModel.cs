@@ -14,7 +14,7 @@ namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
 public partial class BreastPumpListViewModel : ObservableObject
 {
-    public static int TimeIntervalInHours => 4;
+    public int TimeIntervalInHours { get; set; }
     private readonly HttpClient _httpClient;
     private readonly ILocalNotificationService _localNotificationService;
     private readonly IBadge _badgeService;
@@ -108,6 +108,9 @@ public partial class BreastPumpListViewModel : ObservableObject
     
     public async Task LoadDataAsync()
     {
+        TimeIntervalInHours = 4;
+        OnPropertyChanged(nameof(TimeIntervalInHours));
+        
         _badgeService.SetCount(0);
         var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
         

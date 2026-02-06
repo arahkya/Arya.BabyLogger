@@ -13,32 +13,20 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Color x:Key="PageBg">#F6F4F1</Color>
+            <Color x:Key="PageBg">#FFCE99</Color>
+            <Color x:Key="PageHeroBg">#FF9644</Color>
+            <Color x:Key="PageHeroPrimaryText">Black</Color>
+            <Color x:Key="PageHeroSecondaryText">White</Color>
+            <Color x:Key="ListBg">#FFFDF1</Color>
+            <Color x:Key="ListIconBg">#F3EDE6</Color>
+            <Color x:Key="ListIconStroke">#E5DDD2</Color>
             <Color x:Key="CardBg">#FFFFFF</Color>
             <Color x:Key="CardStroke">#E6E1DA</Color>
             <Color x:Key="AccentText">#2D2A26</Color>
             <Color x:Key="MutedText">#6E655B</Color>
+            <Color x:Key="NewButtonBg">#562F00</Color>
+            <Color x:Key="NewButtonTextColor">White</Color>
 
-            <Style x:Key="SectionTitle"
-                   TargetType="Label">
-                <Setter Property="FontSize"
-                        Value="22"/>
-                <Setter Property="FontAttributes"
-                        Value="Bold"/>
-                <Setter Property="TextColor"
-                        Value="{StaticResource AccentText}"/>
-            </Style>
-            <Style x:Key="SectionSubtitle"
-                   TargetType="Label">
-                <Setter Property="FontSize"
-                        Value="13"/>
-                <Setter Property="HorizontalTextAlignment"
-                        Value="Center" />
-                <Setter Property="Margin"
-                        Value="0,0,0,10" />
-                <Setter Property="TextColor"
-                        Value="{StaticResource MutedText}"/>
-            </Style>
             <Style x:Key="CardBorder"
                    TargetType="Border">
                 <Setter Property="BackgroundColor"
@@ -55,7 +43,7 @@
                 <Setter Property="Padding"
                         Value="14"/>
                 <Setter Property="Margin"
-                        Value="8,6"/>
+                        Value="15,6"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -64,35 +52,19 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Padding="20,16,20,6">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <Button Text="บันทึกการปั๊มนม"
-                    Margin="0, 10,0,5"
-                    FontSize="20"
-                    TextColor="White"
-                    BackgroundColor="#d46f2b"
-                    Command="{Binding AddNewBreastPumpCommand}"></Button>
-            
-            <Label Grid.Row="1"
-                   Style="{StaticResource SectionSubtitle}"
-                   Text="แตะรายการเพื่อดูรายละเอียด หรือกดเพิ่มเพื่อบันทึกใหม่"/>
 
-            <Border Grid.Row="2"
-                    BackgroundColor="#FFE4942A"
-                    Stroke="{StaticResource CardStroke}"
-                    StrokeThickness="1"
-                    Padding="0"
-                    Margin="0,12,0,0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="14"/>
-                </Border.StrokeShape>
+            <Border Grid.Row="0"
+                    StrokeThickness="0"
+                    BackgroundColor="{StaticResource PageHeroBg}">
                 <Grid RowSpacing="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -104,8 +76,8 @@
                         <ColumnDefinition Width="50*"/>
                     </Grid.ColumnDefinitions>
                     <Label Text="ถึงเวลาปั้มนมในอีก"
-                           FontSize="12"
-                           TextColor="White"
+                           FontSize="14"
+                           TextColor="{StaticResource PageHeroSecondaryText}"
                            Padding="12,12,12,0"
                            Grid.ColumnSpan="2"
                            HorizontalOptions="Center"/>
@@ -114,7 +86,7 @@
                            Grid.ColumnSpan="2"
                            FontSize="28"
                            FontAttributes="Bold"
-                           TextColor="Black"
+                           TextColor="{StaticResource PageHeroPrimaryText}"
                            Padding="12,0,12,0"
                            HorizontalOptions="Center"/>
                     <Label Text="{Binding NextPumpTime}"
@@ -122,15 +94,15 @@
                            Grid.Column="0"
                            FontSize="14"
                            FontAttributes="Bold"
-                           TextColor="White"
+                           TextColor="{StaticResource PageHeroSecondaryText}"
                            Padding="12,0,12,9"
                            Margin="0,0,0,0"
                            HorizontalOptions="Center"/>
                     <Label Text="{Binding TimeIntervalInHours, StringFormat='(รอบละ {0} ชั่วโมง)'}"
                            Grid.Row="2"
                            Grid.Column="1"
-                           FontSize="12"
-                           TextColor="White"
+                           FontSize="14"
+                           TextColor="{StaticResource PageHeroSecondaryText}"
                            Padding="0,0,12,9"
                            HorizontalTextAlignment="End"
                            HorizontalOptions="End"/>
@@ -140,13 +112,14 @@
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding BreastPumpItemsGroup}"
+                        BackgroundColor="{StaticResource ListBg}"
                         IsGrouped="True"
-                        SelectionMode="None"
-                        Margin="12,16,12,12">
+                        SelectionMode="None">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="viewModels:BreastPumpGroupViewModel">
                     <Grid
                         Padding="12"
+                        Margin="10,0"
                         ColumnSpacing="12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -193,8 +166,8 @@
                         <Grid ColumnDefinitions="Auto,*,Auto"
                               ColumnSpacing="12"
                               VerticalOptions="Center">
-                            <Border BackgroundColor="#F3EDE6"
-                                    Stroke="#E5DDD2"
+                            <Border BackgroundColor="{StaticResource ListIconBg}"
+                                    Stroke="{StaticResource ListIconStroke}"
                                     StrokeShape="RoundRectangle 10"
                                     Padding="8"
                                     WidthRequest="40"
@@ -246,5 +219,12 @@
                 </Grid>
             </CollectionView.EmptyView>
         </CollectionView>
+        
+        <Button Grid.Row="2" Text="บันทึกการปั๊มนม"
+                Margin="30,20,30,0"
+                FontSize="20"
+                TextColor="{StaticResource NewButtonTextColor}"
+                BackgroundColor="{StaticResource NewButtonBg}"
+                Command="{Binding AddNewBreastPumpCommand}"></Button>
     </Grid>
 </ContentPage>
