@@ -1,25 +1,28 @@
+using System.Collections.Frozen;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Arya.BabyLogger.WebApi.Db;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Arya.BabyLogger.WebApi.Services;
 
-public class UserService(BabyLoggerDbContext dbContext) : IUserService
+public class UserService(BabyLoggerDbContext dbContext, IConfiguration configuration) : IUserService
 {
-    public UserEntity? LookupUserNameAsync(string username)
+    public UserEntity? LookupEmailAsync(string email)
     {
-        var user = dbContext.Users.FirstOrDefault(u => u.Username == username);
+        var user = dbContext.Users.FirstOrDefault(u => u.Email == email);
 
         return user;
     }
 
     public string GenerateJwtToken(UserEntity user)
     {
-        var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new Exception("JWT_ISSUER not set");
-        var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new Exception("JWT_AUDIENCE not set");
-        var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") ?? throw new Exception("JWT_SECRET_KEY not set");
+        var jwtConfig = configuration.GetSection("Jwt");
+        var issuer = jwtConfig["Issuer"] ?? throw new Exception("Jwt:Issuer not set");
+        var audience = jwtConfig["Audience"] ?? throw new Exception("Jwt:Audience not set");
+        var secretKey = jwtConfig["SigningKey"] ?? throw new Exception("Jwt:SingingKey not set");
         var jwtSecurityToken = new JwtSecurityToken(
             issuer: issuer,
             audience: audience,
@@ -27,12 +30,24 @@ public class UserService(BabyLoggerDbContext dbContext) : IUserService
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Username)
             ],
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: DateTime.UtcNow.AddMonths(1),
             signingCredentials: new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                 SecurityAlgorithms.HmacSha256)
         );
 
         return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+    }
+
+    public string HashedPassword(string password)
+    {
+        var secretKey = Environment.GetEnvironmentVariable("UserHashingPasswordKey") ?? throw new Exception("UserHashingPasswordKey not set");
+        var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+
+        using var hmac = new HMACSHA256(keyBytes);
+        var hashBytes = hmac.ComputeHash(passwordBytes);
+
+        return Convert.ToHexString(hashBytes).ToLowerInvariant();
     }
 }

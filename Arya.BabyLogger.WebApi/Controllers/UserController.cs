@@ -12,15 +12,15 @@ public class UserController : ControllerBase
     [AllowAnonymous]
     [HttpPost("login")]
     public ActionResult<LoginResponse> LoginAsync([FromBody] LoginRequest request, [FromServices] IUserService userService)
-    {
-        var user = userService.LookupUserNameAsync(request.Username);
+    {   
+        var user = userService.LookupEmailAsync(request.Email);
 
         if (user is null)
         {
             return Unauthorized("Invalid username");
         }
 
-        if (user.PasswordHash != request.HashedPassword)
+        if (user.PasswordHash != userService.HashedPassword(request.Password))
         {
             return Unauthorized("Invalid password");
         }

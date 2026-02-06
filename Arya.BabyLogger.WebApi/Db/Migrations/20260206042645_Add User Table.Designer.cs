@@ -3,6 +3,7 @@ using System;
 using Arya.BabyLogger.WebApi.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Arya.BabyLogger.WebApi.Db.Migrations
 {
     [DbContext(typeof(BabyLoggerDbContext))]
-    partial class BabyLoggerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260206042645_Add User Table")]
+    partial class AddUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
@@ -36,7 +39,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
 
                     b.HasIndex("PumpTime");
 
-                    b.ToTable("BreastPumps", (string)null);
+                    b.ToTable("BreastPumps");
 
                     b.HasData(
                         new
@@ -206,7 +209,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Excretions", (string)null);
+                    b.ToTable("Excretions");
 
                     b.HasData(
                         new
@@ -411,7 +414,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Feeds", (string)null);
+                    b.ToTable("Feeds");
                 });
 
             modelBuilder.Entity("Arya.BabyLogger.WebApi.Db.SleepEntity", b =>
@@ -435,7 +438,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
 
                     b.HasIndex("SleepStartTime");
 
-                    b.ToTable("Sleeps", (string)null);
+                    b.ToTable("Sleeps");
 
                     b.HasData(
                         new
@@ -603,7 +606,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new

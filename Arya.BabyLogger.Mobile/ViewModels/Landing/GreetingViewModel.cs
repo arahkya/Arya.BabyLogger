@@ -1,4 +1,9 @@
+using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
 using Arya.BabyLogger.Mobile.Services.Storage;
+using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -7,23 +12,46 @@ namespace Arya.BabyLogger.Mobile.ViewModels.Landing;
 public partial class GreetingViewModel(HttpClient httpClient) : ObservableObject
 {
     public string Email { get; set; } = string.Empty;
+    
     public string Password { get; set; } = string.Empty;
+    
+    public string? ErrorMessage { get; set; }
     
     [RelayCommand]
     private async Task LoginAsync()
     {
-        #if DEBUG
-        var authToken = Environment.GetEnvironmentVariable("AUTH_TOKEN");
-        MobileStorageProvider.SetSecureStorage("AUTH_TOKEN", authToken ?? throw new InvalidOperationException("AUTH_TOKEN is cannot not set."));
-        #else
-        var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "user/login"));
-        var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-        
-        response.EnsureSuccessStatusCode();
-        
-        MobileStorageProvider.SetSecureStorage("AUTH_KEY", loginResponse!.Token);
-        
-        await App.SwapMainPage();
-        #endif
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "user/login");
+            var content = new StringContent(JsonSerializer.Serialize(new LoginRequest
+            {
+                Email = Email,
+                Password = Password
+            }));
+
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            request.Content = content;
+
+            var response = await httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+            MobileStorageProvider.SetSecureStorage("AUTH_TOKEN", loginResponse!.Token);
+
+            await App.SwapMainPage();
+        } 
+        catch (HttpRequestException ex)
+        {
+            Debug.WriteLine($"Login failed: {ex.StatusCode} ({ex.Message})");
+
+            ErrorMessage = string.IsNullOrWhiteSpace(ex.StatusCode.ToString()) ? ex.Message : ex.StatusCode.ToString();
+            OnPropertyChanged(nameof(ErrorMessage));
+        }
+        catch
+        {
+            ErrorMessage = "An unknown error occurred";
+        }
     }
 }

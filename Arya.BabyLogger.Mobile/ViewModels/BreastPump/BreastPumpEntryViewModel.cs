@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -148,6 +150,9 @@ public partial class BreastPumpEntryViewModel(HttpClient client) : ObservableObj
         {
             Content = JsonContent.Create(breastPumpCreateRequest)
         };
+        var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
+        
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
         var response = await client.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
@@ -163,6 +168,9 @@ public partial class BreastPumpEntryViewModel(HttpClient client) : ObservableObj
         {
             Content = JsonContent.Create(_breastDetailResponse)
         };
+        var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
+        
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
         var response = await client.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
@@ -171,10 +179,14 @@ public partial class BreastPumpEntryViewModel(HttpClient client) : ObservableObj
     }
 
     [RelayCommand]
-    public async Task DeleteAsync()
+    private async Task DeleteAsync()
     {
         var url = $"breastpump/{_listItemId}";
         var request = new HttpRequestMessage(HttpMethod.Delete, url);
+        var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
+        
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+        
         var response = await client.SendAsync(request);
 
         response.EnsureSuccessStatusCode();

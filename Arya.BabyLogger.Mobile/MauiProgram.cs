@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Net;
@@ -42,11 +41,6 @@ public static class MauiProgram
 				DefaultRequestVersion = HttpVersion.Version11,
 				DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
 			};
-
-			#if DEBUG
-			var authToken = Environment.GetEnvironmentVariable("AUTH_TOKEN");
-			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
-			#endif
 			
 			return httpClient;
 		});

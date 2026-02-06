@@ -6,6 +6,11 @@
              xmlns:viewModels="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.BreastPump"
              Title="{StaticResource AppName}">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="ออกจากระบบ"
+                     Order="Secondary"
+                     Command="{Binding SignOutCommand}"/>        
+    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="PageBg">#F6F4F1</Color>
@@ -27,6 +32,10 @@
                    TargetType="Label">
                 <Setter Property="FontSize"
                         Value="13"/>
+                <Setter Property="HorizontalTextAlignment"
+                        Value="Center" />
+                <Setter Property="Margin"
+                        Value="0,0,0,10" />
                 <Setter Property="TextColor"
                         Value="{StaticResource MutedText}"/>
             </Style>
@@ -51,11 +60,6 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="เพิ่ม"
-                     Command="{Binding AddNewBreastPumpCommand}"/>
-    </ContentPage.ToolbarItems>
-
     <Grid BackgroundColor="{StaticResource PageBg}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -68,8 +72,14 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Label Style="{StaticResource SectionTitle}"
-                   Text="บันทึกการปั๊มนม"/>
+            
+            <Button Text="บันทึกการปั๊มนม"
+                    Margin="0, 10,0,5"
+                    FontSize="20"
+                    TextColor="White"
+                    BackgroundColor="#d46f2b"
+                    Command="{Binding AddNewBreastPumpCommand}"></Button>
+            
             <Label Grid.Row="1"
                    Style="{StaticResource SectionSubtitle}"
                    Text="แตะรายการเพื่อดูรายละเอียด หรือกดเพิ่มเพื่อบันทึกใหม่"/>

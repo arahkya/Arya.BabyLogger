@@ -1,11 +1,13 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Arya.BabyLogger.Mobile.Services;
+using Arya.BabyLogger.Mobile.Services.Storage;
 using CommunityToolkit.Maui.ApplicationModel;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
@@ -88,7 +90,7 @@ public partial class BreastPumpListViewModel : ObservableObject
     public ObservableCollection<BreastPumpGroupViewModel> BreastPumpItemsGroup { get; } = [];
 
     [RelayCommand]
-    private async Task AddNewBreastPumpAsync()
+    private static async Task AddNewBreastPumpAsync()
     {
         var viewModel = App.Services.GetRequiredService<BreastPumpEntryViewModel>();
         var page = new BreastPumpEntryPage(viewModel);
@@ -96,10 +98,21 @@ public partial class BreastPumpListViewModel : ObservableObject
         await Shell.Current.Navigation.PushModalAsync(page);
     }
 
+    [RelayCommand]
+    private static async Task SignOutAsync()
+    {
+        MobileStorageProvider.ClearSecureStorage("AUTH_TOKEN");
+        
+        await App.SwapGreetingPage();
+    }
+    
     public async Task LoadDataAsync()
     {
         _badgeService.SetCount(0);
-
+        var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
+        
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+        
         var startDate = new DateTimeOffset(StartDate.Year, StartDate.Month, StartDate.Day, 0, 0, 0, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:ssZ", new CultureInfo("en-US"));
         var endDate = new DateTimeOffset(EndDate.Year, EndDate.Month, EndDate.Day, 23, 59, 59, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:ssZ", new CultureInfo("en-US"));
         var url = $"breastpump?startDate={startDate}&endDate={endDate}";

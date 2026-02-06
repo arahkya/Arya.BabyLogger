@@ -21,4 +21,9 @@ public static class MobileStorageProvider
     {
         SecureStorage.Default.SetAsync(key, context).GetAwaiter().GetResult();
     }
+
+    public static void ClearSecureStorage(string key)
+    {
+        SecureStorage.Default.Remove(key);
+    }
 }

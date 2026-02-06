@@ -4,7 +4,9 @@ namespace Arya.BabyLogger.WebApi.Services;
 
 public interface IUserService
 {
-    UserEntity? LookupUserNameAsync(string username);
+    UserEntity? LookupEmailAsync(string email);
 
     string GenerateJwtToken(UserEntity user);
+    
+    string HashedPassword(string password);
 }

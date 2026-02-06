@@ -31,6 +31,9 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
         // Seed Breast Pump data - 20 records covering 7 days back from January 12, 2026
         var breastPumpSeedData = GenerateBreastPumpSeedData();
         modelBuilder.Entity<BreastPumpEntity>().HasData(breastPumpSeedData);
+        
+        var userSeedData = GenerateUserSeedData();
+        modelBuilder.Entity<UserEntity>().HasData(userSeedData);
     }
 
     private static List<ExcretionEntity> GenerateExcretionSeedData()
@@ -196,8 +199,8 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     {
         return [
 
-            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444401"), Email = "arahk@outlook.com", Username = "Arahk8986", PasswordHash = "hashedpassword" },
-            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444402"), Email = "wiparat500267@gmail.com", Username = "wiparat500267", PasswordHash = "hashedpassword" }
+            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444401"), Email = "arahk@outlook.com", Username = "Arahk8986", PasswordHash = "a2697f4143cbb043c514129a7bb96a53f48ac829a1413ad6aa09beb10b54f622" },
+            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444402"), Email = "wiparat500267@gmail.com", Username = "wiparat500267", PasswordHash = "85dfffbb42725a20b1c6cc3c78073f39a19281230bc558e6e252f1f6a67973c8" }
         ];
     }
 }
