@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
 
 namespace Arya.BabyLogger.WebApi.Db;
@@ -8,6 +9,7 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     public DbSet<ExcretionEntity> Excretions { get; set; } = null!;
     public DbSet<SleepEntity> Sleeps { get; set; } = null!;
     public DbSet<BreastPumpEntity> BreastPumps { get; set; } = null!;
+    public DbSet<UserEntity> Users { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -188,5 +190,14 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
             new() { Id = pumpIds[18], PumpTime = baseDate.AddDays(-3).AddHours(16).AddMinutes(25), AmountML = 97, Note = "Afternoon pump" },
             new() { Id = pumpIds[19], PumpTime = baseDate.AddDays(-3).AddHours(20).AddMinutes(15), AmountML = 128, Note = "Evening pump" }
         };
+    }
+
+    private static List<UserEntity> GenerateUserSeedData()
+    {
+        return [
+
+            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444401"), Email = "arahk@outlook.com", Username = "Arahk8986", PasswordHash = "hashedpassword" },
+            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444402"), Email = "wiparat500267@gmail.com", Username = "wiparat500267", PasswordHash = "hashedpassword" }
+        ];
     }
 }
