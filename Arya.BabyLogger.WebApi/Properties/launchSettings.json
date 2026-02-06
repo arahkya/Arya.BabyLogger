@@ -7,7 +7,10 @@
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5001",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Jwt:SigningKey": "hKfotBdtyzQbupnLD_w0QgNrssyH5WuUmxXUoZm9uLo",
+        "Jwt:Issuer": "Arya.BabyLogger",
+        "Jwt:Audience": "Arya.BabyLogger.Clients"
       }
     },
     "https": {

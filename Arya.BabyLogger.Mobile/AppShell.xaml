@@ -3,12 +3,12 @@
     x:Class="Arya.BabyLogger.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:breastPumpView="clr-namespace:Arya.BabyLogger.Mobile.Views.BreastPump"
+    xmlns:breastPumpViews="clr-namespace:Arya.BabyLogger.Mobile.Views.BreastPump"
     Title="Arya.BabyLogger.Mobile">
 
     <ShellContent
         Title="Breast Pump"
-        ContentTemplate="{DataTemplate breastPumpView:BreastPumpListPage}"
+        ContentTemplate="{DataTemplate breastPumpViews:BreastPumpListPage}"
         Icon="mother_breast_pumping.png"
         Route="BreastPumpListPage"/>
 </Shell>

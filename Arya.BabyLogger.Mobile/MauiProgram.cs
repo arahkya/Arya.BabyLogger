@@ -1,9 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Net;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
+using Arya.BabyLogger.Mobile.ViewModels.Landing;
+using Arya.BabyLogger.Mobile.Views.BreastPump;
+using Arya.BabyLogger.Mobile.Views.Landing;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.ApplicationModel;
 using Microsoft.Extensions.Logging;
@@ -25,6 +29,7 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddSingleton<Channel<bool>>(_ => Channel.CreateUnbounded<bool>());
+		
 		builder.Services.AddSingleton<HttpClient>(_ =>
 		{
 			const string webApiUrl = BuildConstraints.WebApiUrl;
@@ -38,9 +43,17 @@ public static class MauiProgram
 				DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
 			};
 
+			#if DEBUG
+			var authToken = Environment.GetEnvironmentVariable("AUTH_TOKEN");
+			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+			#endif
+			
 			return httpClient;
 		});
-		
+
+		builder.Services.AddTransient<GreetingPage>();
+		builder.Services.AddTransient<GreetingViewModel>();
+		builder.Services.AddTransient<BreastPumpListPage>();
 		builder.Services.AddTransient<BreastPumpListViewModel>();
 		builder.Services.AddTransient<BreastPumpEntryViewModel>();
 
