@@ -10,6 +10,7 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     public DbSet<SleepEntity> Sleeps { get; set; } = null!;
     public DbSet<BreastPumpEntity> BreastPumps { get; set; } = null!;
     public DbSet<UserEntity> Users { get; set; } = null!;
+    public DbSet<CareHouseholdEntity> CareHouseholdEntities { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,9 +32,15 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
         // Seed Breast Pump data - 20 records covering 7 days back from January 12, 2026
         var breastPumpSeedData = GenerateBreastPumpSeedData();
         modelBuilder.Entity<BreastPumpEntity>().HasData(breastPumpSeedData);
+        modelBuilder.Entity<BreastPumpEntity>().HasOne(p => p.CareHousehold).WithMany().IsRequired();
         
         var userSeedData = GenerateUserSeedData();
+        modelBuilder.Entity<UserEntity>().HasKey(p => p.Id);
         modelBuilder.Entity<UserEntity>().HasData(userSeedData);
+        modelBuilder.Entity<UserEntity>().HasOne(p => p.CareHousehold).WithMany(p => p.Users).HasForeignKey(p => p.CareHouseholdId).IsRequired();
+
+        modelBuilder.Entity<CareHouseholdEntity>().ToTable("CareHouseholds");
+        modelBuilder.Entity<CareHouseholdEntity>().HasKey(p => p.Id);
     }
 
     private static List<ExcretionEntity> GenerateExcretionSeedData()
@@ -172,26 +179,26 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
 
         return new List<BreastPumpEntity>
         {
-            new() { Id = pumpIds[0], PumpTime = baseDate.AddHours(5).AddMinutes(15), AmountML = 120, Note = "Morning pump" },
-            new() { Id = pumpIds[1], PumpTime = baseDate.AddHours(8).AddMinutes(45), AmountML = 90, Note = "Mid-morning" },
-            new() { Id = pumpIds[2], PumpTime = baseDate.AddHours(12).AddMinutes(10), AmountML = 110, Note = "Noon session" },
-            new() { Id = pumpIds[3], PumpTime = baseDate.AddHours(15).AddMinutes(30), AmountML = 100, Note = "Afternoon pump" },
-            new() { Id = pumpIds[4], PumpTime = baseDate.AddHours(19).AddMinutes(5), AmountML = 130, Note = "Evening pump" },
-            new() { Id = pumpIds[5], PumpTime = baseDate.AddDays(-1).AddHours(6), AmountML = 115, Note = "Morning pump" },
-            new() { Id = pumpIds[6], PumpTime = baseDate.AddDays(-1).AddHours(9).AddMinutes(20), AmountML = 95, Note = "Mid-morning" },
-            new() { Id = pumpIds[7], PumpTime = baseDate.AddDays(-1).AddHours(13), AmountML = 105, Note = "Noon session" },
-            new() { Id = pumpIds[8], PumpTime = baseDate.AddDays(-1).AddHours(16).AddMinutes(10), AmountML = 100, Note = "Afternoon pump" },
-            new() { Id = pumpIds[9], PumpTime = baseDate.AddDays(-1).AddHours(20).AddMinutes(5), AmountML = 125, Note = "Evening pump" },
-            new() { Id = pumpIds[10], PumpTime = baseDate.AddDays(-2).AddHours(5).AddMinutes(30), AmountML = 118, Note = "Morning pump" },
-            new() { Id = pumpIds[11], PumpTime = baseDate.AddDays(-2).AddHours(9), AmountML = 92, Note = "Mid-morning" },
-            new() { Id = pumpIds[12], PumpTime = baseDate.AddDays(-2).AddHours(12).AddMinutes(40), AmountML = 108, Note = "Noon session" },
-            new() { Id = pumpIds[13], PumpTime = baseDate.AddDays(-2).AddHours(15).AddMinutes(50), AmountML = 98, Note = "Afternoon pump" },
-            new() { Id = pumpIds[14], PumpTime = baseDate.AddDays(-2).AddHours(19), AmountML = 132, Note = "Evening pump" },
-            new() { Id = pumpIds[15], PumpTime = baseDate.AddDays(-3).AddHours(6).AddMinutes(10), AmountML = 112, Note = "Morning pump" },
-            new() { Id = pumpIds[16], PumpTime = baseDate.AddDays(-3).AddHours(9).AddMinutes(35), AmountML = 88, Note = "Mid-morning" },
-            new() { Id = pumpIds[17], PumpTime = baseDate.AddDays(-3).AddHours(13).AddMinutes(5), AmountML = 107, Note = "Noon session" },
-            new() { Id = pumpIds[18], PumpTime = baseDate.AddDays(-3).AddHours(16).AddMinutes(25), AmountML = 97, Note = "Afternoon pump" },
-            new() { Id = pumpIds[19], PumpTime = baseDate.AddDays(-3).AddHours(20).AddMinutes(15), AmountML = 128, Note = "Evening pump" }
+            new() { Id = pumpIds[0],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddHours(5).AddMinutes(15), AmountML = 120, Note = "Morning pump" },
+            new() { Id = pumpIds[1],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddHours(8).AddMinutes(45), AmountML = 90, Note = "Mid-morning" },
+            new() { Id = pumpIds[2],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddHours(12).AddMinutes(10), AmountML = 110, Note = "Noon session" },
+            new() { Id = pumpIds[3],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddHours(15).AddMinutes(30), AmountML = 100, Note = "Afternoon pump" },
+            new() { Id = pumpIds[4],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddHours(19).AddMinutes(5), AmountML = 130, Note = "Evening pump" },
+            new() { Id = pumpIds[5],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddDays(-1).AddHours(6), AmountML = 115, Note = "Morning pump" },
+            new() { Id = pumpIds[6],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddDays(-1).AddHours(9).AddMinutes(20), AmountML = 95, Note = "Mid-morning" },
+            new() { Id = pumpIds[7],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddDays(-1).AddHours(13), AmountML = 105, Note = "Noon session" },
+            new() { Id = pumpIds[8],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddDays(-1).AddHours(16).AddMinutes(10), AmountML = 100, Note = "Afternoon pump" },
+            new() { Id = pumpIds[9],  CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), PumpTime = baseDate.AddDays(-1).AddHours(20).AddMinutes(5), AmountML = 125, Note = "Evening pump" },
+            new() { Id = pumpIds[10], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-2).AddHours(5).AddMinutes(30), AmountML = 118, Note = "Morning pump" },
+            new() { Id = pumpIds[11], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-2).AddHours(9), AmountML = 92, Note = "Mid-morning" },
+            new() { Id = pumpIds[12], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-2).AddHours(12).AddMinutes(40), AmountML = 108, Note = "Noon session" },
+            new() { Id = pumpIds[13], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-2).AddHours(15).AddMinutes(50), AmountML = 98, Note = "Afternoon pump" },
+            new() { Id = pumpIds[14], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-2).AddHours(19), AmountML = 132, Note = "Evening pump" },
+            new() { Id = pumpIds[15], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-3).AddHours(6).AddMinutes(10), AmountML = 112, Note = "Morning pump" },
+            new() { Id = pumpIds[16], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-3).AddHours(9).AddMinutes(35), AmountML = 88, Note = "Mid-morning" },
+            new() { Id = pumpIds[17], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-3).AddHours(13).AddMinutes(5), AmountML = 107, Note = "Noon session" },
+            new() { Id = pumpIds[18], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-3).AddHours(16).AddMinutes(25), AmountML = 97, Note = "Afternoon pump" },
+            new() { Id = pumpIds[19], CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"),  PumpTime = baseDate.AddDays(-3).AddHours(20).AddMinutes(15), AmountML = 128, Note = "Evening pump" }
         };
     }
 
@@ -199,8 +206,8 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     {
         return [
 
-            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444401"), Email = "arahk@outlook.com", Username = "Arahk8986", PasswordHash = "a2697f4143cbb043c514129a7bb96a53f48ac829a1413ad6aa09beb10b54f622" },
-            new() { Id = Guid.Parse("44444444-4444-4444-4444-444444444402"), Email = "wiparat500267@gmail.com", Username = "wiparat500267", PasswordHash = "85dfffbb42725a20b1c6cc3c78073f39a19281230bc558e6e252f1f6a67973c8" }
+            new UserEntity { Id = Guid.Parse("44444444-4444-4444-4444-444444444401"), CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), Email = "arahk@outlook.com", Username = "Arahk8986", PasswordHash = "a2697f4143cbb043c514129a7bb96a53f48ac829a1413ad6aa09beb10b54f622" },
+            new UserEntity { Id = Guid.Parse("44444444-4444-4444-4444-444444444402"), CareHouseholdId = Guid.Parse("571B31B8-6B65-48CF-9E8F-81DE3F29A6B4"), Email = "wiparat500267@gmail.com", Username = "wiparat500267", PasswordHash = "85dfffbb42725a20b1c6cc3c78073f39a19281230bc558e6e252f1f6a67973c8" }
         ];
     }
 }

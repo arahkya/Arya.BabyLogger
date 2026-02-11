@@ -4,7 +4,7 @@ namespace Arya.BabyLogger.WebApi.Db;
 
 public class UserEntity
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     
     [MinLength(4)]
     [MaxLength(12)]
@@ -17,4 +17,7 @@ public class UserEntity
     [MinLength(10)]
     [MaxLength(100)]
     public required string PasswordHash { get; set; } = string.Empty;
+    
+    public Guid CareHouseholdId { get; init; }
+    public CareHouseholdEntity? CareHousehold { get; init; }
 }

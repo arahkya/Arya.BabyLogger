@@ -3,6 +3,7 @@ using System;
 using Arya.BabyLogger.WebApi.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Arya.BabyLogger.WebApi.Db.Migrations
 {
     [DbContext(typeof(BabyLoggerDbContext))]
-    partial class BabyLoggerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260211071521_Create Care Household Table")]
+    partial class CreateCareHouseholdTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
@@ -26,7 +29,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                     b.Property<int>("AmountML")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("CareHouseholdId")
+                    b.Property<Guid?>("CareHouseholdId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Note")
@@ -48,7 +51,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333301"),
                             AmountML = 120,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Morning pump",
                             PumpTime = new DateTime(2026, 1, 12, 5, 15, 0, 0, DateTimeKind.Utc)
                         },
@@ -56,7 +58,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333302"),
                             AmountML = 90,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Mid-morning",
                             PumpTime = new DateTime(2026, 1, 12, 8, 45, 0, 0, DateTimeKind.Utc)
                         },
@@ -64,7 +65,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333303"),
                             AmountML = 110,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Noon session",
                             PumpTime = new DateTime(2026, 1, 12, 12, 10, 0, 0, DateTimeKind.Utc)
                         },
@@ -72,7 +72,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333304"),
                             AmountML = 100,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Afternoon pump",
                             PumpTime = new DateTime(2026, 1, 12, 15, 30, 0, 0, DateTimeKind.Utc)
                         },
@@ -80,7 +79,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333305"),
                             AmountML = 130,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Evening pump",
                             PumpTime = new DateTime(2026, 1, 12, 19, 5, 0, 0, DateTimeKind.Utc)
                         },
@@ -88,7 +86,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333306"),
                             AmountML = 115,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Morning pump",
                             PumpTime = new DateTime(2026, 1, 11, 6, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -96,7 +93,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333307"),
                             AmountML = 95,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Mid-morning",
                             PumpTime = new DateTime(2026, 1, 11, 9, 20, 0, 0, DateTimeKind.Utc)
                         },
@@ -104,7 +100,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333308"),
                             AmountML = 105,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Noon session",
                             PumpTime = new DateTime(2026, 1, 11, 13, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -112,7 +107,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333309"),
                             AmountML = 100,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Afternoon pump",
                             PumpTime = new DateTime(2026, 1, 11, 16, 10, 0, 0, DateTimeKind.Utc)
                         },
@@ -120,7 +114,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333310"),
                             AmountML = 125,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Evening pump",
                             PumpTime = new DateTime(2026, 1, 11, 20, 5, 0, 0, DateTimeKind.Utc)
                         },
@@ -128,7 +121,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333311"),
                             AmountML = 118,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Morning pump",
                             PumpTime = new DateTime(2026, 1, 10, 5, 30, 0, 0, DateTimeKind.Utc)
                         },
@@ -136,7 +128,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333312"),
                             AmountML = 92,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Mid-morning",
                             PumpTime = new DateTime(2026, 1, 10, 9, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -144,7 +135,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333313"),
                             AmountML = 108,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Noon session",
                             PumpTime = new DateTime(2026, 1, 10, 12, 40, 0, 0, DateTimeKind.Utc)
                         },
@@ -152,7 +142,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333314"),
                             AmountML = 98,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Afternoon pump",
                             PumpTime = new DateTime(2026, 1, 10, 15, 50, 0, 0, DateTimeKind.Utc)
                         },
@@ -160,7 +149,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333315"),
                             AmountML = 132,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Evening pump",
                             PumpTime = new DateTime(2026, 1, 10, 19, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -168,7 +156,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333316"),
                             AmountML = 112,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Morning pump",
                             PumpTime = new DateTime(2026, 1, 9, 6, 10, 0, 0, DateTimeKind.Utc)
                         },
@@ -176,7 +163,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333317"),
                             AmountML = 88,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Mid-morning",
                             PumpTime = new DateTime(2026, 1, 9, 9, 35, 0, 0, DateTimeKind.Utc)
                         },
@@ -184,7 +170,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333318"),
                             AmountML = 107,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Noon session",
                             PumpTime = new DateTime(2026, 1, 9, 13, 5, 0, 0, DateTimeKind.Utc)
                         },
@@ -192,7 +177,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333319"),
                             AmountML = 97,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Afternoon pump",
                             PumpTime = new DateTime(2026, 1, 9, 16, 25, 0, 0, DateTimeKind.Utc)
                         },
@@ -200,7 +184,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333320"),
                             AmountML = 128,
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Note = "Evening pump",
                             PumpTime = new DateTime(2026, 1, 9, 20, 15, 0, 0, DateTimeKind.Utc)
                         });
@@ -622,7 +605,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("CareHouseholdId")
+                    b.Property<Guid?>("CareHouseholdId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -650,7 +633,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         new
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444401"),
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Email = "arahk@outlook.com",
                             PasswordHash = "a2697f4143cbb043c514129a7bb96a53f48ac829a1413ad6aa09beb10b54f622",
                             Username = "Arahk8986"
@@ -658,7 +640,6 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         new
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444402"),
-                            CareHouseholdId = new Guid("571b31b8-6b65-48cf-9e8f-81de3f29a6b4"),
                             Email = "wiparat500267@gmail.com",
                             PasswordHash = "85dfffbb42725a20b1c6cc3c78073f39a19281230bc558e6e252f1f6a67973c8",
                             Username = "wiparat500267"
@@ -669,9 +650,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                 {
                     b.HasOne("Arya.BabyLogger.WebApi.Db.CareHouseholdEntity", "CareHousehold")
                         .WithMany()
-                        .HasForeignKey("CareHouseholdId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CareHouseholdId");
 
                     b.Navigation("CareHousehold");
                 });
@@ -680,9 +659,7 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                 {
                     b.HasOne("Arya.BabyLogger.WebApi.Db.CareHouseholdEntity", "CareHousehold")
                         .WithMany("Users")
-                        .HasForeignKey("CareHouseholdId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CareHouseholdId");
 
                     b.Navigation("CareHousehold");
                 });
