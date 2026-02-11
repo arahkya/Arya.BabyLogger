@@ -19,8 +19,10 @@ public class UserController : ControllerBase
         {
             return Unauthorized("Invalid username");
         }
-
-        if (user.PasswordHash != userService.HashedPassword(request.Password))
+        
+        var passwordHash = userService.HashedPassword(request.Password);
+        
+        if (user.PasswordHash != passwordHash)
         {
             return Unauthorized("Invalid password");
         }

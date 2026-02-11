@@ -79,4 +79,37 @@ public static class JwtTokenService
         var bytes = Convert.FromBase64String(padded);
         return Encoding.UTF8.GetString(bytes);
     }
+    
+    public static string GetClaim(string claimKey, string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return string.Empty;
+        }
+
+        var parts = token.Split('.');
+        if (parts.Length != 3)
+        {
+            return string.Empty;
+        }
+
+        try
+        {
+            var payloadJson = DecodeBase64Url(parts[1]);
+            using var payload = JsonDocument.Parse(payloadJson);
+
+            var now = DateTimeOffset.UtcNow;
+
+            if (!payload.RootElement.TryGetProperty(claimKey, out var nbfElement))
+            {
+                return string.Empty;
+            }
+
+            return nbfElement.GetString() ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty; // malformed payload
+        }
+    }
 }

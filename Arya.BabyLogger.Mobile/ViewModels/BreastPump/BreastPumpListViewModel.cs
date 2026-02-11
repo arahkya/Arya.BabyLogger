@@ -7,6 +7,7 @@ using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Arya.BabyLogger.Mobile.Services;
+using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using CommunityToolkit.Maui.ApplicationModel;
 
@@ -113,6 +114,7 @@ public partial class BreastPumpListViewModel : ObservableObject
         
         _badgeService.SetCount(0);
         var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
+        var userId = JwtTokenService.GetClaim("sub", authToken!);
         
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
         
@@ -120,6 +122,9 @@ public partial class BreastPumpListViewModel : ObservableObject
         var endDate = new DateTimeOffset(EndDate.Year, EndDate.Month, EndDate.Day, 23, 59, 59, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:ssZ", new CultureInfo("en-US"));
         var url = $"breastpump?startDate={startDate}&endDate={endDate}";
         var request = new HttpRequestMessage(HttpMethod.Get, url);
+        
+        request.Headers.Add("User-Id", userId);
+        
         var response = await _httpClient.SendAsync(request);
 
         response.EnsureSuccessStatusCode();

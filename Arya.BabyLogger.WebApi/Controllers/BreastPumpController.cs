@@ -38,7 +38,10 @@ public class BreastPumpController : ControllerBase
         var startDateUtc = startDate?.UtcDateTime ?? DateTime.MinValue;
         var endDateUtc = endDate?.UtcDateTime ?? DateTime.MaxValue;
 
-        var response = await _breastPumpService.ListAsync(startDateUtc, endDateUtc);
+        var userId = Request.Headers["User-Id"];
+        if(!Guid.TryParse(userId, out var userIdGuid)) return BadRequest("User-Id header is required.");
+        
+        var response = await _breastPumpService.ListAsync(startDateUtc, endDateUtc, userIdGuid);
         return Ok(response);
     }
 

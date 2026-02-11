@@ -22,16 +22,20 @@ public class BreastPumpService(BabyLoggerDbContext dbContext) : IBreastPumpServi
         return breastPumpEntity.Id;
     }
 
-    public async Task<BreastPumpListItemsResponse> ListAsync(DateTime startDateUtc, DateTime endDateUtc)
+    public async Task<BreastPumpListItemsResponse> ListAsync(DateTime startDateUtc, DateTime endDateUtc, Guid userId = default)
     {
+        var userEntity = await dbContext.Users.SingleAsync(p => p.Id == userId);
+        
         var items = await dbContext.BreastPumps
-            .Where(p => p.PumpTime >= startDateUtc && p.PumpTime <= endDateUtc)
+            .Where(p => 
+                p.PumpTime >= startDateUtc && p.PumpTime <= endDateUtc &&
+                p.CareHouseholdId == userEntity.CareHouseholdId)
             .OrderByDescending(p => p.PumpTime)
             .Select(p => new BreastPumpListItemsResponse.BreastPumpListItem
             {
                 Id = p.Id,
                 PumpTime = new DateTimeOffset(p.PumpTime, TimeSpan.Zero),
-                AmountML = p.AmountML
+                AmountML = p.AmountML,
             })
             .ToListAsync();
 
