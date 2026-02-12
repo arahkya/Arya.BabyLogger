@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -49,5 +48,23 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         var hashBytes = hmac.ComputeHash(passwordBytes);
 
         return Convert.ToHexString(hashBytes).ToLowerInvariant();
+    }
+
+    public async Task<Guid> CreateNewCareHolderAsync()
+    {
+        var careHousehold = new CareHouseholdEntity();
+        
+        await dbContext.CareHouseholdEntities.AddAsync(careHousehold);
+        await dbContext.SaveChangesAsync();
+        
+        return careHousehold.Id;
+    }
+    
+    public async Task<Guid> CreateUserAsync(UserEntity user)
+    {
+        await dbContext.Users.AddAsync(user);
+        await dbContext.SaveChangesAsync();
+        
+        return user.Id;
     }
 }

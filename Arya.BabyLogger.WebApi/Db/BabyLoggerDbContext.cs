@@ -33,10 +33,12 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
         modelBuilder.Entity<BreastPumpEntity>().HasOne(p => p.CareHousehold).WithMany().HasForeignKey(p => p.CareHouseholdId).IsRequired();
         
         modelBuilder.Entity<UserEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<UserEntity>().HasOne(p => p.CareHousehold).WithMany(p => p.Users).HasForeignKey(p => p.CareHouseholdId).IsRequired();
+        modelBuilder.Entity<UserEntity>().Property(p => p.CareHouseholdId).HasConversion<string>();
+        modelBuilder.Entity<UserEntity>().HasOne(p => p.CareHousehold).WithMany().HasForeignKey(p => p.CareHouseholdId).IsRequired();
 
         modelBuilder.Entity<CareHouseholdEntity>().ToTable("CareHouseholds");
         modelBuilder.Entity<CareHouseholdEntity>().HasKey(p => p.Id);
+        modelBuilder.Entity<CareHouseholdEntity>().Property(p => p.Id).HasConversion<string>();
     }
 
     private static List<ExcretionEntity> GenerateExcretionSeedData()

@@ -9,4 +9,8 @@ public interface IUserService
     string GenerateJwtToken(UserEntity user);
     
     string HashedPassword(string password);
+    
+    Task<Guid> CreateUserAsync(UserEntity user);
+
+    Task<Guid> CreateNewCareHolderAsync();
 }
