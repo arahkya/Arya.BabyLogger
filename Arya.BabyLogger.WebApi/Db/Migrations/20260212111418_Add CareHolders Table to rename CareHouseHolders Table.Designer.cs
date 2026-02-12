@@ -3,6 +3,7 @@ using System;
 using Arya.BabyLogger.WebApi.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Arya.BabyLogger.WebApi.Db.Migrations
 {
     [DbContext(typeof(BabyLoggerDbContext))]
-    partial class BabyLoggerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260212111418_Add CareHolders Table to rename CareHouseHolders Table")]
+    partial class AddCareHoldersTabletorenameCareHouseHoldersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
@@ -27,6 +30,9 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CareHolderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CareHouseholdId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -39,6 +45,8 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CareHolderId");
+
+                    b.HasIndex("CareHouseholdId");
 
                     b.HasIndex("PumpTime");
 
@@ -59,6 +67,17 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CareHolders", (string)null);
+                });
+
+            modelBuilder.Entity("Arya.BabyLogger.WebApi.Db.CareHouseholdEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CareHouseholds", (string)null);
                 });
 
             modelBuilder.Entity("Arya.BabyLogger.WebApi.Db.ExcretionEntity", b =>
@@ -467,6 +486,9 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CareHolderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CareHouseholdId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -489,6 +511,8 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
 
                     b.HasIndex("CareHolderId");
 
+                    b.HasIndex("CareHouseholdId");
+
                     b.ToTable("Users");
                 });
 
@@ -496,22 +520,34 @@ namespace Arya.BabyLogger.WebApi.Db.Migrations
                 {
                     b.HasOne("Arya.BabyLogger.WebApi.Db.CareHolderEntity", "CareHolder")
                         .WithMany()
-                        .HasForeignKey("CareHolderId")
+                        .HasForeignKey("CareHolderId");
+
+                    b.HasOne("Arya.BabyLogger.WebApi.Db.CareHouseholdEntity", "CareHousehold")
+                        .WithMany()
+                        .HasForeignKey("CareHouseholdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CareHolder");
+
+                    b.Navigation("CareHousehold");
                 });
 
             modelBuilder.Entity("Arya.BabyLogger.WebApi.Db.UserEntity", b =>
                 {
                     b.HasOne("Arya.BabyLogger.WebApi.Db.CareHolderEntity", "CareHolder")
                         .WithMany()
-                        .HasForeignKey("CareHolderId")
+                        .HasForeignKey("CareHolderId");
+
+                    b.HasOne("Arya.BabyLogger.WebApi.Db.CareHouseholdEntity", "CareHousehold")
+                        .WithMany()
+                        .HasForeignKey("CareHouseholdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CareHolder");
+
+                    b.Navigation("CareHousehold");
                 });
 #pragma warning restore 612, 618
         }

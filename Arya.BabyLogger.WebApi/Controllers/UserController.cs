@@ -57,7 +57,7 @@ public class UserController : ControllerBase
             Username = request.Username,
             PasswordHash = userService.HashedPassword(request.Password),
             Email = request.Email,
-            CareHouseholdId = careHolderId
+            CareHolderId = careHolderId
         };
         
         var id= await userService.CreateUserAsync(userEntity);

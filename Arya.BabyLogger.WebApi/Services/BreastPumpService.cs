@@ -15,7 +15,7 @@ public class BreastPumpService(BabyLoggerDbContext dbContext) : IBreastPumpServi
             PumpTime = request.PumpTime.UtcDateTime,
             AmountML = request.AmountML,
             Note = request.Note,
-            CareHouseholdId = userEntity.CareHouseholdId,
+            CareHolderId = userEntity.CareHolderId,
         };
 
         await dbContext.BreastPumps.AddAsync(breastPumpEntity);
@@ -31,7 +31,7 @@ public class BreastPumpService(BabyLoggerDbContext dbContext) : IBreastPumpServi
         var items = await dbContext.BreastPumps
             .Where(p => 
                 p.PumpTime >= startDateUtc && p.PumpTime <= endDateUtc &&
-                p.CareHouseholdId.ToString() == userEntity.CareHouseholdId.ToString())
+                p.CareHolderId == userEntity.CareHolderId)
             .OrderByDescending(p => p.PumpTime)
             .Select(p => new BreastPumpListItemsResponse.BreastPumpListItem
             {  

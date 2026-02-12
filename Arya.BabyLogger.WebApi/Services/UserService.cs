@@ -52,9 +52,9 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
 
     public async Task<Guid> CreateNewCareHolderAsync()
     {
-        var careHousehold = new CareHouseholdEntity();
+        var careHousehold = new CareHolderEntity();
         
-        await dbContext.CareHouseholdEntities.AddAsync(careHousehold);
+        await dbContext.CareHolders.AddAsync(careHousehold);
         await dbContext.SaveChangesAsync();
         
         return careHousehold.Id;

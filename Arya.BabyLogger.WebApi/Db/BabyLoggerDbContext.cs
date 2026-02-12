@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
 
 namespace Arya.BabyLogger.WebApi.Db;
@@ -10,7 +9,7 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     public DbSet<SleepEntity> Sleeps { get; set; } = null!;
     public DbSet<BreastPumpEntity> BreastPumps { get; set; } = null!;
     public DbSet<UserEntity> Users { get; set; } = null!;
-    public DbSet<CareHouseholdEntity> CareHouseholdEntities { get; set; } = null!;
+    public DbSet<CareHolderEntity> CareHolders { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,16 +28,17 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
 
         modelBuilder.Entity<BreastPumpEntity>().HasIndex(p => p.PumpTime);
         modelBuilder.Entity<BreastPumpEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<BreastPumpEntity>().Property(p => p.CareHouseholdId).HasConversion<string>();
-        modelBuilder.Entity<BreastPumpEntity>().HasOne(p => p.CareHousehold).WithMany().HasForeignKey(p => p.CareHouseholdId).IsRequired();
+        modelBuilder.Entity<BreastPumpEntity>().Property(p => p.CareHolderId).HasConversion<string>();
+        modelBuilder.Entity<BreastPumpEntity>().HasOne(p => p.CareHolder).WithMany().HasForeignKey(p => p.CareHolderId).IsRequired();
         
         modelBuilder.Entity<UserEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<UserEntity>().Property(p => p.CareHouseholdId).HasConversion<string>();
-        modelBuilder.Entity<UserEntity>().HasOne(p => p.CareHousehold).WithMany().HasForeignKey(p => p.CareHouseholdId).IsRequired();
-
-        modelBuilder.Entity<CareHouseholdEntity>().ToTable("CareHouseholds");
-        modelBuilder.Entity<CareHouseholdEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<CareHouseholdEntity>().Property(p => p.Id).HasConversion<string>();
+        modelBuilder.Entity<UserEntity>().Property(p => p.CareHolderId).HasConversion<string>();
+        modelBuilder.Entity<UserEntity>().HasOne(p => p.CareHolder).WithMany().HasForeignKey(p => p.CareHolderId).IsRequired();
+        
+        modelBuilder.Entity<CareHolderEntity>().ToTable("CareHolders");
+        modelBuilder.Entity<CareHolderEntity>().HasKey(p => p.Id);
+        modelBuilder.Entity<CareHolderEntity>().Property(p => p.Id).HasConversion<string>();
+        modelBuilder.Entity<CareHolderEntity>().Property(p => p.Name).HasMaxLength(50);
     }
 
     private static List<ExcretionEntity> GenerateExcretionSeedData()

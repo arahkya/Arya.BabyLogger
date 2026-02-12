@@ -18,6 +18,6 @@ public class UserEntity
     [MaxLength(100)]
     public required string PasswordHash { get; set; } = string.Empty;
     
-    public Guid CareHouseholdId { get; init; }
-    public CareHouseholdEntity? CareHousehold { get; init; }
+    public Guid CareHolderId { get; init; }
+    public CareHolderEntity? CareHolder { get; init; }
 }
