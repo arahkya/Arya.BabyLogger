@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -131,7 +132,7 @@ public partial class BreastPumpEntryViewModel(HttpClient client) : ObservableObj
     }
 
     [RelayCommand]
-    public async Task SaveAsync()
+    private async Task SaveAsync()
     {
         if ((_breastDetailResponse?.AmountML ?? 0) <= 0)
         {
@@ -144,13 +145,15 @@ public partial class BreastPumpEntryViewModel(HttpClient client) : ObservableObj
             AmountML = _breastDetailResponse.AmountML,
             Note = _breastDetailResponse.Note
         };
-
-        var url = "breastpump";
+        var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
+        var userId = JwtTokenService.GetClaim("sub", authToken!);
+        const string url = "breastpump";
         var request = new HttpRequestMessage(HttpMethod.Post, url)
         {
             Content = JsonContent.Create(breastPumpCreateRequest)
         };
-        var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
+        
+        request.Headers.Add("User-Id", userId);
         
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
         var response = await client.SendAsync(request);

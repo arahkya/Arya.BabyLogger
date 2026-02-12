@@ -6,14 +6,16 @@ namespace Arya.BabyLogger.WebApi.Services;
 
 public class BreastPumpService(BabyLoggerDbContext dbContext) : IBreastPumpService
 {
-    public async Task<Guid> CreateAsync(BreastPumpCreateRequest request)
+    public async Task<Guid> CreateAsync(BreastPumpCreateRequest request, Guid userId)
     {
+        var userEntity = await dbContext.Users.SingleAsync(p => p.Id == userId);
         var breastPumpEntity = new BreastPumpEntity
         {
             Id = Guid.NewGuid(),
             PumpTime = request.PumpTime.UtcDateTime,
             AmountML = request.AmountML,
-            Note = request.Note
+            Note = request.Note,
+            CareHouseholdId = userEntity.CareHouseholdId,
         };
 
         await dbContext.BreastPumps.AddAsync(breastPumpEntity);
@@ -29,10 +31,10 @@ public class BreastPumpService(BabyLoggerDbContext dbContext) : IBreastPumpServi
         var items = await dbContext.BreastPumps
             .Where(p => 
                 p.PumpTime >= startDateUtc && p.PumpTime <= endDateUtc &&
-                p.CareHouseholdId == userEntity.CareHouseholdId)
+                p.CareHouseholdId.ToString() == userEntity.CareHouseholdId.ToString())
             .OrderByDescending(p => p.PumpTime)
             .Select(p => new BreastPumpListItemsResponse.BreastPumpListItem
-            {
+            {  
                 Id = p.Id,
                 PumpTime = new DateTimeOffset(p.PumpTime, TimeSpan.Zero),
                 AmountML = p.AmountML,

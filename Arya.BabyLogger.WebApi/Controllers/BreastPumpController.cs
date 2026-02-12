@@ -22,11 +22,14 @@ public class BreastPumpController : ControllerBase
         {
             return BadRequest("amountML must be greater than 0.");
         }
-
-        var id = await _breastPumpService.CreateAsync(request);
+        
+        var userId = Request.Headers["User-Id"];
+        if(!Guid.TryParse(userId, out var userIdGuid)) return BadRequest("User-Id header is required.");
+        
+        var id = await _breastPumpService.CreateAsync(request, userIdGuid);
         return CreatedAtRoute("GetBreastPumpById", new { id }, null);
     }
-
+    
     [HttpGet]
     public async Task<IActionResult> ListAsync([FromQuery] DateTimeOffset? startDate, [FromQuery] DateTimeOffset? endDate)
     {
@@ -34,7 +37,7 @@ public class BreastPumpController : ControllerBase
         {
             return BadRequest("endDate must be greater than or equal to startDate.");
         }
-
+ 
         var startDateUtc = startDate?.UtcDateTime ?? DateTime.MinValue;
         var endDateUtc = endDate?.UtcDateTime ?? DateTime.MaxValue;
 
