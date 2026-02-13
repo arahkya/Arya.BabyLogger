@@ -2,18 +2,159 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Arya.BabyLogger.Mobile.Views.Landing.RegisterPage"
+             xmlns:viewModel="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.Landing"
+             x:DataType="viewModel:RegisterViewModel"
              Title="Register">
-    <ScrollView>
-        <VerticalStackLayout Padding="24">
-            <Label Text="Register"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"/>
-            <Label Text="Registration screen coming soon."
-                   FontSize="14"
-                   HorizontalOptions="Center"
-                   TextColor="#6E655B"
-                   Margin="0,12,0,0"/>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PageBg">#FFCE99</Color>
+            <Color x:Key="PageHeroBg">#FF9644</Color>
+            <Color x:Key="PageHeroPrimaryText">Black</Color>
+            <Color x:Key="PageHeroSecondaryText">White</Color>
+            <Color x:Key="CardBg">#FFFFFF</Color>
+            <Color x:Key="CardStroke">#E6E1DA</Color>
+            <Color x:Key="ListBg">#FFFDF1</Color>
+            <Color x:Key="ListIconStroke">#E5DDD2</Color>
+            <Color x:Key="AccentText">#2D2A26</Color>
+            <Color x:Key="MutedText">#6E655B</Color>
+            <Color x:Key="PrimaryButtonBg">#562F00</Color>
+            <Color x:Key="PrimaryButtonText">White</Color>
+
+            <Style x:Key="CardBorder" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource CardBg}"/>
+                <Setter Property="Stroke" Value="{StaticResource CardStroke}"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="18"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding" Value="16"/>
+                <Setter Property="Margin" Value="8,6"/>
+            </Style>
+
+            <Style x:Key="EntryStyle" TargetType="Entry">
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="TextColor" Value="{StaticResource AccentText}"/>
+                <Setter Property="PlaceholderColor" Value="{StaticResource MutedText}"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource ListBg}"/>
+                <Setter Property="HeightRequest" Value="48"/>
+            </Style>
+
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryButtonBg}"/>
+                <Setter Property="TextColor" Value="{StaticResource PrimaryButtonText}"/>
+                <Setter Property="CornerRadius" Value="14"/>
+                <Setter Property="FontSize" Value="17"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="HeightRequest" Value="52"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView BackgroundColor="{StaticResource PageBg}">
+        <VerticalStackLayout Padding="22,26" Spacing="16">
+            <Border StrokeThickness="0"
+                    BackgroundColor="{StaticResource PageHeroBg}"
+                    StrokeShape="RoundRectangle 22"
+                    Padding="18,18,18,14">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Create your BabyLogger account"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource PageHeroPrimaryText}"/>
+                    <Label Text="Stay in rhythm with pumping, feeding, and cuddles."
+                           FontSize="14"
+                           TextColor="{StaticResource PageHeroSecondaryText}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorder}">
+                <VerticalStackLayout Spacing="14">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Username"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource MutedText}"/>
+                        <Border Stroke="{StaticResource ListIconStroke}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                BackgroundColor="{StaticResource ListBg}">
+                            <Entry Style="{StaticResource EntryStyle}"
+                                   Placeholder="pick a handle"
+                                   Text="{Binding Username}">
+                                <Entry.Keyboard>
+                                    <Keyboard x:FactoryMethod="Create">
+                                        <x:Arguments>
+                                            <KeyboardFlags>None</KeyboardFlags>
+                                        </x:Arguments>
+                                    </Keyboard>
+                                </Entry.Keyboard>
+                            </Entry>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Email"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource MutedText}"/>
+                        <Border Stroke="{StaticResource ListIconStroke}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                BackgroundColor="{StaticResource ListBg}">
+                            <Entry Style="{StaticResource EntryStyle}"
+                                   Keyboard="Email"
+                                   Placeholder="you@example.com"
+                                   Text="{Binding Email}"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Password"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource MutedText}"/>
+                        <Border Stroke="{StaticResource ListIconStroke}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                BackgroundColor="{StaticResource ListBg}">
+                            <Entry Style="{StaticResource EntryStyle}"
+                                   Placeholder="8+ characters"
+                                   IsPassword="True"
+                                   Text="{Binding Password}"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Care holder ID (optional)"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource MutedText}"/>
+                        <Border Stroke="{StaticResource ListIconStroke}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                BackgroundColor="{StaticResource ListBg}">
+                            <Entry Style="{StaticResource EntryStyle}"
+                                   Placeholder="invite code or share link"
+                                   Text="{Binding CareHolderIdText}"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Button Text="Create account"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding RegisterCommand}"/>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                        <BoxView HeightRequest="1" WidthRequest="40" Color="{StaticResource CardStroke}" VerticalOptions="Center"/>
+                        <Label Text="We'll never share your details"
+                               FontSize="12"
+                               TextColor="{StaticResource MutedText}"/>
+                        <BoxView HeightRequest="1" WidthRequest="40" Color="{StaticResource CardStroke}" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

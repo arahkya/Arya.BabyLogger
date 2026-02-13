@@ -47,6 +47,8 @@ public static class MauiProgram
 
 		builder.Services.AddTransient<GreetingPage>();
 		builder.Services.AddTransient<GreetingViewModel>();
+		builder.Services.AddTransient<RegisterViewModel>();
+		builder.Services.AddTransient<RegisterPage>();
 		builder.Services.AddTransient<BreastPumpListPage>();
 		builder.Services.AddTransient<BreastPumpListViewModel>();
 		builder.Services.AddTransient<BreastPumpEntryViewModel>();

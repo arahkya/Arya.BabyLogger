@@ -158,6 +158,7 @@
                             BackgroundColor="#FFFFFF"
                             TextColor="{StaticResource AccentText}"
                             BorderColor="{StaticResource CardStroke}"
+                            Command="{Binding GotoRegisterPageCommand}"
                             BorderWidth="1"
                             CornerRadius="14"
                             HeightRequest="48"/>
@@ -176,7 +177,7 @@
                        TextColor="{StaticResource Accent}"
                        >
                     <!-- <Label.GestureRecognizers> -->
-                    <!--     <TapGestureRecognizer Tapped="OnRegisterTapped"/> -->
+                    <!--     <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped" /> -->
                     <!-- </Label.GestureRecognizers> -->
                 </Label>
             </HorizontalStackLayout>

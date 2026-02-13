@@ -31,7 +31,7 @@ public partial class App
 		var appShell = new AppShell();
 		var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN") ?? string.Empty;
 		var isAuthenticated = JwtTokenService.IsTokenValid(authToken);
-		var window = new Window(isAuthenticated ? appShell : _greetingPage!);
+		var window = new Window(isAuthenticated ? appShell : new NavigationPage(_greetingPage!));
 
 		window.Activated += async (_, _) =>
 		{

@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Arya.BabyLogger.Mobile.Services.Storage;
+using Arya.BabyLogger.Mobile.Views.Landing;
 using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -53,5 +54,13 @@ public partial class GreetingViewModel(HttpClient httpClient) : ObservableObject
         {
             ErrorMessage = "An unknown error occurred";
         }
+    }
+    
+    [RelayCommand]
+    private static async Task GotoRegisterPageAsync()
+    {
+        var registerPage = App.Services.GetRequiredService<RegisterPage>();
+        
+        await Application.Current.MainPage.Navigation.PushAsync(registerPage);
     }
 }
