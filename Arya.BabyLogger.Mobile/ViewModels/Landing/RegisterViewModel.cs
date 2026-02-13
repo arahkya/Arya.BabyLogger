@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using Arya.BabyLogger.Mobile.Views.Landing;
 using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -47,5 +48,7 @@ public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
         response.EnsureSuccessStatusCode();
         
         Debug.WriteLine("Successfully registered");
+
+        await Application.Current.MainPage.Navigation.PushModalAsync(new RegisterCompletePage());
     }
 }

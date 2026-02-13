@@ -60,11 +60,11 @@
                     StrokeShape="RoundRectangle 22"
                     Padding="18,18,18,14">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Create your BabyLogger account"
+                    <Label Text="สร้างบัญชี BabyLogger ของคุณ"
                            FontSize="22"
                            FontAttributes="Bold"
                            TextColor="{StaticResource PageHeroPrimaryText}"/>
-                    <Label Text="Stay in rhythm with pumping, feeding, and cuddles."
+                    <Label Text="ติดตามรอบปั๊มนม ป้อนนม และช่วงเวลากอดได้อย่างไม่พลาด"
                            FontSize="14"
                            TextColor="{StaticResource PageHeroSecondaryText}"/>
                 </VerticalStackLayout>
@@ -142,13 +142,13 @@
                         </Border>
                     </VerticalStackLayout>
 
-                    <Button Text="Create account"
+                    <Button Text="สร้างบัญชี"
                             Style="{StaticResource PrimaryButton}"
                             Command="{Binding RegisterCommand}"/>
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
                         <BoxView HeightRequest="1" WidthRequest="40" Color="{StaticResource CardStroke}" VerticalOptions="Center"/>
-                        <Label Text="We'll never share your details"
+                        <Label Text="เราจะไม่เปิดเผยข้อมูลของคุณ"
                                FontSize="12"
                                TextColor="{StaticResource MutedText}"/>
                         <BoxView HeightRequest="1" WidthRequest="40" Color="{StaticResource CardStroke}" VerticalOptions="Center"/>

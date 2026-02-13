@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Arya.BabyLogger.Mobile.Views.Landing.RegisterCompletePage"
+             Title="Registration Complete">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PageBg">#FFCE99</Color>
+            <Color x:Key="PageHeroBg">#FF9644</Color>
+            <Color x:Key="PageHeroPrimaryText">Black</Color>
+            <Color x:Key="PageHeroSecondaryText">White</Color>
+            <Color x:Key="CardBg">#FFFFFF</Color>
+            <Color x:Key="CardStroke">#E6E1DA</Color>
+            <Color x:Key="AccentText">#2D2A26</Color>
+            <Color x:Key="MutedText">#6E655B</Color>
+            <Color x:Key="PrimaryButtonBg">#562F00</Color>
+            <Color x:Key="PrimaryButtonText">White</Color>
+
+            <Style x:Key="CardBorder" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource CardBg}" />
+                <Setter Property="Stroke" Value="{StaticResource CardStroke}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="18" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding" Value="18" />
+                <Setter Property="Margin" Value="14" />
+            </Style>
+
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryButtonBg}" />
+                <Setter Property="TextColor" Value="{StaticResource PrimaryButtonText}" />
+                <Setter Property="CornerRadius" Value="14" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HeightRequest" Value="52" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView BackgroundColor="{StaticResource PageBg}">
+        <VerticalStackLayout Padding="22,40,22,30" Spacing="20">
+            <Border StrokeThickness="0"
+                    BackgroundColor="{StaticResource PageHeroBg}"
+                    StrokeShape="RoundRectangle 22"
+                    Padding="20,22">
+                <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Image Source="check_circle.png"
+                           HeightRequest="70"
+                           WidthRequest="70"
+                           HorizontalOptions="Center"/>
+                    <Label Text="ยินดีต้อนรับ! คุณพร้อมใช้งานแล้ว"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource PageHeroPrimaryText}"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center"/>
+                    <Label Text="เริ่มบันทึกการปั๊มนม การให้นม และพัฒนาการได้ทันที."
+                           FontSize="14"
+                           TextColor="{StaticResource PageHeroSecondaryText}"
+                           HorizontalTextAlignment="Center"
+                           Margin="8,0"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorder}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Tip"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource AccentText}"/>
+                    <Label Text="หลังจากคลิกปุ่ม Continue ระบจะพาคุณไปยังหน้า Login เพื่อเริ่มใช้งาน"
+                           FontSize="13"
+                           TextColor="{StaticResource MutedText}"
+                           LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Continue"
+                    Style="{StaticResource PrimaryButton}"
+                    Clicked="OnContinueClicked"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

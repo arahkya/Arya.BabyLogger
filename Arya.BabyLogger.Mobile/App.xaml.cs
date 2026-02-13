@@ -65,7 +65,7 @@ public partial class App
 				DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
 			}));
 			
-			Current!.Windows[0].Page = greetingPage;
+			Current!.Windows[0].Page = new NavigationPage(greetingPage);
 		});
 	}
 }
