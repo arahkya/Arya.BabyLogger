@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Arya.BabyLogger.WebApi.Db;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Arya.BabyLogger.WebApi.Services;
@@ -59,7 +60,14 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         
         return careHousehold.Id;
     }
-    
+
+    public async Task<UserEntity?> GetUserByEmailAsync(string requestEmail)
+    {
+        var userEntity = await dbContext.Users.SingleOrDefaultAsync(p => p.Email == requestEmail);
+        
+        return userEntity;
+    }
+
     public async Task<Guid> CreateUserAsync(UserEntity user)
     {
         await dbContext.Users.AddAsync(user);

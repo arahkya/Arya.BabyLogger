@@ -1,3 +1,4 @@
+using System.Net;
 using Arya.BabyLogger.WebApi.Db;
 using Arya.BabyLogger.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -50,6 +51,13 @@ public class UserController : ControllerBase
         else
         {
             careHolderId = Guid.Parse(request.CareHolderId);
+        }
+        
+        var existedUser = await userService.GetUserByEmailAsync(request.Email);
+        if (existedUser is not null)
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.Conflict);
+            return Guid.Empty;
         }
         
         var userEntity = new UserEntity

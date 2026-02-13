@@ -13,4 +13,5 @@ public interface IUserService
     Task<Guid> CreateUserAsync(UserEntity user);
 
     Task<Guid> CreateNewCareHolderAsync();
+    Task<UserEntity?> GetUserByEmailAsync(string requestEmail);
 }

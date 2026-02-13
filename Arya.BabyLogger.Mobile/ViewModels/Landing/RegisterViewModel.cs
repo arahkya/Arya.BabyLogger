@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Text.Json;
@@ -127,6 +128,14 @@ public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
         }
         catch (HttpRequestException ex)
         {
+            if (ex.StatusCode == HttpStatusCode.Conflict)
+            {
+                ErrorMessage = "Email นี้ถูกลงทะเบียนไว้แล้ว กรุณาใช้อีเมล์อื่นและลองใหม่อีกครั้ง";
+                Debug.WriteLine($"Register failed: {ex.StatusCode} ({ex.Message})");
+                
+                return;
+            }
+            
             Debug.WriteLine($"Register failed: {ex.StatusCode} ({ex.Message})");
             ErrorMessage = "ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่อีกครั้ง";
         }
