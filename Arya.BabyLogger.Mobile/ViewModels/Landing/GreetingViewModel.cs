@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Mail;
 using System.Text.Json;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Mobile.Views.Landing;
@@ -12,21 +13,69 @@ namespace Arya.BabyLogger.Mobile.ViewModels.Landing;
 
 public partial class GreetingViewModel(HttpClient httpClient) : ObservableObject
 {
-    public string Email { get; set; } = string.Empty;
-    
-    public string Password { get; set; } = string.Empty;
-    
-    public string? ErrorMessage { get; set; }
+    private string _email = string.Empty;
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            if (SetProperty(ref _email, value) && !string.IsNullOrWhiteSpace(EmailError))
+            {
+                ValidateEmail();
+            }
+        }
+    }
+
+    private string _password = string.Empty;
+    public string Password
+    {
+        get => _password;
+        set
+        {
+            if (SetProperty(ref _password, value) && !string.IsNullOrWhiteSpace(PasswordError))
+            {
+                ValidatePassword();
+            }
+        }
+    }
+
+    private string? _errorMessage;
+    public string? ErrorMessage
+    {
+        get => _errorMessage;
+        private set => SetProperty(ref _errorMessage, value);
+    }
+
+    private string _emailError = string.Empty;
+    public string EmailError
+    {
+        get => _emailError;
+        private set => SetProperty(ref _emailError, value);
+    }
+
+    private string _passwordError = string.Empty;
+    public string PasswordError
+    {
+        get => _passwordError;
+        private set => SetProperty(ref _passwordError, value);
+    }
     
     [RelayCommand]
     private async Task LoginAsync()
     {
+        ErrorMessage = string.Empty;
+
+        if (!ValidateInput())
+        {
+            return;
+        }
+
         try
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "user/login");
             var content = new StringContent(JsonSerializer.Serialize(new LoginRequest
             {
-                Email = Email,
+                Email = Email.Trim(),
                 Password = Password
             }));
 
@@ -48,7 +97,6 @@ public partial class GreetingViewModel(HttpClient httpClient) : ObservableObject
             Debug.WriteLine($"Login failed: {ex.StatusCode} ({ex.Message})");
 
             ErrorMessage = string.IsNullOrWhiteSpace(ex.StatusCode.ToString()) ? ex.Message : ex.StatusCode.ToString();
-            OnPropertyChanged(nameof(ErrorMessage));
         }
         catch
         {
@@ -62,5 +110,54 @@ public partial class GreetingViewModel(HttpClient httpClient) : ObservableObject
         var registerPage = App.Services.GetRequiredService<RegisterPage>();
         
         await Application.Current.MainPage.Navigation.PushAsync(registerPage);
+    }
+
+    private bool ValidateInput()
+    {
+        var isEmailValid = ValidateEmail();
+        var isPasswordValid = ValidatePassword();
+
+        return isEmailValid && isPasswordValid;
+    }
+
+    private bool ValidateEmail()
+    {
+        var value = Email?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            EmailError = "กรุณากรอก Email";
+            return false;
+        }
+
+        try
+        {
+            _ = new MailAddress(value);
+            EmailError = string.Empty;
+            return true;
+        }
+        catch
+        {
+            EmailError = "รูปแบบ Email ไม่ถูกต้อง";
+            return false;
+        }
+    }
+
+    private bool ValidatePassword()
+    {
+        if (string.IsNullOrWhiteSpace(Password))
+        {
+            PasswordError = "กรุณากรอก Password";
+            return false;
+        }
+
+        if (Password.Length is < 4 or > 12)
+        {
+            PasswordError = "Password ต้องยาว 4-12 ตัวอักษร";
+            return false;
+        }
+
+        PasswordError = string.Empty;
+        return true;
     }
 }

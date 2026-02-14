@@ -124,6 +124,9 @@
                                Placeholder="you@example.com"
                                Text="{Binding Email}"
                                Keyboard="Email"/>
+                        <Label Text="{Binding EmailError}"
+                               FontSize="12"
+                               TextColor="Red"/>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
@@ -136,6 +139,9 @@
                                Text="{Binding Password}"
                                Placeholder="********"
                                IsPassword="True"/>
+                        <Label Text="{Binding PasswordError}"
+                               FontSize="12"
+                               TextColor="Red"/>
                     </VerticalStackLayout>
 
                     <Button Text="เข้าสู่ระบบ"
