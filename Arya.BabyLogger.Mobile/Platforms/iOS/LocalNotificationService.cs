@@ -11,7 +11,7 @@ public class LocalNotificationService : ILocalNotificationService
 
     public LocalNotificationService()
     {
-        UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert, (approved, err) =>
+        UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert | UNAuthorizationOptions.Sound | UNAuthorizationOptions.Badge, (approved, err) =>
         {
             hasNotificationsPermission = approved;
         });
@@ -41,7 +41,12 @@ public class LocalNotificationService : ILocalNotificationService
             Subtitle = "",
             Body = message,
             Badge = 1,
-            Sound = UNNotificationSound.Default
+            Sound = UNNotificationSound.Default,
+            CategoryIdentifier = "BabyLogger",
+            ThreadIdentifier = "BabyLogger",
+            UserInfo = new NSDictionary(),
+            LaunchImageName = "AppIcon"
+            
         };
 
         UNNotificationTrigger trigger;
