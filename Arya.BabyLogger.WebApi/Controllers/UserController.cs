@@ -72,4 +72,15 @@ public class UserController : ControllerBase
 
         return id;
     }
+
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    public async Task<string> RequestResetPasswordAsync([FromBody] RequestResetPasswordRequest request, [FromServices] IUserService userService, [FromServices] IEmailService emailService)
+    {
+        var (id, secretKey) = await userService.ResetPasswordAsync(request.Email);
+
+        await emailService.SendAsync(request.Email, "BabyLogger: Reset Password", $"Please enter Secret Key : {secretKey} to reset your password in BabyLogger Mobile Application.");
+        
+        return id.ToString();
+    }
 }

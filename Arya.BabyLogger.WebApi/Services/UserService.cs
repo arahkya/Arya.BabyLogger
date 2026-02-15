@@ -68,6 +68,39 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return userEntity;
     }
 
+    public async Task<Tuple<Guid,string>> ResetPasswordAsync(string requestEmail)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(requestEmail);
+
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Email == requestEmail);
+        if (user is null)
+        {
+            throw new BadHttpRequestException("Email not found.", StatusCodes.Status400BadRequest);
+        }
+
+        var secretCode = GenerateSixDigitCode();
+
+        var resetRequest = new ResetPasswordRequestEntity
+        {
+            UserId = user.Id,
+            SecretCode = secretCode
+        };
+
+        await dbContext.ResetPasswordRequests.AddAsync(resetRequest);
+        await dbContext.SaveChangesAsync();
+
+        return new Tuple<Guid, string>(resetRequest.Id ,secretCode);
+    }
+
+    private static string GenerateSixDigitCode()
+    {
+        // Generates a zero-padded 6-digit number using a cryptographically secure RNG.
+        Span<byte> buffer = stackalloc byte[4];
+        RandomNumberGenerator.Fill(buffer);
+        var value = BitConverter.ToUInt32(buffer) % 1_000_000;
+        return value.ToString("D6");
+    }
+
     public async Task<Guid> CreateUserAsync(UserEntity user)
     {
         await dbContext.Users.AddAsync(user);

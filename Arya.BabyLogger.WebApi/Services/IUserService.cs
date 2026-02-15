@@ -14,4 +14,5 @@ public interface IUserService
 
     Task<Guid> CreateNewCareHolderAsync();
     Task<UserEntity?> GetUserByEmailAsync(string requestEmail);
+    Task<Tuple<Guid,string>> ResetPasswordAsync(string requestEmail);
 }

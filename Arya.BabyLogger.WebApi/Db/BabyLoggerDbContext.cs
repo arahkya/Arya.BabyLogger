@@ -10,6 +10,7 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     public DbSet<BreastPumpEntity> BreastPumps { get; set; } = null!;
     public DbSet<UserEntity> Users { get; set; } = null!;
     public DbSet<CareHolderEntity> CareHolders { get; set; } = null!;
+    public DbSet<ResetPasswordRequestEntity> ResetPasswordRequests { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,6 +35,15 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
         modelBuilder.Entity<UserEntity>().HasKey(p => p.Id);
         modelBuilder.Entity<UserEntity>().Property(p => p.CareHolderId).HasConversion<string>();
         modelBuilder.Entity<UserEntity>().HasOne(p => p.CareHolder).WithMany().HasForeignKey(p => p.CareHolderId).IsRequired();
+
+        modelBuilder.Entity<ResetPasswordRequestEntity>().HasKey(p => p.Id);
+        modelBuilder.Entity<ResetPasswordRequestEntity>().Property(p => p.Id).HasConversion<string>();
+        modelBuilder.Entity<ResetPasswordRequestEntity>().Property(p => p.SecretCode).HasMaxLength(6).IsRequired();
+        modelBuilder.Entity<ResetPasswordRequestEntity>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         modelBuilder.Entity<CareHolderEntity>().ToTable("CareHolders");
         modelBuilder.Entity<CareHolderEntity>().HasKey(p => p.Id);
