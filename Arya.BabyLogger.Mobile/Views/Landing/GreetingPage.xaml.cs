@@ -11,4 +11,12 @@ public partial class GreetingPage : ContentPage
         
         BindingContext = viewModel;
     }
+
+    private void TapGestureRecognizer_OnTapped(object? sender, TappedEventArgs e)
+    {
+        if (BindingContext is GreetingViewModel vm)
+        {
+            vm.GotoForgotPasswordPageCommand.ExecuteAsync(null);
+        }
+    }
 }

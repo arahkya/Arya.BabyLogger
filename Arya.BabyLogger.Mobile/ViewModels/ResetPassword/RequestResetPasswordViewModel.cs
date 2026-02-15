@@ -1,0 +1,47 @@
+using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Arya.BabyLogger.Mobile.Views.ResetPassword;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+namespace Arya.BabyLogger.Mobile.ViewModels.ResetPassword;
+
+public partial class RequestResetPasswordViewModel(HttpClient httpClient) : ObservableObject
+{
+    [ObservableProperty]
+    private string _email = string.Empty;
+
+    public bool IsEmailValid => Regex.IsMatch(Email ?? string.Empty,
+        @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    public bool ShowEmailError => !string.IsNullOrWhiteSpace(Email) && !IsEmailValid;
+
+    partial void OnEmailChanged(string value)
+    {
+        OnPropertyChanged(nameof(IsEmailValid));
+        OnPropertyChanged(nameof(ShowEmailError));
+    }
+    
+    [RelayCommand]
+    private async Task RequestSecretCodeAsync()
+    {
+        if (!IsEmailValid) return;
+        
+        var json = JsonSerializer.Serialize(new { Email });
+        var content = new StringContent(json);
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/user/forgot-password");
+        
+        request.Content = content;
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        
+        var response = await httpClient.SendAsync(request);
+        
+        response.EnsureSuccessStatusCode();
+        
+        var resetPasswordKey = await response.Content.ReadAsStringAsync();
+        
+        await Application.Current!.Windows[0].Page!.DisplayAlertAsync("สำเร็จ", "ส่งอีเมล์สำเร็จโปรดตรวจสอบอินบ๊อกซ์ของท่าน", "OK");
+        await Application.Current.Windows[0].Navigation.PushModalAsync(new ResetPasswordPage(new ResetPasswordViewModel(resetPasswordKey)));
+    }
+}

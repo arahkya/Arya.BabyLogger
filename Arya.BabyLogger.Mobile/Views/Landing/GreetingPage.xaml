@@ -182,9 +182,9 @@
                        FontAttributes="Bold"
                        TextColor="{StaticResource Accent}"
                        >
-                    <!-- <Label.GestureRecognizers> -->
-                    <!--     <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped" /> -->
-                    <!-- </Label.GestureRecognizers> -->
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped" />
+                    </Label.GestureRecognizers>
                 </Label>
             </HorizontalStackLayout>
 
