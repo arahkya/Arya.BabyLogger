@@ -56,6 +56,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<BreastPumpEntryViewModel>();
 		builder.Services.AddTransient<ChangePasswordViewModel>();
 		builder.Services.AddTransient<ChangePasswordPage>();
+		builder.Services.AddTransient<ProfileViewModel>();
+		builder.Services.AddTransient<ProfilePage>();
 
 		builder.Services.AddSingleton(Badge.Default);
 

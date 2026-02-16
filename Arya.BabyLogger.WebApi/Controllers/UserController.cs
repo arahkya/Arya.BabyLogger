@@ -3,6 +3,7 @@ using Arya.BabyLogger.WebApi.Db;
 using Arya.BabyLogger.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Arya.BabyLogger.WebApi.Controllers;
 
@@ -138,6 +139,34 @@ public class UserController : ControllerBase
             Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
             Response.Headers.Append("Error", ex.Message);
             
+            return false;
+        }
+    }
+
+    [Authorize]
+    [HttpPatch("username")]
+    public async Task<bool> UpdateUsernameAsync([FromBody] UpdateUsernameRequest request, [FromServices] IUserService userService)
+    {
+        try
+        {
+            var userId = Request.Headers["User-Id"];
+            if (!Guid.TryParse(userId, out var userIdGuid))
+            {
+                Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+                Response.Headers.Append("Error", "User-Id header is required.");
+                
+                return false;
+            }
+
+            var success = await userService.UpdateUsernameAsync(userIdGuid, request.Username);
+
+            return success;
+        }
+        catch (Exception ex)
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", ex.Message);
+
             return false;
         }
     }

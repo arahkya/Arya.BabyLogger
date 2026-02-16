@@ -8,9 +8,57 @@
             <Label Text="Profile"
                    FontSize="28"
                    FontAttributes="Bold" />
-            <Label Text="(Add profile details here)"
-                   FontSize="16"
-                   TextColor="Gray" />
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Username" FontAttributes="Bold" />
+                <Entry Placeholder="Enter username"
+                       Text="{Binding Username, Mode=TwoWay}" />
+                <Label Text="{Binding UsernameError}"
+                       TextColor="Red"
+                       FontSize="12">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding UsernameError}" Value="">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding UsernameError}" Value="{x:Null}">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding UsernameError}" Value="{x:Static x:String.Empty}">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </VerticalStackLayout>
+
+            <Button Text="Update Username"
+                    Command="{Binding UpdateUsernameCommand}"
+                    BackgroundColor="#FFCE99"
+                    TextColor="Black"
+                    CornerRadius="8"
+                    HeightRequest="48">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="#FFCE99" />
+                                    <Setter Property="TextColor" Value="Black" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="#E0E0E0" />
+                                    <Setter Property="TextColor" Value="#7A7A7A" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+            </Button>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="#FFCE99" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

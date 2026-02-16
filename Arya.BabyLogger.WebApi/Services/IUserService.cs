@@ -17,4 +17,5 @@ public interface IUserService
     Task<Tuple<Guid,string>> RequestResetPasswordAsync(string requestEmail);
     Task<bool> ResetPasswordAsync(string secretKey, string secretCode, string requestNewPassword);
     Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword);
+    Task<bool> UpdateUsernameAsync(Guid userId, string newUsername);
 }

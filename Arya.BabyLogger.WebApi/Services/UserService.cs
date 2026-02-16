@@ -140,6 +140,28 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         
         return true;
     }
+
+    public async Task<bool> UpdateUsernameAsync(Guid userId, string newUsername)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(newUsername);
+        
+        var username = newUsername.Trim();
+        if (username.Length is < 4 or > 12)
+        {
+            throw new Exception("Username must be 5-14 characters.");
+        }
+        
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        if (user is null) throw new Exception("User not found");
+
+        var isTaken = await dbContext.Users.AnyAsync(u => u.Username == username && u.Id != userId);
+        if (isTaken) throw new Exception("Username already in use.");
+        
+        user.Username = username;
+        await dbContext.SaveChangesAsync();
+
+        return true;
+    }
     
     private static string GenerateSixDigitCode()
     {
