@@ -109,7 +109,7 @@ public partial class BreastPumpListViewModel : ObservableObject
     
     public async Task LoadDataAsync()
     {
-        TimeIntervalInHours = 4;
+        TimeIntervalInHours = 3;
         OnPropertyChanged(nameof(TimeIntervalInHours));
         
         _badgeService.SetCount(0);
