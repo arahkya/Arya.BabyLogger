@@ -4,12 +4,33 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:breastPumpViews="clr-namespace:Arya.BabyLogger.Mobile.Views.BreastPump"
+    xmlns:profileViews="clr-namespace:Arya.BabyLogger.Mobile.Views.Profile"
+    x:Name="AppShellView"
     BackgroundColor="#FFCE99"
     Title="Arya.BabyLogger.Mobile">
 
-    <ShellContent
-        Title="Breast Pump"
-        ContentTemplate="{DataTemplate breastPumpViews:BreastPumpListPage}"
-        Icon="mother_breast_pumping.png"
-        Route="BreastPumpListPage"/>
+    <Shell.FlyoutHeader>
+        <Grid Padding="20" BackgroundColor="#FFCE99">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Logged in as" FontSize="12" TextColor="Black"/>
+                <Label Text="{Binding Username}" FontSize="22" FontAttributes="Bold" TextColor="Black"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Breast Pump" Icon="mother_breast_pumping.png">
+        <ShellContent
+            Title="Breast Pump"
+            ContentTemplate="{DataTemplate breastPumpViews:BreastPumpListPage}"
+            Route="BreastPumpListPage"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Profile" Route="ProfilePage">
+        <ShellContent
+            Title="Profile"
+            ContentTemplate="{DataTemplate profileViews:ProfilePage}"
+            Route="ProfilePage"/>
+    </FlyoutItem>
+
+    <MenuItem Text="Sign out" Clicked="OnSignOutClicked"/>
 </Shell>
