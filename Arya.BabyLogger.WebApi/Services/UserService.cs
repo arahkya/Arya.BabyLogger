@@ -75,9 +75,15 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Email == requestEmail);
         if (user is null)
         {
-            throw new BadHttpRequestException("Email not found.", StatusCodes.Status400BadRequest);
+            throw new Exception("Email not found");
         }
 
+        var requestResetPasswordAttempt = await dbContext.ResetPasswordRequests.CountAsync(r => r.UserId == user.Id);
+        if (requestResetPasswordAttempt > 3)
+        {
+            throw new Exception("You account locked please contact arahk@arahk.com");
+        }
+        
         var secretCode = GenerateSixDigitCode();
 
         var resetRequest = new ResetPasswordRequestEntity
@@ -90,6 +96,36 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         await dbContext.SaveChangesAsync();
 
         return new Tuple<Guid, string>(resetRequest.Id ,secretCode);
+    }
+
+    public async Task<bool> ChangePasswordAsync(string secretKey, string secretCode , string requestNewPassword)
+    {
+        var resetPassword = await dbContext.ResetPasswordRequests.SingleOrDefaultAsync(p => p.Id.ToString() == secretKey);
+        
+        if (resetPassword is null)
+        {
+            throw new Exception("Invalid request");
+        }
+
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == resetPassword.UserId);
+        
+        if (user is null)
+        {
+            throw new Exception("Invalid request");
+        }
+        
+        if (resetPassword.SecretCode != secretCode)
+        {
+            throw new Exception("Invalid secret code");
+        }
+        
+        user.PasswordHash = HashedPassword(requestNewPassword);
+        
+        dbContext.ResetPasswordRequests.Remove(resetPassword);
+        
+        var effectedRows = await dbContext.SaveChangesAsync();
+        
+        return effectedRows > 0;
     }
 
     private static string GenerateSixDigitCode()

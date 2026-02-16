@@ -77,10 +77,39 @@ public class UserController : ControllerBase
     [HttpPost("reset-password")]
     public async Task<string> RequestResetPasswordAsync([FromBody] RequestResetPasswordRequest request, [FromServices] IUserService userService, [FromServices] IEmailService emailService)
     {
-        var (id, secretKey) = await userService.ResetPasswordAsync(request.Email);
+        try
+        {
+            var (id, secretKey) = await userService.ResetPasswordAsync(request.Email);
 
-        await emailService.SendAsync(request.Email, "BabyLogger: Reset Password", $"Please enter Secret Key : {secretKey} to reset your password in BabyLogger Mobile Application.");
-        
-        return id.ToString();
+            await emailService.SendAsync(request.Email, "BabyLogger: Reset Password", $"Please enter Secret Key : {secretKey} to reset your password in BabyLogger Mobile Application.");
+
+            return id.ToString();
+        }
+        catch (Exception ex)
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", ex.Message);
+            
+            return string.Empty;
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPatch("reset-password")]
+    public async Task<bool> ResetPasswordAsync([FromBody] ChangePasswordRequest request, [FromServices] IUserService userService)
+    {
+        try
+        {
+            var success = await userService.ChangePasswordAsync(request.SecretKey, request.SecretCode, request.NewPassword);
+            
+            return success;
+            
+        }catch(Exception ex)
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", ex.Message);
+            
+            return false;
+        }
     }
 }
