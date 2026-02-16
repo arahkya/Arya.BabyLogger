@@ -21,6 +21,7 @@ builder.Services.AddTransient<IExcretionService, ExcretionService>();
 builder.Services.AddTransient<ISleepService, SleepService>();
 builder.Services.AddTransient<IBreastPumpService, BreastPumpService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var signingKey = jwtSection["SigningKey"];

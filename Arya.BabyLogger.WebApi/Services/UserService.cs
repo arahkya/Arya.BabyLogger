@@ -68,6 +68,75 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return userEntity;
     }
 
+    public async Task<Tuple<Guid,string>> ResetPasswordAsync(string requestEmail)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(requestEmail);
+
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Email == requestEmail);
+        if (user is null)
+        {
+            throw new Exception("Email not found");
+        }
+
+        var requestResetPasswordAttempt = await dbContext.ResetPasswordRequests.CountAsync(r => r.UserId == user.Id);
+        if (requestResetPasswordAttempt > 3)
+        {
+            throw new Exception("You account locked please contact arahk@arahk.com");
+        }
+        
+        var secretCode = GenerateSixDigitCode();
+
+        var resetRequest = new ResetPasswordRequestEntity
+        {
+            UserId = user.Id,
+            SecretCode = secretCode
+        };
+
+        await dbContext.ResetPasswordRequests.AddAsync(resetRequest);
+        await dbContext.SaveChangesAsync();
+
+        return new Tuple<Guid, string>(resetRequest.Id ,secretCode);
+    }
+
+    public async Task<bool> ChangePasswordAsync(string secretKey, string secretCode , string requestNewPassword)
+    {
+        var resetPassword = await dbContext.ResetPasswordRequests.SingleOrDefaultAsync(p => p.Id.ToString() == secretKey);
+        
+        if (resetPassword is null)
+        {
+            throw new Exception("Invalid request");
+        }
+
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == resetPassword.UserId);
+        
+        if (user is null)
+        {
+            throw new Exception("Invalid request");
+        }
+        
+        if (resetPassword.SecretCode != secretCode)
+        {
+            throw new Exception("Invalid secret code");
+        }
+        
+        user.PasswordHash = HashedPassword(requestNewPassword);
+        
+        dbContext.ResetPasswordRequests.Remove(resetPassword);
+        
+        var effectedRows = await dbContext.SaveChangesAsync();
+        
+        return effectedRows > 0;
+    }
+
+    private static string GenerateSixDigitCode()
+    {
+        // Generates a zero-padded 6-digit number using a cryptographically secure RNG.
+        Span<byte> buffer = stackalloc byte[4];
+        RandomNumberGenerator.Fill(buffer);
+        var value = BitConverter.ToUInt32(buffer) % 1_000_000;
+        return value.ToString("D6");
+    }
+
     public async Task<Guid> CreateUserAsync(UserEntity user)
     {
         await dbContext.Users.AddAsync(user);

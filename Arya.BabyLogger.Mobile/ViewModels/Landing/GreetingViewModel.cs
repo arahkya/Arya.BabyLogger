@@ -4,7 +4,9 @@ using System.Net.Http.Json;
 using System.Net.Mail;
 using System.Text.Json;
 using Arya.BabyLogger.Mobile.Services.Storage;
+using Arya.BabyLogger.Mobile.ViewModels.ResetPassword;
 using Arya.BabyLogger.Mobile.Views.Landing;
+using Arya.BabyLogger.Mobile.Views.ResetPassword;
 using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -159,5 +161,11 @@ public partial class GreetingViewModel(HttpClient httpClient) : ObservableObject
 
         PasswordError = string.Empty;
         return true;
+    }
+
+    [RelayCommand]
+    private async Task GotoForgotPasswordPageAsync()
+    {
+        await Application.Current!.Windows[0].Page!.Navigation.PushAsync(new RequestResetPasswordPage(new RequestResetPasswordViewModel(httpClient)));
     }
 }
