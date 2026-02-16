@@ -5,8 +5,10 @@ using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Net;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 using Arya.BabyLogger.Mobile.ViewModels.Landing;
+using Arya.BabyLogger.Mobile.ViewModels.Profile;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Mobile.Views.Landing;
+using Arya.BabyLogger.Mobile.Views.Profile;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.ApplicationModel;
 using Microsoft.Extensions.Logging;
@@ -52,6 +54,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<BreastPumpListPage>();
 		builder.Services.AddTransient<BreastPumpListViewModel>();
 		builder.Services.AddTransient<BreastPumpEntryViewModel>();
+		builder.Services.AddTransient<ChangePasswordViewModel>();
+		builder.Services.AddTransient<ChangePasswordPage>();
 
 		builder.Services.AddSingleton(Badge.Default);
 

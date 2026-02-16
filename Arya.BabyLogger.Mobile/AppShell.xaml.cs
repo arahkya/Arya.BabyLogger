@@ -17,6 +17,7 @@ public partial class AppShell
 		
 		Routing.RegisterRoute(nameof(BreastPumpListPage), typeof(BreastPumpListPage));
 		Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
+		Routing.RegisterRoute(nameof(ChangePasswordPage), typeof(Views.Profile.ChangePasswordPage));
 		Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
 	}
 

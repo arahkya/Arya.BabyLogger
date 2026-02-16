@@ -57,7 +57,7 @@ public partial class ResetPasswordViewModel(HttpClient httpClient, string resetP
     {
         if (!CanSubmit) return;
 
-        var json = JsonSerializer.Serialize(new ChangePasswordRequest { SecretKey = resetPasswordKey, NewPassword = NewPassword, SecretCode = SecretCode});
+        var json = JsonSerializer.Serialize(new ResetPasswordRequest { SecretKey = resetPasswordKey, NewPassword = NewPassword, SecretCode = SecretCode});
         var content = new StringContent(json);
         var request = new HttpRequestMessage(HttpMethod.Patch, "user/reset-password");
         

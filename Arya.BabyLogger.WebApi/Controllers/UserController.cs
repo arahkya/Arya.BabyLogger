@@ -79,7 +79,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var (id, secretKey) = await userService.ResetPasswordAsync(request.Email);
+            var (id, secretKey) = await userService.RequestResetPasswordAsync(request.Email);
 
             await emailService.SendAsync(request.Email, "BabyLogger: Reset Password", $"Please enter Secret Key : {secretKey} to reset your password in BabyLogger Mobile Application.");
 
@@ -96,15 +96,44 @@ public class UserController : ControllerBase
 
     [AllowAnonymous]
     [HttpPatch("reset-password")]
-    public async Task<bool> ResetPasswordAsync([FromBody] ChangePasswordRequest request, [FromServices] IUserService userService)
+    public async Task<bool> ResetPasswordAsync([FromBody] ResetPasswordRequest request, [FromServices] IUserService userService)
     {
         try
         {
-            var success = await userService.ChangePasswordAsync(request.SecretKey, request.SecretCode, request.NewPassword);
+            var success = await userService.ResetPasswordAsync(request.SecretKey, request.SecretCode, request.NewPassword);
             
             return success;
             
-        }catch(Exception ex)
+        }
+        catch(Exception ex)
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", ex.Message);
+            
+            return false;
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPatch("change-password")]
+    public async Task<bool> ChangePasswordAsync([FromBody] ChangePasswordRequest request, [FromServices] IUserService userService)
+    {
+        try
+        {
+            var userId = Request.Headers["User-Id"];
+            if (!Guid.TryParse(userId, out var userIdGuid))
+            {
+                Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+                Response.Headers.Append("Error", "User-Id header is required.");
+                
+                return false;
+            }
+            
+            var success = await userService.ChangePasswordAsync(userIdGuid, request.CurrentPassword, request.NewPassword);
+
+            return success;
+        }
+        catch(Exception ex)
         {
             Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
             Response.Headers.Append("Error", ex.Message);

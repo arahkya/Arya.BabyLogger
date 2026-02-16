@@ -68,7 +68,7 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return userEntity;
     }
 
-    public async Task<Tuple<Guid,string>> ResetPasswordAsync(string requestEmail)
+    public async Task<Tuple<Guid,string>> RequestResetPasswordAsync(string requestEmail)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(requestEmail);
 
@@ -98,7 +98,7 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return new Tuple<Guid, string>(resetRequest.Id ,secretCode);
     }
 
-    public async Task<bool> ChangePasswordAsync(string secretKey, string secretCode , string requestNewPassword)
+    public async Task<bool> ResetPasswordAsync(string secretKey, string secretCode, string requestNewPassword)
     {
         var resetPassword = await dbContext.ResetPasswordRequests.SingleOrDefaultAsync(p => p.Id.ToString() == secretKey);
         
@@ -128,6 +128,19 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return effectedRows > 0;
     }
 
+    public async Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)
+    {
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        if (user is null) throw new Exception("User not found");
+
+        if (user.PasswordHash != HashedPassword(currentPassword)) throw new Exception("Current password is incorrect");
+        
+        user.PasswordHash = HashedPassword(newPassword);
+        await dbContext.SaveChangesAsync();
+        
+        return true;
+    }
+    
     private static string GenerateSixDigitCode()
     {
         // Generates a zero-padded 6-digit number using a cryptographically secure RNG.

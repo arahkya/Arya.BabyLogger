@@ -31,6 +31,13 @@
             ContentTemplate="{DataTemplate profileViews:ProfilePage}"
             Route="ProfilePage"/>
     </FlyoutItem>
+    
+    <FlyoutItem Title="Change Password" Route="ChangePasswordPage">
+        <ShellContent
+            Title="Change Password"
+            ContentTemplate="{DataTemplate profileViews:ChangePasswordPage}"
+            Route="ChangePasswordPage"/>
+    </FlyoutItem>
 
     <MenuItem Text="Sign out" Clicked="OnSignOutClicked"/>
 </Shell>
