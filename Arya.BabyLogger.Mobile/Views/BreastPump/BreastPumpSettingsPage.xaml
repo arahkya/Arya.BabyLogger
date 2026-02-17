@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.BreastPump"
+             x:Class="Arya.BabyLogger.Mobile.Views.BreastPump.BreastPumpSettingsPage"
+             x:DataType="viewModels:BreastPumpSettingsViewModel"
+             Title="ตั้งค่า">
+    <ContentPage.Content>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label Text="กำหนดช่วงเวลาปั๊มนม"
+                   FontSize="22"
+                   FontAttributes="Bold" />
+
+            <Label Text="เลือกระยะห่างระหว่างการปั๊มนม (ชั่วโมง)"
+                   FontSize="14"
+                   TextColor="#555" />
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" VerticalOptions="Center">
+                <Label Text="ชั่วโมง:"
+                       FontSize="16"
+                       VerticalOptions="Center" />
+                <Stepper Grid.Column="1"
+                         Minimum="1"
+                         Maximum="12"
+                         Increment="1"
+                         HorizontalOptions="Start"
+                         Value="{Binding BreastPumpTimeIntervalHours, Mode=TwoWay}" />
+            </Grid>
+
+            <Label Text="{Binding BreastPumpTimeIntervalHours, StringFormat='รอบละ {0} ชั่วโมง'}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="#222" />
+
+            <Label Text="หมายเหตุ: ระบบจะบันทึกอัตโนมัติเมื่อออกจากหน้านี้"
+                   FontSize="12"
+                   TextColor="#777" />
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

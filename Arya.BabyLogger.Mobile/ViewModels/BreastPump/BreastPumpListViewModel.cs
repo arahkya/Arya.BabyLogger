@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,16 +10,18 @@ using CommunityToolkit.Mvvm.Input;
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
+using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Maui.ApplicationModel;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
 public partial class BreastPumpListViewModel : ObservableObject
 {
-    public int TimeIntervalInHours { get; set; }
+    [ObservableProperty] private int _timeIntervalInHours;
     private readonly HttpClient _httpClient;
     private readonly ILocalNotificationService _localNotificationService;
     private readonly IBadge _badgeService;
+    private readonly Channel<BreastPumpSettingsRquestResponse> _settingChannel;
     
     public DateTime NextPumpTime
     {
@@ -60,6 +63,7 @@ public partial class BreastPumpListViewModel : ObservableObject
 
     private DateTimeOffset _startDate = DateTimeOffset.Now.AddDays(-7);
     private DateTimeOffset _endDate = DateTimeOffset.Now;
+
     public DateTimeOffset StartDate
     {
         get => _startDate;
@@ -73,8 +77,9 @@ public partial class BreastPumpListViewModel : ObservableObject
 
     
 
-    public BreastPumpListViewModel(HttpClient httpClient, IBadge badgeService, ILocalNotificationService localNotificationService)
+    public BreastPumpListViewModel(HttpClient httpClient, IBadge badgeService, ILocalNotificationService localNotificationService, Channel<BreastPumpSettingsRquestResponse> settingChannel)
     {
+        _settingChannel = settingChannel;
         _httpClient = httpClient;
         _localNotificationService = localNotificationService;
         _badgeService = badgeService;
@@ -87,7 +92,7 @@ public partial class BreastPumpListViewModel : ObservableObject
             }
         };
     }
-
+    
     public ObservableCollection<BreastPumpGroupViewModel> BreastPumpItemsGroup { get; } = [];
 
     [RelayCommand]
@@ -100,17 +105,14 @@ public partial class BreastPumpListViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static async Task SignOutAsync()
+    private static async Task SettingAsync()
     {
-        MobileStorageProvider.ClearSecureStorage("AUTH_TOKEN");
-        
-        await App.SwapGreetingPage();
+        await Shell.Current.Navigation.PushAsync(new BreastPumpSettingsPage());
     }
     
     public async Task LoadDataAsync()
     {
-        TimeIntervalInHours = 3;
-        OnPropertyChanged(nameof(TimeIntervalInHours));
+        TimeIntervalInHours = BreastPumpSettingsViewModel.GetSavedTimeIntervalHours();
         
         _badgeService.SetCount(0);
         var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
@@ -178,5 +180,15 @@ public partial class BreastPumpListViewModel : ObservableObject
             "เวลาปั๊มนมแล้ว",
             "ถึงเวลาปั๊มนมอีกครั้งแล้ว อย่าลืมปั๊มนมให้น้องนะครับ",
             notifyTime);
+        
+        await UpdateSettings();
+    }
+
+    private async Task UpdateSettings()
+    {
+        await _settingChannel.Reader.WaitToReadAsync();
+        
+        var settings = await _settingChannel.Reader.ReadAsync();
+        TimeIntervalInHours = settings.PumpIntervalHours;
     }
 }

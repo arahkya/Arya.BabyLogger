@@ -170,4 +170,46 @@ public class UserController : ControllerBase
             return false;
         }
     }
+
+    [Authorize]
+    [HttpPut("settings-breastpump")]
+    public async Task<bool> SetBreastpumpSettingsAsync([FromBody] BreastPumpSettingsRquestResponse request, [FromServices] IUserService userService)
+    {
+        var userId = Request.Headers["User-Id"];
+        if (!Guid.TryParse(userId, out var userIdGuid))
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", "User-Id header is required.");
+                
+            return false;
+        }
+
+        var success = await userService.SaveBreastPumpSettingsAsync(userIdGuid, new BreastPumpSettingEntity
+        {
+            PumpIntervalHours = request.PumpIntervalHours
+        });
+        
+        return success;
+    }
+
+    [Authorize]
+    [HttpGet("settings-breastpump")]
+    public async Task<BreastPumpSettingsRquestResponse> GetBreastpumpSettingsAsync([FromServices] IUserService userService)
+    {
+        var userId = Request.Headers["User-Id"];
+        if (!Guid.TryParse(userId, out var userIdGuid))
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", "User-Id header is required.");
+                
+            return new BreastPumpSettingsRquestResponse();
+        }
+        
+        var settings = await userService.GetBreastPumpSettingsAsync(userIdGuid);
+
+        return new BreastPumpSettingsRquestResponse
+        {
+            PumpIntervalHours = settings.PumpIntervalHours
+        };
+    }
 }

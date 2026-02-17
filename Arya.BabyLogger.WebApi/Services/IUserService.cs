@@ -18,4 +18,6 @@ public interface IUserService
     Task<bool> ResetPasswordAsync(string secretKey, string secretCode, string requestNewPassword);
     Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword);
     Task<bool> UpdateUsernameAsync(Guid userId, string newUsername);
+    Task<bool> SaveBreastPumpSettingsAsync(Guid userId, BreastPumpSettingEntity settings);
+    Task<BreastPumpSettingEntity> GetBreastPumpSettingsAsync(Guid userIdGuid);
 }

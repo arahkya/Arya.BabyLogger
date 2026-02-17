@@ -11,6 +11,7 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
     public DbSet<UserEntity> Users { get; set; } = null!;
     public DbSet<CareHolderEntity> CareHolders { get; set; } = null!;
     public DbSet<ResetPasswordRequestEntity> ResetPasswordRequests { get; set; } = null!;
+    public DbSet<BreastPumpSettingEntity> BreastPumpSettings { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,6 +45,10 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<BreastPumpSettingEntity>().ToTable("BreastPumpSettings");
+        modelBuilder.Entity<BreastPumpSettingEntity>().HasKey(p => new { p.CareHolderId });
+        modelBuilder.Entity<BreastPumpSettingEntity>().HasOne(p => p.CareHolder).WithMany().HasForeignKey(p => p.CareHolderId).IsRequired();
         
         modelBuilder.Entity<CareHolderEntity>().ToTable("CareHolders");
         modelBuilder.Entity<CareHolderEntity>().HasKey(p => p.Id);

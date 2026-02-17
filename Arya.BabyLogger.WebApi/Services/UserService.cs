@@ -162,7 +162,47 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
 
         return true;
     }
-    
+
+    public async Task<bool> SaveBreastPumpSettingsAsync(Guid userId, BreastPumpSettingEntity settings)
+    {
+        var user = dbContext.Users.SingleOrDefault(u => u.Id == userId);
+        var careHolder = await dbContext.CareHolders.SingleAsync(p => p.Id == user!.CareHolderId);
+        
+        var existedSettings = await dbContext.BreastPumpSettings.SingleOrDefaultAsync(p => p.CareHolderId == careHolder.Id);
+        if (existedSettings is not null)
+        {
+            existedSettings.PumpIntervalHours = settings.PumpIntervalHours;
+        }
+        else
+        {
+            settings.CareHolderId = careHolder.Id;
+            await dbContext.BreastPumpSettings.AddAsync(settings);
+        }
+
+        return await dbContext.SaveChangesAsync() > 0;
+    }
+
+    public async Task<BreastPumpSettingEntity> GetBreastPumpSettingsAsync(Guid userId)
+    {
+        var user = dbContext.Users.SingleOrDefault(u => u.Id == userId);
+        var careHolder = await dbContext.CareHolders.SingleAsync(p => p.Id == user!.CareHolderId);
+        
+        var settings = await dbContext.BreastPumpSettings.SingleOrDefaultAsync(p => p.CareHolderId == careHolder.Id);
+
+        if (settings is not null) return settings;
+        
+        settings = new BreastPumpSettingEntity
+        {
+            CareHolderId = careHolder.Id,
+            PumpIntervalHours = 4
+        };
+
+        await dbContext.BreastPumpSettings.AddAsync(settings);
+        await dbContext.SaveChangesAsync();
+        
+        return settings;
+    }
+
     private static string GenerateSixDigitCode()
     {
         // Generates a zero-padded 6-digit number using a cryptographically secure RNG.

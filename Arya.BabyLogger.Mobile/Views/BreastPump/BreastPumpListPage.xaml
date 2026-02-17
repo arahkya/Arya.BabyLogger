@@ -7,9 +7,9 @@
              Title="{StaticResource AppName}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="ออกจากระบบ"
+        <ToolbarItem Text="ตั้งค่า"
                      Order="Secondary"
-                     Command="{Binding SignOutCommand}"/>        
+                     Command="{Binding SettingCommand}"/>        
     </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>

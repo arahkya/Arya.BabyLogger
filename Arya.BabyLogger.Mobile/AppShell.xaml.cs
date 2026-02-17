@@ -19,6 +19,7 @@ public partial class AppShell
 		Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
 		Routing.RegisterRoute(nameof(ChangePasswordPage), typeof(Views.Profile.ChangePasswordPage));
 		Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
+		Routing.RegisterRoute(nameof(BreastPumpSettingsPage), typeof(BreastPumpSettingsPage));
 	}
 
 	protected override void OnNavigating(ShellNavigatingEventArgs args)
