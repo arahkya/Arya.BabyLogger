@@ -33,7 +33,7 @@ public partial class ChangePasswordViewModel(HttpClient client) : ObservableObje
 	private async Task Update()
 	{
 		if (!CanUpdate()) return;
-
+		HttpResponseMessage? response = null;
 		try
 		{
 			var json = JsonSerializer.Serialize(new ChangePasswordRequest { CurrentPassword = CurrentPassword, NewPassword = NewPassword });
@@ -44,10 +44,10 @@ public partial class ChangePasswordViewModel(HttpClient client) : ObservableObje
 			var userId = JwtTokenService.GetClaim("sub", authToken!);
 			
 			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-			content.Headers.Add("User-Id",userId);
+			
 			request.Content = content;
 			
-			var response = await client.SendAsync(request);
+			response = await client.SendAsync(request);
 			
 			response.EnsureSuccessStatusCode();
 			
@@ -59,7 +59,14 @@ public partial class ChangePasswordViewModel(HttpClient client) : ObservableObje
 		}
 		catch (HttpRequestException ex)
 		{
-			await Application.Current!.Windows[0].Page!.DisplayAlertAsync("เกิดข้อผิดพลาด", ex.Message, "OK");
+			var errorMessage = ex.Message;
+			
+			if (response is not null)
+			{
+				errorMessage = response.Headers.GetValues("Error").FirstOrDefault() ?? errorMessage;
+			}
+			
+			await Application.Current!.Windows[0].Page!.DisplayAlertAsync("เกิดข้อผิดพลาด", errorMessage, "OK");
 		}
 	}
 

@@ -51,10 +51,11 @@ public partial class ProfileViewModel(HttpClient httpClient) : ObservableObject
 			var request = new HttpRequestMessage(HttpMethod.Patch, "user/username");
 			var payload = JsonSerializer.Serialize(new UpdateUsernameRequest { Username = Username.Trim() });
 			var content = new StringContent(payload);
-			content.Headers.Add("User-Id",userId);
+			
+			request.Headers.Add("User-Id", userId);
 			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 			request.Content = content;
-
+			
 			var response = await httpClient.SendAsync(request);
 
 			if (!response.IsSuccessStatusCode)
