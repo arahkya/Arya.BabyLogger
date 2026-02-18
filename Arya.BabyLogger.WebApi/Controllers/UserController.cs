@@ -115,7 +115,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpPatch("change-password")]
     public async Task<bool> ChangePasswordAsync([FromBody] ChangePasswordRequest request, [FromServices] IUserService userService)
     {

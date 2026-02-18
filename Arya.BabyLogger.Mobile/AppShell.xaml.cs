@@ -1,4 +1,5 @@
-﻿using Arya.BabyLogger.Mobile.Services.Jwt;
+﻿using System.Diagnostics;
+using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Mobile.ViewModels;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
@@ -17,30 +18,44 @@ public partial class AppShell
 		
 		Routing.RegisterRoute(nameof(BreastPumpListPage), typeof(BreastPumpListPage));
 		Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
-		Routing.RegisterRoute(nameof(ChangePasswordPage), typeof(Views.Profile.ChangePasswordPage));
+		Routing.RegisterRoute(nameof(ChangePasswordPage), typeof(ChangePasswordPage));
 		Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
 		Routing.RegisterRoute(nameof(BreastPumpSettingsPage), typeof(BreastPumpSettingsPage));
 	}
 
-	protected override void OnNavigating(ShellNavigatingEventArgs args)
+	protected override async void OnNavigating(ShellNavigatingEventArgs args)
 	{
-		base.OnNavigating(args);
-		
-		var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN") ?? string.Empty;
-		var isAuthenticated = JwtTokenService.IsTokenValid(authToken);
+		try
+		{
+			base.OnNavigating(args);
 
-		if (isAuthenticated) return;
+			var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN") ?? string.Empty;
+			var isAuthenticated = JwtTokenService.IsTokenValid(authToken);
 
-		if (Current == null) return;
-		
-		MobileStorageProvider.ClearSecureStorage("AUTH_TOKEN");
-		
-		App.SwapGreetingPage().GetAwaiter().GetResult();
+			if (isAuthenticated) return;
+
+			if (Current == null) return;
+
+			MobileStorageProvider.ClearSecureStorage("AUTH_TOKEN");
+
+			await App.SwapGreetingPage();
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine($"Failed to navigate : {ex.Message}");
+		}
 	}
 
 	private async void OnSignOutClicked(object? sender, EventArgs e)
 	{
-		MobileStorageProvider.ClearSecureStorage("AUTH_TOKEN");
-		await App.SwapGreetingPage();
+		try
+		{
+			MobileStorageProvider.ClearSecureStorage("AUTH_TOKEN");
+			await App.SwapGreetingPage();
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine($"Failed to sign out : {ex.Message}");
+		}
 	}
 }

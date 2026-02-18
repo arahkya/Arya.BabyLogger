@@ -1,7 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Linq;
+using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Jwt;
+using Arya.BabyLogger.Mobile.Services.Net;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,7 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.Profile;
 
-public partial class ProfileViewModel(HttpClient httpClient) : ObservableObject
+public partial class ProfileViewModel : ObservableObject
 {
 	[ObservableProperty]
 	private string _username = string.Empty;
@@ -38,23 +39,21 @@ public partial class ProfileViewModel(HttpClient httpClient) : ObservableObject
 			IsBusy = true;
 			UpdateUsernameCommand.NotifyCanExecuteChanged();
 			
+			var jsonPayload = JsonSerializer.Serialize(new UpdateUsernameRequest { Username = Username.Trim() });
+			var request = new HttpRequestMessage(HttpMethod.Patch, "user/username");
+			var content = new StringContent(jsonPayload);
 			var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
-			if (string.IsNullOrWhiteSpace(authToken))
-			{
-				await Application.Current!.Windows[0].Page!.DisplayAlertAsync("ข้อผิดพลาด", "กรุณาเข้าสู่ระบบใหม่", "OK");
-				return;
-			}
 			var userId = JwtTokenService.GetClaim("sub", authToken!);
 			
-			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
-
-			var request = new HttpRequestMessage(HttpMethod.Patch, "user/username");
-			var payload = JsonSerializer.Serialize(new UpdateUsernameRequest { Username = Username.Trim() });
-			var content = new StringContent(payload);
-			
-			request.Headers.Add("User-Id", userId);
-			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 			request.Content = content;
+			request.Content.Headers.Add("User-Id", userId);
+			request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+
+			var httpClient = new HttpClient(HttpClientHandlerProvider.CreateHandler())
+			{
+				BaseAddress	= new Uri(BuildConstraints.WebApiUrl)
+			};
 			
 			var response = await httpClient.SendAsync(request);
 
@@ -68,9 +67,9 @@ public partial class ProfileViewModel(HttpClient httpClient) : ObservableObject
 				return;
 			}
 
-			await Application.Current!.Windows[0].Page!.DisplayAlertAsync("สำเร็จ", "Username ถูกอัปเดตแล้ว กรุณาออกจากระบบ และเข้าใหม่เพื่อการแสดงผลที่ถูกต้อง", "OK");
+			await Application.Current!.Windows[0].Page!.DisplayAlertAsync("สำเร็จ", "Username ถูกอัปเดตแล้ว", "OK");
 
-			if (Shell.Current?.BindingContext is ViewModels.ShellViewModel shellVm)
+			if (Shell.Current?.BindingContext is ShellViewModel shellVm)
 			{
 				shellVm.Username = Username.Trim();
 			}
@@ -88,7 +87,7 @@ public partial class ProfileViewModel(HttpClient httpClient) : ObservableObject
 
 	private void ValidateUsername(string value)
 	{
-		var trimmed = value?.Trim() ?? string.Empty;
+		var trimmed = value.Trim();
 
 		if (string.IsNullOrWhiteSpace(trimmed))
 		{
@@ -110,6 +109,11 @@ public partial class ProfileViewModel(HttpClient httpClient) : ObservableObject
 		var token = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN") ?? string.Empty;
 		var nameClaim = JwtTokenService.GetClaim("unique_name", token);
 
-		Username = nameClaim ?? string.Empty;
+		Username = nameClaim;
+		
+		if (Shell.Current?.BindingContext is ShellViewModel shellVm)
+		{
+			Username = shellVm.Username;
+		}
 	}
 }

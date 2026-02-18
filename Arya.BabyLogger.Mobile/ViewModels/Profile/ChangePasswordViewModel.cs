@@ -1,15 +1,18 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Jwt;
+using Arya.BabyLogger.Mobile.Services.Net;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using UIKit;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.Profile;
 
-public partial class ChangePasswordViewModel(HttpClient client) : ObservableObject
+public partial class ChangePasswordViewModel : ObservableObject
 {
 	[ObservableProperty]
 	private string _currentPassword = string.Empty;
@@ -36,18 +39,23 @@ public partial class ChangePasswordViewModel(HttpClient client) : ObservableObje
 		HttpResponseMessage? response = null;
 		try
 		{
-			var json = JsonSerializer.Serialize(new ChangePasswordRequest { CurrentPassword = CurrentPassword, NewPassword = NewPassword });
+			var jsonPayload = JsonSerializer.Serialize(new ChangePasswordRequest { CurrentPassword = CurrentPassword, NewPassword = NewPassword });
 			var request = new HttpRequestMessage(HttpMethod.Patch, "user/change-password");
-			var content = new StringContent(json);
-			
+			var content = new StringContent(jsonPayload);
 			var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN");
 			var userId = JwtTokenService.GetClaim("sub", authToken!);
 			
-			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-			
 			request.Content = content;
+			request.Content.Headers.Add("User-Id", userId);
+			request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+
+			var httpClient = new HttpClient(HttpClientHandlerProvider.CreateHandler())
+			{
+				BaseAddress = new Uri(BuildConstraints.WebApiUrl)
+			};
 			
-			response = await client.SendAsync(request);
+			response = await httpClient.SendAsync(request);
 			
 			response.EnsureSuccessStatusCode();
 			

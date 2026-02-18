@@ -25,8 +25,8 @@ public partial class App
 		GreetingPage greetingPage)
 	{
 		InitializeComponent();
-		this._greetingPage = greetingPage;
-		this._recalculateNextPumpTimeChannel = recalculateNextPumpTimeChannel;
+		_greetingPage = greetingPage;
+		_recalculateNextPumpTimeChannel = recalculateNextPumpTimeChannel;
 	}
 	
 	protected override Window CreateWindow(IActivationState? activationState)
@@ -65,7 +65,7 @@ public partial class App
 		if(authToken == string.Empty) return;
 		
 		var httpClient = Services.GetRequiredService<HttpClient>();
-		var userId = JwtTokenService.GetClaim("sub", authToken!);
+		var userId = JwtTokenService.GetClaim("sub", authToken);
 		
 		httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
 		httpClient.DefaultRequestHeaders.Add("User-Id", userId);
@@ -77,7 +77,7 @@ public partial class App
 	
 	public static async Task SwapMainPage()
 	{
-		await MainThread.InvokeOnMainThreadAsync(async () =>
+		await MainThread.InvokeOnMainThreadAsync(() =>
 		{
 			var shell = new AppShell();
 			Current!.Windows[0].Page = shell;

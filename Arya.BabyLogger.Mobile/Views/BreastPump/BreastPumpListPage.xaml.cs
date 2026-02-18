@@ -22,15 +22,10 @@ public partial class BreastPumpListPage
 		try
 		{
 			base.OnAppearing();
-		
-			await ((BreastPumpListViewModel)BindingContext).LoadDataAsync();
 
-			while (!_recalculateNextPumpTimeChannel.Reader.Completion.IsCompleted)
+			if (BindingContext is BreastPumpListViewModel viewModel)
 			{
-				await _recalculateNextPumpTimeChannel.Reader.WaitToReadAsync();
-				await _recalculateNextPumpTimeChannel.Reader.ReadAsync();
-
-				await ((BreastPumpListViewModel)BindingContext).LoadDataAsync();
+				await viewModel.LoadDataAsync();
 			}
 		}
 		catch (Exception ex)
