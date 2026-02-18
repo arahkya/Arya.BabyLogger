@@ -81,7 +81,7 @@
                            Padding="12,12,12,0"
                            Grid.ColumnSpan="2"
                            HorizontalOptions="Center"/>
-                    <Label Text="{Binding RemainingMinutesTilNextPump}"
+                    <Label Grid.Column="0" Text="{Binding RemainingMinutesTilNextPump}"
                            Grid.Row="1"
                            Grid.ColumnSpan="2"
                            FontSize="28"
@@ -109,8 +109,10 @@
                 </Grid>
             </Border>
         </Grid>
-
-        <CollectionView Grid.Row="1"
+        <RefreshView Grid.Row="1"
+                     Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsLoading}">
+            <CollectionView
                         ItemsSource="{Binding BreastPumpItemsGroup}"
                         BackgroundColor="{StaticResource ListBg}"
                         IsGrouped="True"
@@ -135,18 +137,18 @@
                                FontSize="14"
                                Grid.Row="0"
                                TextColor="{StaticResource AccentText}"/>
-                        <Label Text="สรุปประจำวัน"
+                        <Label Grid.Column="0" Text="สรุปประจำวัน"
                                FontSize="12"
                                Grid.Row="1"
                                TextColor="{StaticResource MutedText}"/>
 
-                        <Label Text="{Binding TotalAmountInMl, StringFormat='{0} ml'}"
+                        <Label Grid.Column="0" Text="{Binding TotalAmountInMl, StringFormat='{0} ml'}"
                                Grid.Row="0"
                                FontAttributes="Bold"
                                FontSize="16"
                                TextColor="{StaticResource AccentText}"
                                HorizontalTextAlignment="End"/>
-                        <Label Text="รวมทั้งหมด"
+                        <Label Grid.Column="0" Text="รวมทั้งหมด"
                                Grid.Row="1"
                                FontSize="11"
                                TextColor="{StaticResource MutedText}"
@@ -219,7 +221,7 @@
                 </Grid>
             </CollectionView.EmptyView>
         </CollectionView>
-        
+        </RefreshView>
         <Button Grid.Row="2" Text="บันทึกการปั๊มนม"
                 Margin="30,20,30,0"
                 FontSize="20"

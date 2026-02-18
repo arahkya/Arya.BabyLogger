@@ -1,14 +1,11 @@
-using System;
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Storage;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
@@ -20,23 +17,19 @@ public partial class BreastPumpSettingsViewModel : ObservableObject
     private const int MaxIntervalHours = 12;
 
     private readonly HttpClient _httpClient;
-    
-    private int _breastPumpTimeIntervalHours = DefaultIntervalHours;
-    private readonly Channel<BreastPumpSettingsRquestResponse> _settingsChannel;
 
     public int BreastPumpTimeIntervalHours
     {
-        get => _breastPumpTimeIntervalHours;
+        get;
         set
         {
             var clampedValue = Math.Clamp(value, MinIntervalHours, MaxIntervalHours);
-            SetProperty(ref _breastPumpTimeIntervalHours, clampedValue);
+            SetProperty(ref field, clampedValue);
         }
-    }
+    } = DefaultIntervalHours;
 
-    public BreastPumpSettingsViewModel(HttpClient httpClient, Channel<BreastPumpSettingsRquestResponse> settingsChannel)
+    public BreastPumpSettingsViewModel(HttpClient httpClient)
     {
-        _settingsChannel = settingsChannel;
         _httpClient = httpClient;
         LoadSettings();
     }
@@ -75,11 +68,6 @@ public partial class BreastPumpSettingsViewModel : ObservableObject
             response.EnsureSuccessStatusCode();
             
             Preferences.Set(PreferenceKey, BreastPumpTimeIntervalHours);
-
-            await _settingsChannel.Writer.WriteAsync(new BreastPumpSettingsRquestResponse
-            {
-                PumpIntervalHours = BreastPumpTimeIntervalHours
-            });
         }
         catch(Exception ex)
         {

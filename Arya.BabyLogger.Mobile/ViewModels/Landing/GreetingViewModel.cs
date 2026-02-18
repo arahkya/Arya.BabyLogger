@@ -111,7 +111,7 @@ public partial class GreetingViewModel(HttpClient httpClient) : ObservableObject
     {
         var registerPage = App.Services.GetRequiredService<RegisterPage>();
         
-        await Application.Current.MainPage.Navigation.PushAsync(registerPage);
+        await Application.Current!.Windows[0].Page!.Navigation.PushAsync(registerPage);
     }
 
     private bool ValidateInput()

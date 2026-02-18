@@ -124,7 +124,7 @@ public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
 
             Debug.WriteLine("Successfully registered");
 
-            await Application.Current.MainPage.Navigation.PushModalAsync(new RegisterCompletePage());
+            await Application.Current!.Windows[0].Page!.Navigation.PushModalAsync(new RegisterCompletePage());
         }
         catch (HttpRequestException ex)
         {

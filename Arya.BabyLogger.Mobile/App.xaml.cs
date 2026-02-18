@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Threading.Channels;
+using System.Net.Http.Json; 
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Net;
@@ -17,16 +16,12 @@ public partial class App
 {
 	public static IServiceProvider Services => Current?.Handler?.MauiContext?.Services ?? throw new InvalidOperationException("Service provider is not available.");
 	
-	private readonly Channel<bool> _recalculateNextPumpTimeChannel;
 	private readonly GreetingPage? _greetingPage;
 	
-	public App(
-		Channel<bool> recalculateNextPumpTimeChannel,
-		GreetingPage greetingPage)
+	public App(GreetingPage greetingPage)
 	{
 		InitializeComponent();
 		_greetingPage = greetingPage;
-		_recalculateNextPumpTimeChannel = recalculateNextPumpTimeChannel;
 	}
 	
 	protected override Window CreateWindow(IActivationState? activationState)
@@ -35,17 +30,10 @@ public partial class App
 		var authToken = MobileStorageProvider.GetSecureStorage("AUTH_TOKEN") ?? string.Empty;
 		var isAuthenticated = JwtTokenService.IsTokenValid(authToken);
 		var window = new Window(isAuthenticated ? appShell : new NavigationPage(_greetingPage!));
-
-		window.Activated += async (_, _) =>
-		{
-			Debug.WriteLine("Window Activated");
-			
-			await _recalculateNextPumpTimeChannel.Writer.WriteAsync(true);
-		};
 		
 		return window;
 	}
-	
+
 	protected override async void OnStart()
 	{
 		try

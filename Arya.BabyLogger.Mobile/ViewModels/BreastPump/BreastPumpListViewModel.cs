@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -10,7 +11,6 @@ using CommunityToolkit.Mvvm.Input;
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
-using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Maui.ApplicationModel;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
@@ -21,7 +21,8 @@ public partial class BreastPumpListViewModel : ObservableObject
     private readonly HttpClient _httpClient;
     private readonly ILocalNotificationService _localNotificationService;
     private readonly IBadge _badgeService;
-    private readonly Channel<BreastPumpSettingsRquestResponse> _settingChannel;
+
+    [ObservableProperty] private bool _isLoading;
     
     public DateTime NextPumpTime
     {
@@ -37,49 +38,30 @@ public partial class BreastPumpListViewModel : ObservableObject
             var hours = (int)timeDiff.TotalHours;
             var minutes = timeDiff.Minutes;
 
-            if (minutes < 0)
+            return minutes switch
             {
-                if (hours == 0)
-                {
-                    return $"เลยเวลามาแล้ว {Math.Abs(minutes)} นาที";
-                }
-
-                return $"เลยเวลามาแล้ว {Math.Abs(hours)} ชั่วโมง {Math.Abs(minutes)} นาที";
-            }
-
-            if (minutes == 0)
-            {
-                return "ถึงเวลาปั๊มนมแล้ว";
-            }
-
-            if (hours == 0)
-            {
-                return $"{minutes} นาที";
-            }
-
-            return $"{hours} ชั่วโมง {minutes} นาที";
+                < 0 when hours == 0 => $"เลยเวลามาแล้ว {Math.Abs(minutes)} นาที",
+                < 0 => $"เลยเวลามาแล้ว {Math.Abs(hours)} ชั่วโมง {Math.Abs(minutes)} นาที",
+                0 => "ถึงเวลาปั๊มนมแล้ว",
+                _ => hours == 0 ? $"{minutes} นาที" : $"{hours} ชั่วโมง {minutes} นาที"
+            };
         }
     }
 
-    private DateTimeOffset _startDate = DateTimeOffset.Now.AddDays(-7);
-    private DateTimeOffset _endDate = DateTimeOffset.Now;
-
     public DateTimeOffset StartDate
     {
-        get => _startDate;
-        set => SetProperty(ref _startDate, value);
-    }
+        get;
+        init => SetProperty(ref field, value);
+    } = DateTimeOffset.Now.AddDays(-7);
+
     public DateTimeOffset EndDate
     {
-        get => _endDate;
-        set => SetProperty(ref _endDate, value);
-    }
+        get;
+        init => SetProperty(ref field, value);
+    } = DateTimeOffset.Now;
 
-    
-
-    public BreastPumpListViewModel(HttpClient httpClient, IBadge badgeService, ILocalNotificationService localNotificationService, Channel<BreastPumpSettingsRquestResponse> settingChannel)
+    public BreastPumpListViewModel(HttpClient httpClient, IBadge badgeService, ILocalNotificationService localNotificationService)
     {
-        _settingChannel = settingChannel;
         _httpClient = httpClient;
         _localNotificationService = localNotificationService;
         _badgeService = badgeService;
@@ -108,6 +90,12 @@ public partial class BreastPumpListViewModel : ObservableObject
     private static async Task SettingAsync()
     {
         await Shell.Current.Navigation.PushAsync(new BreastPumpSettingsPage());
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        await LoadDataAsync();
     }
     
     public async Task LoadDataAsync()
@@ -147,7 +135,7 @@ public partial class BreastPumpListViewModel : ObservableObject
 
             foreach (var group in groupedItems)
             {
-                BreastPumpItemsGroup.Add(new BreastPumpGroupViewModel(group.Key, [.. group.OrderBy(i => i.PumpTime)]));
+                BreastPumpItemsGroup.Add(new BreastPumpGroupViewModel(group.Key, [.. group.OrderByDescending(i => i.PumpTime)]));
             }
         });
 
@@ -181,14 +169,6 @@ public partial class BreastPumpListViewModel : ObservableObject
             "ถึงเวลาปั๊มนมอีกครั้งแล้ว อย่าลืมปั๊มนมให้น้องนะครับ",
             notifyTime);
         
-        await UpdateSettings();
-    }
-
-    private async Task UpdateSettings()
-    {
-        await _settingChannel.Reader.WaitToReadAsync();
-        
-        var settings = await _settingChannel.Reader.ReadAsync();
-        TimeIntervalInHours = settings.PumpIntervalHours;
+        IsLoading = false;
     }
 }

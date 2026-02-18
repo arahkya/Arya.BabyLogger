@@ -1,18 +1,13 @@
 using System.Diagnostics;
-using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
 
 namespace Arya.BabyLogger.Mobile.Views.BreastPump;
 
 public partial class BreastPumpListPage
 {
-	private readonly Channel<bool> _recalculateNextPumpTimeChannel;
-	
-	public BreastPumpListPage(
-		Channel<bool> recalculateNextPumpTimeChannel)
+	public BreastPumpListPage()
 	{
 		InitializeComponent();
-		_recalculateNextPumpTimeChannel = recalculateNextPumpTimeChannel;
 
 		BindingContext = App.Services.GetRequiredService<BreastPumpListViewModel>();
 	}

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Net;
-using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Net;
 using Arya.BabyLogger.Mobile.ViewModels.BreastPump;
@@ -9,7 +8,6 @@ using Arya.BabyLogger.Mobile.ViewModels.Profile;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Mobile.Views.Landing;
 using Arya.BabyLogger.Mobile.Views.Profile;
-using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.ApplicationModel;
 using Microsoft.Extensions.Logging;
@@ -29,9 +27,6 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
-
-		builder.Services.AddSingleton<Channel<bool>>(_ => Channel.CreateUnbounded<bool>());
-		builder.Services.AddSingleton<Channel<BreastPumpSettingsRquestResponse>>(_ => Channel.CreateUnbounded<BreastPumpSettingsRquestResponse>());
 		
 		builder.Services.AddSingleton<HttpClient>(_ =>
 		{
