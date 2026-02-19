@@ -203,6 +203,19 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return settings;
     }
 
+    public async Task<string> InviteCareHolderAsync(Guid userIdGuid)
+    {
+        var inviteCode = GenerateSixDigitCode();
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == userIdGuid);
+        var careHolder = await dbContext.CareHolders.SingleAsync(p => p.Id == user!.CareHolderId);
+        
+        careHolder.InviteCode = inviteCode;
+        
+        await dbContext.SaveChangesAsync();
+        
+        return inviteCode;
+    }
+
     private static string GenerateSixDigitCode()
     {
         // Generates a zero-padded 6-digit number using a cryptographically secure RNG.

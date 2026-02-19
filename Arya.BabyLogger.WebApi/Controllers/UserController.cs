@@ -3,7 +3,6 @@ using Arya.BabyLogger.WebApi.Db;
 using Arya.BabyLogger.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Arya.BabyLogger.WebApi.Controllers;
 
@@ -211,5 +210,23 @@ public class UserController : ControllerBase
         {
             PumpIntervalHours = settings.PumpIntervalHours
         };
+    }
+
+    [Authorize]
+    [HttpPost("invite-care-holder")]
+    public async Task<string> InviteCareHolderAsync([FromServices] IUserService userService)
+    {
+        var userId = Request.Headers["User-Id"];
+        if (!Guid.TryParse(userId, out var userIdGuid))
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", "User-Id header is required.");
+                
+            return string.Empty;;
+        }
+        
+        var inviteSecretCode = await userService.InviteCareHolderAsync(userIdGuid); 
+        
+        return inviteSecretCode;
     }
 }
