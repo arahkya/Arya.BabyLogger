@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.Profile"
+             x:DataType="viewModel:InviteCareHolderViewModel"
+             Title="เชิญผู้ช่วยดูแล"
+             x:Class="Arya.BabyLogger.Mobile.Views.Profile.InviteCareHolderPage">
+    <ContentPage.Content>
+        <VerticalStackLayout HorizontalOptions="Center">
+            <Label HorizontalTextAlignment="Center"
+                   Margin="50, 50,50, 0"
+                   LineHeight="1.4"
+                   Text="กรุณาบอกเลขด้านล่างนี้&#10;ให้กับผู้ช่วยดูแลไว้กรอกในรับคำเชิญ หรือลงทะเบียน"></Label>
+            <Label HorizontalTextAlignment="Center"
+                   Margin="0, 30"
+                   FontSize="24"
+                   CharacterSpacing="10"
+                   Text="{Binding InviteCode}"></Label>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>
