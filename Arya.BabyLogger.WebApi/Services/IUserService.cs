@@ -20,5 +20,6 @@ public interface IUserService
     Task<bool> UpdateUsernameAsync(Guid userId, string newUsername);
     Task<bool> SaveBreastPumpSettingsAsync(Guid userId, BreastPumpSettingEntity settings);
     Task<BreastPumpSettingEntity> GetBreastPumpSettingsAsync(Guid userIdGuid);
-    Task<string> InviteCareHolderAsync(Guid userIdGuid);
+    Task<string> InviteCareHolderAsync(Guid userIdGuid, string requestInviteUserEmail);
+    Task<bool> AcceptCareHolderInviteAsync(string requestInviteSecret, Guid userIdGuid);
 }

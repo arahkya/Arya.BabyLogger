@@ -212,9 +212,10 @@ public class UserController : ControllerBase
         };
     }
 
-    [Authorize]
-    [HttpPost("invite-care-holder")]
-    public async Task<string> InviteCareHolderAsync([FromServices] IUserService userService)
+    // [Authorize]
+    [AllowAnonymous]
+    [HttpPost("invite-care-holder/{email}")]
+    public async Task<string> InviteCareHolderAsync(string email, [FromServices] IUserService userService)
     {
         var userId = Request.Headers["User-Id"];
         if (!Guid.TryParse(userId, out var userIdGuid))
@@ -225,8 +226,27 @@ public class UserController : ControllerBase
             return string.Empty;;
         }
         
-        var inviteSecretCode = await userService.InviteCareHolderAsync(userIdGuid); 
+        var inviteSecretCode = await userService.InviteCareHolderAsync(userIdGuid, email); 
         
         return inviteSecretCode;
+    }
+
+    // [Authorize]
+    [AllowAnonymous]
+    [HttpPost("accept-invite-care-holder")]
+    public async Task<bool> AcceptCareHolderInviteAsync([FromBody] AcceptCareHolderInviteRequest request, [FromServices] IUserService userService)
+    {
+        var userId = Request.Headers["User-Id"];
+        if (!Guid.TryParse(userId, out var userIdGuid))
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", "User-Id header is required.");
+                
+            return false;
+        }
+        
+        var success = await userService.AcceptCareHolderInviteAsync(request.InviteSecret, userIdGuid);
+        
+        return success;
     }
 }

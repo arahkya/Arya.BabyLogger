@@ -55,6 +55,7 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
         modelBuilder.Entity<CareHolderEntity>().Property(p => p.Id).HasConversion<string>();
         modelBuilder.Entity<CareHolderEntity>().Property(p => p.Name).HasMaxLength(50);
         modelBuilder.Entity<CareHolderEntity>().Property(p => p.InviteCode).HasMaxLength(10);
+        modelBuilder.Entity<CareHolderEntity>().Property(p => p.InviteUserEmail).HasMaxLength(70);
     }
 
     private static List<ExcretionEntity> GenerateExcretionSeedData()

@@ -53,7 +53,10 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
 
     public async Task<Guid> CreateNewCareHolderAsync()
     {
-        var careHousehold = new CareHolderEntity();
+        var careHousehold = new CareHolderEntity
+        {
+            Name = "Family"
+        };
         
         await dbContext.CareHolders.AddAsync(careHousehold);
         await dbContext.SaveChangesAsync();
@@ -203,17 +206,32 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return settings;
     }
 
-    public async Task<string> InviteCareHolderAsync(Guid userIdGuid)
+    public async Task<string> InviteCareHolderAsync(Guid userIdGuid, string requestInviteUserEmail)
     {
         var inviteCode = GenerateSixDigitCode();
         var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == userIdGuid);
         var careHolder = await dbContext.CareHolders.SingleAsync(p => p.Id == user!.CareHolderId);
         
         careHolder.InviteCode = inviteCode;
+        careHolder.InviteUserEmail = requestInviteUserEmail;
         
         await dbContext.SaveChangesAsync();
         
         return inviteCode;
+    }
+
+    public async Task<bool> AcceptCareHolderInviteAsync(string requestInviteSecret, Guid userIdGuid)
+    {
+        var userEntity = await dbContext.Users.SingleAsync(p => p.Id == userIdGuid);
+        var careHolderEntity = await dbContext.CareHolders.SingleAsync(p => p.InviteCode == requestInviteSecret && p.InviteUserEmail == userEntity.Email);
+        
+        userEntity.CareHolderId = careHolderEntity.Id;
+        careHolderEntity.InviteCode = null;
+        careHolderEntity.InviteUserEmail = null;
+        
+        await dbContext.SaveChangesAsync();
+        
+        return true;
     }
 
     private static string GenerateSixDigitCode()
