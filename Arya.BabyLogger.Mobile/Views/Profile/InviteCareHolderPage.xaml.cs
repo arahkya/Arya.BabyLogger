@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Arya.BabyLogger.Mobile.ViewModels.Profile;
 
 namespace Arya.BabyLogger.Mobile.Views.Profile;
@@ -11,20 +10,15 @@ public partial class InviteCareHolderPage
         BindingContext = App.Services.GetRequiredService<InviteCareHolderViewModel>();
     }
 
-    protected override void OnAppearing()
+    private void EmailEntry_TextChanged(object sender, TextChangedEventArgs e)
     {
-        try
-        {
-            base.OnAppearing();
+        if (sender is not Entry entry)
+            return;
 
-            if (BindingContext is InviteCareHolderViewModel viewModel)
-            {
-                viewModel.RequestInviteCodeCommand.ExecuteAsync(null);
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-        }
+        var lower = entry.Text.ToLowerInvariant();
+        if (lower == entry.Text) return;
+        
+        entry.Text = lower;
     }
 }
+ 
