@@ -1,9 +1,7 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,7 +10,6 @@ using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
 using Arya.BabyLogger.Mobile.Views.Profile;
-using Arya.BabyLogger.Shared.User;
 using CommunityToolkit.Maui.ApplicationModel;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
@@ -106,6 +103,12 @@ public partial class BreastPumpListViewModel : ObservableObject
         await Shell.Current.Navigation.PushAsync(new InviteCareHolderPage());
     }
     
+    [RelayCommand]
+    private static async Task AcceptInviteAsync()
+    {
+        await Shell.Current.Navigation.PushAsync(new AcceptInviteCareHolderPage());
+    }
+    
     public async Task LoadDataAsync()
     {
         TimeIntervalInHours = BreastPumpSettingsViewModel.GetSavedTimeIntervalHours();
@@ -177,14 +180,6 @@ public partial class BreastPumpListViewModel : ObservableObject
             "ถึงเวลาปั๊มนมอีกครั้งแล้ว อย่าลืมปั๊มนมให้น้องนะครับ",
             notifyTime);
         
-        await UpdateSettings();
-    }
-
-    private async Task UpdateSettings()
-    {
-        await _settingChannel.Reader.WaitToReadAsync();
-        
-        var settings = await _settingChannel.Reader.ReadAsync();
-        TimeIntervalInHours = settings.PumpIntervalHours;
+        IsLoading = false;
     }
 }

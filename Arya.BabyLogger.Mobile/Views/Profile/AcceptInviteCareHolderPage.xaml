@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.Profile"
+             x:DataType="viewModel:AcceptInviteCareHolderViewModel"
+             x:Class="Arya.BabyLogger.Mobile.Views.Profile.AcceptInviteCareHolderPage">
+    <ContentPage.Content>
+        <VerticalStackLayout>
+            <Label Text="กรุณาป้อนรหัสคำเชิญที่ได้"></Label>
+            <Entry Keyboard="Numeric"
+                   MaxLength="6"
+                   Text="{Binding InviteCode}"></Entry>
+            <Button Text="Accept Invite"
+                    Command="{Binding AcceptInviteCommand}"></Button>
+            <Label Text="{Binding Errors}"
+                   TextColor="Red"
+                   IsVisible="{Binding IsErrors}"></Label>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>
