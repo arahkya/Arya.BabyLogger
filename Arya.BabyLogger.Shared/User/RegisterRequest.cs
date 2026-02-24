@@ -16,5 +16,4 @@ public class RegisterRequest
     [MinLength(4)]
     [MaxLength(15)]
     public string Password { get; init; } = string.Empty;
-    public string? CareHolderId { get; init; }
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:Arya.BabyLogger.Mobile.ViewModels.Profile"
+             x:DataType="viewModel:InviteCareHolderViewModel"
+             Title="เชิญผู้ช่วยดูแล"
+             x:Class="Arya.BabyLogger.Mobile.Views.Profile.InviteCareHolderPage">
+    <ContentPage.Content>
+        <VerticalStackLayout HorizontalOptions="Center"
+                             Margin="15">
+            <Label HorizontalTextAlignment="Center"
+                   Margin="0,0,0,15"
+                   LineHeight="1.4"
+                   Text="อีเมล์ของผู้ช่วยดูแล ที่ต้องการเชิญ. จะต้องตรงกับที่ลงทะเบียนไว้."></Label>
+            <Entry x:Name="EmailEntry"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,25"
+                   Placeholder="email"
+                   TextChanged="EmailEntry_TextChanged"
+                   Text="{Binding Email}"></Entry>
+            
+            <Button Text="Invite"
+                    Command="{Binding RequestInviteCodeCommand}"></Button>
+            
+            <Label HorizontalTextAlignment="Center"
+                   Margin="0,20,0,0"
+                   IsVisible="{Binding IsRequestingInviteCode}"
+                   LineHeight="1.4"
+                   Text="กรุณาบอกเลขด้านล่างนี้&#10;ให้กับผู้ช่วยดูแลไว้กรอกในรับคำเชิญ หรือลงทะเบียน"></Label>
+            <Label HorizontalTextAlignment="Center"
+                   IsVisible="{Binding IsRequestingInviteCode}"
+                   Margin="0, 30"
+                   FontSize="24"
+                   CharacterSpacing="10"
+                   Text="{Binding InviteCode}"></Label>
+               <Label HorizontalTextAlignment="Center"
+                      Margin="0,10,0,0"
+                      IsVisible="{Binding IsRequestingInviteCode}"
+                      LineHeight="1.4"
+                      Text="รหัสนี้สามารถใช้ได้ครั้งเดียวต่อ 1 อีเมล์ของผู้ช่วยดูแล&#10;หากต้องการเชิญครั้งต่อไปกรุณากรอก อีเมล์และกด Invite อีกครั้ง"></Label>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

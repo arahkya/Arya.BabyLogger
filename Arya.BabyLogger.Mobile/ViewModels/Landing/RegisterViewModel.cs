@@ -12,86 +12,82 @@ namespace Arya.BabyLogger.Mobile.ViewModels.Landing;
 
 public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
 {
-    private string _email = string.Empty;
-    public string Email
+    public required string Email
     {
-        get => _email;
+        get;
         set
         {
-            if (SetProperty(ref _email, value) && !string.IsNullOrWhiteSpace(EmailError))
+            if (SetProperty(ref field, value) && !string.IsNullOrWhiteSpace(EmailError))
             {
                 ValidateEmail();
             }
         }
     }
-
-    private string _password = string.Empty;
-    public string Password
+    
+    public required string Password
     {
-        get => _password;
+        get;
         set
         {
-            if (SetProperty(ref _password, value) && !string.IsNullOrWhiteSpace(PasswordError))
+            if (SetProperty(ref field, value) && !string.IsNullOrWhiteSpace(PasswordError))
             {
                 ValidatePassword();
             }
         }
     }
-
-    private string _username = string.Empty;
-    public string Username
+    
+    public required string ConfirmPassword
     {
-        get => _username;
+        get;
         set
         {
-            if (SetProperty(ref _username, value) && !string.IsNullOrWhiteSpace(UsernameError))
+            if (SetProperty(ref field, value) && !string.IsNullOrWhiteSpace(PasswordError))
+            {
+                ValidatePassword();
+            }
+        }
+    }
+    
+    public required string Username
+    {
+        get;
+        set
+        {
+            if (SetProperty(ref field, value) && !string.IsNullOrWhiteSpace(UsernameError))
             {
                 ValidateUsername();
             }
         }
     }
 
-    private Guid? CareHolderId { get; set; }
-
-    private string _errorMessage = string.Empty;
-    public string ErrorMessage
+    public string? ErrorMessage
     {
-        get => _errorMessage;
-        private set => SetProperty(ref _errorMessage, value);
+        get;
+        private set => SetProperty(ref field, value);
     }
-
-    private string _emailError = string.Empty;
-    public string EmailError
+    
+    public string? EmailError
     {
-        get => _emailError;
-        private set => SetProperty(ref _emailError, value);
+        get;
+        private set => SetProperty(ref field, value);
     }
-
-    private string _passwordError = string.Empty;
-    public string PasswordError
+    
+    public string? PasswordError
     {
-        get => _passwordError;
-        private set => SetProperty(ref _passwordError, value);
+        get;
+        private set => SetProperty(ref field, value);
     }
-
-    private string _usernameError = string.Empty;
-    public string UsernameError
+    
+    public string? ConfirmPasswordError
     {
-        get => _usernameError;
-        private set => SetProperty(ref _usernameError, value);
+        get;
+        private set => SetProperty(ref field, value);
     }
-
-    private string _careHolderIdText = string.Empty;
-    public string CareHolderIdText
+    
+    public string? UsernameError
     {
-        get => _careHolderIdText;
-        set
-        {
-            if (SetProperty(ref _careHolderIdText, value))
-            {
-                CareHolderId = Guid.TryParse(value, out var parsed) ? parsed : null;
-            }
-        }
+        get;
+        private set => SetProperty(ref field, value);
     }
 
     [RelayCommand]
@@ -111,8 +107,7 @@ public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
             {
                 Username = Username.Trim(),
                 Email = Email.Trim(),
-                Password = Password,
-                CareHolderId = CareHolderId?.ToString()
+                Password = Password
             });
             var requestContent = new StringContent(registerJson);
             requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -151,13 +146,14 @@ public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
         var isUsernameValid = ValidateUsername();
         var isEmailValid = ValidateEmail();
         var isPasswordValid = ValidatePassword();
+        var isConfirmPasswordValid = ValidateConfirmPassword();
 
-        return isUsernameValid && isEmailValid && isPasswordValid;
+        return isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
     }
 
     private bool ValidateUsername()
     {
-        var value = Username?.Trim() ?? string.Empty;
+        var value = Username.Trim();
 
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -177,7 +173,7 @@ public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
 
     private bool ValidateEmail()
     {
-        var value = Email?.Trim() ?? string.Empty;
+        var value = Email.Trim();
 
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -214,5 +210,14 @@ public partial class RegisterViewModel(HttpClient httpClient) : ObservableObject
 
         PasswordError = string.Empty;
         return true;
+    }
+
+    private bool ValidateConfirmPassword()
+    {
+        if (Password == ConfirmPassword) return true;
+
+        ConfirmPasswordError = "Password ไม่ตรงกัน";
+        
+        return false;
     }
 }

@@ -1,9 +1,7 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Threading.Channels;
 using Arya.BabyLogger.Mobile.Views.BreastPump;
 using Arya.BabyLogger.Shared.BreastPump;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -11,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Arya.BabyLogger.Mobile.Services;
 using Arya.BabyLogger.Mobile.Services.Jwt;
 using Arya.BabyLogger.Mobile.Services.Storage;
+using Arya.BabyLogger.Mobile.Views.Profile;
 using CommunityToolkit.Maui.ApplicationModel;
 
 namespace Arya.BabyLogger.Mobile.ViewModels.BreastPump;
@@ -96,6 +95,18 @@ public partial class BreastPumpListViewModel : ObservableObject
     private async Task RefreshAsync()
     {
         await LoadDataAsync();
+    }
+    
+    [RelayCommand]
+    private static async Task InviteAsync()
+    {
+        await Shell.Current.Navigation.PushAsync(new InviteCareHolderPage());
+    }
+    
+    [RelayCommand]
+    private static async Task AcceptInviteAsync()
+    {
+        await Shell.Current.Navigation.PushAsync(new AcceptInviteCareHolderPage());
     }
     
     public async Task LoadDataAsync()

@@ -9,7 +9,13 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="ตั้งค่า"
                      Order="Secondary"
-                     Command="{Binding SettingCommand}"/>        
+                     Command="{Binding SettingCommand}"/>       
+        <ToolbarItem Text="เชิญผู้ช่วยดูแล"
+                     Order="Secondary"
+                     Command="{Binding InviteCommand}"/>       
+        <ToolbarItem Text="ตอบรับเชิญผู้ช่วยดูแล"
+                     Order="Secondary"
+                     Command="{Binding AcceptInviteCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>

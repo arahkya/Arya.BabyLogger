@@ -3,7 +3,6 @@ using Arya.BabyLogger.WebApi.Db;
 using Arya.BabyLogger.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Arya.BabyLogger.WebApi.Controllers;
 
@@ -43,17 +42,6 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<Guid> RegisterAsync([FromBody] RegisterRequest request, [FromServices] IUserService userService)
     {
-        Guid careHolderId;
-        
-        if (string.IsNullOrEmpty(request.CareHolderId))
-        {
-            careHolderId = await userService.CreateNewCareHolderAsync();
-        }
-        else
-        {
-            careHolderId = Guid.Parse(request.CareHolderId);
-        }
-        
         var existedUser = await userService.GetUserByEmailAsync(request.Email);
         if (existedUser is not null)
         {
@@ -65,8 +53,7 @@ public class UserController : ControllerBase
         {
             Username = request.Username,
             PasswordHash = userService.HashedPassword(request.Password),
-            Email = request.Email,
-            CareHolderId = careHolderId
+            Email = request.Email
         };
         
         var id= await userService.CreateUserAsync(userEntity);
@@ -211,5 +198,41 @@ public class UserController : ControllerBase
         {
             PumpIntervalHours = settings.PumpIntervalHours
         };
+    }
+
+    [Authorize]
+    [HttpPost("invite-care-holder/{email}")]
+    public async Task<string> InviteCareHolderAsync(string email, [FromServices] IUserService userService)
+    {
+        var userId = Request.Headers["User-Id"];
+        if (!Guid.TryParse(userId, out var userIdGuid))
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", "User-Id header is required.");
+                
+            return string.Empty;;
+        }
+        
+        var inviteSecretCode = await userService.InviteCareHolderAsync(userIdGuid, email); 
+        
+        return inviteSecretCode;
+    }
+
+    [Authorize]
+    [HttpPost("accept-invite-care-holder")]
+    public async Task<bool> AcceptCareHolderInviteAsync([FromBody] AcceptCareHolderInviteRequest request, [FromServices] IUserService userService)
+    {
+        var userId = Request.Headers["User-Id"];
+        if (!Guid.TryParse(userId, out var userIdGuid))
+        {
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.BadRequest);
+            Response.Headers.Append("Error", "User-Id header is required.");
+                
+            return false;
+        }
+        
+        var success = await userService.AcceptCareHolderInviteAsync(request.InviteSecret, userIdGuid);
+        
+        return success;
     }
 }

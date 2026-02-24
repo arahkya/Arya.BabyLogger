@@ -139,9 +139,9 @@
                                FontSize="12"
                                TextColor="Red"/>
                     </VerticalStackLayout>
-
+                    
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Care holder ID (optional)"
+                        <Label Text="Confirm Password"
                                FontSize="13"
                                FontAttributes="Bold"
                                TextColor="{StaticResource MutedText}"/>
@@ -150,9 +150,13 @@
                                 StrokeThickness="1"
                                 BackgroundColor="{StaticResource ListBg}">
                             <Entry Style="{StaticResource EntryStyle}"
-                                   Placeholder="รหัสผู้ดูแลร่วม"
-                                   Text="{Binding CareHolderIdText}"/>
+                                   Placeholder="4-12 ตัวอักษร"
+                                   IsPassword="True"
+                                   Text="{Binding ConfirmPassword}"/>
                         </Border>
+                        <Label Text="{Binding ConfirmPasswordError}"
+                               FontSize="12"
+                               TextColor="Red"/>
                     </VerticalStackLayout>
 
                     <Button Text="สร้างบัญชี"
