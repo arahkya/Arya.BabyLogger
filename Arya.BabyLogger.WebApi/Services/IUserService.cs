@@ -11,8 +11,7 @@ public interface IUserService
     string HashedPassword(string password);
     
     Task<Guid> CreateUserAsync(UserEntity user);
-
-    Task<Guid> CreateNewCareHolderAsync();
+    
     Task<UserEntity?> GetUserByEmailAsync(string requestEmail);
     Task<Tuple<Guid,string>> RequestResetPasswordAsync(string requestEmail);
     Task<bool> ResetPasswordAsync(string secretKey, string secretCode, string requestNewPassword);

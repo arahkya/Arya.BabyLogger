@@ -52,19 +52,6 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
         return Convert.ToHexString(hashBytes).ToLowerInvariant();
     }
 
-    public async Task<Guid> CreateNewCareHolderAsync()
-    {
-        var careHousehold = new CareHolderEntity
-        {
-            Name = "Family"
-        };
-
-        await dbContext.CareHolders.AddAsync(careHousehold);
-        await dbContext.SaveChangesAsync();
-
-        return careHousehold.Id;
-    }
-
     public async Task<UserEntity?> GetUserByEmailAsync(string requestEmail)
     {
         var userEntity = await dbContext.Users.SingleOrDefaultAsync(p => p.Email == requestEmail);
@@ -254,7 +241,25 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
 
     public async Task<Guid> CreateUserAsync(UserEntity user)
     {
+        var careHousehold = new CareHolderEntity
+        {
+            Name = $"{user.Username} Family"
+        };
+
+        await dbContext.CareHolders.AddAsync(careHousehold);
+        
+        user.CareHolderId = careHousehold.Id;
+        
         await dbContext.Users.AddAsync(user);
+
+        var breastPumpSetting = new BreastPumpSettingEntity
+        {
+            CareHolderId = careHousehold.Id,
+            PumpIntervalHours = 3
+        };
+        
+        await dbContext.BreastPumpSettings.AddAsync(breastPumpSetting);
+        
         await dbContext.SaveChangesAsync();
 
         return user.Id;

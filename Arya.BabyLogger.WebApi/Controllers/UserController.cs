@@ -42,17 +42,6 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<Guid> RegisterAsync([FromBody] RegisterRequest request, [FromServices] IUserService userService)
     {
-        Guid careHolderId;
-        
-        if (string.IsNullOrEmpty(request.CareHolderId))
-        {
-            careHolderId = await userService.CreateNewCareHolderAsync();
-        }
-        else
-        {
-            careHolderId = Guid.Parse(request.CareHolderId);
-        }
-        
         var existedUser = await userService.GetUserByEmailAsync(request.Email);
         if (existedUser is not null)
         {
@@ -64,8 +53,7 @@ public class UserController : ControllerBase
         {
             Username = request.Username,
             PasswordHash = userService.HashedPassword(request.Password),
-            Email = request.Email,
-            CareHolderId = careHolderId
+            Email = request.Email
         };
         
         var id= await userService.CreateUserAsync(userEntity);
@@ -212,8 +200,7 @@ public class UserController : ControllerBase
         };
     }
 
-    // [Authorize]
-    [AllowAnonymous]
+    [Authorize]
     [HttpPost("invite-care-holder/{email}")]
     public async Task<string> InviteCareHolderAsync(string email, [FromServices] IUserService userService)
     {
@@ -231,8 +218,7 @@ public class UserController : ControllerBase
         return inviteSecretCode;
     }
 
-    // [Authorize]
-    [AllowAnonymous]
+    [Authorize]
     [HttpPost("accept-invite-care-holder")]
     public async Task<bool> AcceptCareHolderInviteAsync([FromBody] AcceptCareHolderInviteRequest request, [FromServices] IUserService userService)
     {
