@@ -22,7 +22,11 @@
 		<ApplicationTitle>BabyLogger</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>Arya.BabyLogger.Mobile</ApplicationId>
+		<CodesignKey>iPhone Distribution: Arahk Yambupah (RFB5495VZ3)</CodesignKey>
+		<CodesignProvision>Arya.BabyLogger</CodesignProvision>
+		
+		<!-- Provisioning profile name OR UUID -->
+		<ApplicationId>Arya.BabyLogger</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
