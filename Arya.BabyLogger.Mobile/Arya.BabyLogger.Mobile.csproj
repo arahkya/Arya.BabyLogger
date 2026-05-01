@@ -43,7 +43,7 @@
 	</PropertyGroup>
 	
 	<PropertyGroup>
-		<WebApiUrl Condition="'$(WebApiUrl)' == ''">http://localhost:5001/api/</WebApiUrl>
+		<WebApiUrl Condition="'$(WebApiUrl)' == ''">https://baby-logger.arahk.com/api/</WebApiUrl>
 	</PropertyGroup>
 	
 	<Target Name="InjectWebApiUrl" BeforeTargets="BeforeBuild">
