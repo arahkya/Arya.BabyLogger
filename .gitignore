@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Production database backups (never commit binary DB files)
+prod_backup/
+
 # User-specific files
 *.rsuser
 *.suo
