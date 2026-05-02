@@ -63,4 +63,20 @@ app.UseAuthorization();
 
 app.MapControllers().RequireAuthorization();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<BabyLoggerDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        db.Database.Migrate();
+        logger.LogInformation("Database migration applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogCritical(ex, "Failed to apply database migration. Application will not start.");
+        throw;
+    }
+}
+
 app.Run();
