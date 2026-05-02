@@ -6,6 +6,7 @@
 //     --sqlite "/path/to/BabyLoggerDb.sqlite.bak" \
 //     --sqlserver "Server=localhost,1433;Database=BabyLoggerDb;User Id=SA;Password=...;TrustServerCertificate=True;"
 
+using System.Globalization;
 using Microsoft.Data.Sqlite;
 using Microsoft.Data.SqlClient;
 
@@ -63,10 +64,12 @@ static object NullOr(SqliteDataReader r, int ordinal) =>
     r.IsDBNull(ordinal) ? DBNull.Value : (object)r.GetString(ordinal);
 
 // AddWithValue infers 'datetime' (min 1753). Use this to force 'datetime2' (min 0001).
+// InvariantCulture is required — th-TH culture interprets year digits as Thai Buddhist Era,
+// turning Gregorian 2026 into Gregorian 1483 (off by 543 years).
 static SqlParameter Dt2(string name, string rawValue)
 {
     var p = new SqlParameter(name, System.Data.SqlDbType.DateTime2);
-    p.Value = DateTime.Parse(rawValue);
+    p.Value = DateTime.Parse(rawValue, CultureInfo.InvariantCulture);
     return p;
 }
 

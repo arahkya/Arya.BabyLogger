@@ -18,17 +18,19 @@ namespace Arya.BabyLogger.WebApi.Tests.Tests;
 ///   PROD_LOGIN_PASSWORD  — plain-text password for that account
 ///   PROD_HASHING_KEY     — value of UserHashingPasswordKey used in production
 ///                          (the secret used to HMAC-SHA256 the passwords)
+///   PROD_SQL_PASSWORD    — SA password for the SQL Server instance
 ///
 /// Run with:
 ///   PROD_LOGIN_EMAIL=you@example.com \
 ///   PROD_LOGIN_PASSWORD=yourpassword \
 ///   PROD_HASHING_KEY=yourkey \
+///   PROD_SQL_PASSWORD=yourpassword \
 ///   dotnet test --filter "FullyQualifiedName~ProductionLogin"
 /// </summary>
 public class ProductionLoginTests
 {
-    private const string ProdConnectionString =
-        "Server=localhost,1433;Database=BabyLoggerDb;User Id=SA;Password=vkiydKN8986;TrustServerCertificate=True;";
+    private static string ProdConnectionString =>
+        $"Server=localhost,1433;Database=BabyLoggerDb;User Id=SA;Password={Environment.GetEnvironmentVariable("PROD_SQL_PASSWORD")};TrustServerCertificate=True;";
 
     // ── Test 1: hash-level check (no HTTP, no factory) ───────────────────────
     // This is the most direct proof that the password was migrated correctly
@@ -130,7 +132,7 @@ file class ProductionWebApiFactory : WebApplicationFactory<Program>
         {
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings:BabyLoggerDb"] = "Server=localhost,1433;Database=BabyLoggerDb;User Id=SA;Password=vkiydKN8986;TrustServerCertificate=True;",
+                ["ConnectionStrings:BabyLoggerDb"] = $"Server=localhost,1433;Database=BabyLoggerDb;User Id=SA;Password={Environment.GetEnvironmentVariable("PROD_SQL_PASSWORD")};TrustServerCertificate=True;",
                 ["Jwt:SigningKey"] = "prod-login-test-key-must-be-at-least-32-chars!",
                 ["Jwt:Issuer"]    = "BabyLoggerTest",
                 ["Jwt:Audience"]  = "BabyLoggerTest",

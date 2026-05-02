@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 
@@ -10,8 +11,8 @@ namespace Arya.BabyLogger.WebApi.Tests.Tests;
 /// </summary>
 public class DataMigrationIntegrityTests
 {
-    private const string SqlServerCs =
-        "Server=localhost,1433;Database=BabyLoggerDb;User Id=SA;Password=vkiydKN8986;TrustServerCertificate=True;";
+    private static string SqlServerCs =>
+        $"Server=localhost,1433;Database=BabyLoggerDb;User Id=SA;Password={Environment.GetEnvironmentVariable("PROD_SQL_PASSWORD")};TrustServerCertificate=True;";
 
     private static string SqlitePath => Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "../../../../prod_backup/BabyLoggerDb.sqlite.bak"));
@@ -178,8 +179,8 @@ public class DataMigrationIntegrityTests
             while (r.Read())
                 sqRows.Add((
                     Guid.Parse(r.GetString(0)),
-                    DateTime.Parse(r.GetString(1)),
-                    DateTime.Parse(r.GetString(2))));
+                    DateTime.Parse(r.GetString(1), CultureInfo.InvariantCulture),
+                    DateTime.Parse(r.GetString(2), CultureInfo.InvariantCulture)));
         }
 
         await using var ss = OpenSqlServer();

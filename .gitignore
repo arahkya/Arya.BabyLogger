@@ -9,6 +9,9 @@
 # Production database backups (never commit binary DB files)
 prod_backup/
 
+# SQLite dev database (app now uses SQL Server)
+*.sqlite
+
 # User-specific files
 *.rsuser
 *.suo
