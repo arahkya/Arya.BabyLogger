@@ -4,9 +4,17 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG NUGET_USERNAME
+ARG NUGET_PASSWORD
 
 WORKDIR /src
 COPY ["Arya.BabyLogger.WebApi/Arya.BabyLogger.WebApi.csproj", "Arya.BabyLogger.WebApi/"]
+COPY ["Arya.BabyLogger.Shared/Arya.BabyLogger.Shared.csproj", "Arya.BabyLogger.Shared/"]
+RUN dotnet nuget add source "https://nuget.pkg.github.com/mailtrap/index.json" \
+    --name "github-mailtrap" \
+    --username "$NUGET_USERNAME" \
+    --password "$NUGET_PASSWORD" \
+    --store-password-in-clear-text
 RUN dotnet restore "Arya.BabyLogger.WebApi/Arya.BabyLogger.WebApi.csproj"
 COPY . .
 WORKDIR "/src/Arya.BabyLogger.WebApi"
