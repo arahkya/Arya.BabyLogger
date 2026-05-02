@@ -9,8 +9,10 @@ namespace Arya.BabyLogger.WebApi.Tests;
 
 public class BabyLoggerWebApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private const string TestConnectionString =
-        "Server=localhost,1433;Database=BabyLoggerDb_Test;User Id=SA;Password=vkiydKN8986;TrustServerCertificate=True;";
+    private static string TestConnectionString =>
+        $"Server=localhost,1433;Database=BabyLoggerDb_Test;User Id=SA;" +
+        $"Password={Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD") ?? throw new InvalidOperationException("Set MSSQL_SA_PASSWORD env var to your local SQL Server SA password before running tests.")};" +
+        $"TrustServerCertificate=True;";
 
     public BabyLoggerWebApiFactory()
     {
