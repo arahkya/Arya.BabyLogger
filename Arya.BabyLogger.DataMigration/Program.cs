@@ -62,6 +62,14 @@ static Guid ParseGuid(SqliteDataReader r, int ordinal) =>
 static object NullOr(SqliteDataReader r, int ordinal) =>
     r.IsDBNull(ordinal) ? DBNull.Value : (object)r.GetString(ordinal);
 
+// AddWithValue infers 'datetime' (min 1753). Use this to force 'datetime2' (min 0001).
+static SqlParameter Dt2(string name, string rawValue)
+{
+    var p = new SqlParameter(name, System.Data.SqlDbType.DateTime2);
+    p.Value = DateTime.Parse(rawValue);
+    return p;
+}
+
 static void MigrateCareHolders(SqliteConnection src, SqlConnection dst)
 {
     Console.Write("Migrating CareHolders ... ");
@@ -129,7 +137,7 @@ static void MigrateFeeds(SqliteConnection src, SqlConnection dst)
                 VALUES (@Id, @Time, @Note, @Amount, @Unit, @Type)
             """;
         ins.Parameters.AddWithValue("@Id", ParseGuid(r, 0));
-        ins.Parameters.AddWithValue("@Time", DateTime.Parse(r.GetString(1)));
+        ins.Parameters.Add(Dt2("@Time", r.GetString(1)));
         ins.Parameters.AddWithValue("@Note", NullOr(r, 2));
         ins.Parameters.AddWithValue("@Amount", r.GetDouble(3));
         ins.Parameters.AddWithValue("@Unit", r.GetString(4));
@@ -156,7 +164,7 @@ static void MigrateExcretions(SqliteConnection src, SqlConnection dst)
                 VALUES (@Id, @ExcretionDateTime, @ExcretionLevel, @ExcretionColor, @Consistency, @Note)
             """;
         ins.Parameters.AddWithValue("@Id", ParseGuid(r, 0));
-        ins.Parameters.AddWithValue("@ExcretionDateTime", DateTime.Parse(r.GetString(1)));
+        ins.Parameters.Add(Dt2("@ExcretionDateTime", r.GetString(1)));
         ins.Parameters.AddWithValue("@ExcretionLevel", r.GetInt32(2));
         ins.Parameters.AddWithValue("@ExcretionColor", r.GetString(3));
         ins.Parameters.AddWithValue("@Consistency", r.GetString(4));
@@ -183,8 +191,8 @@ static void MigrateSleeps(SqliteConnection src, SqlConnection dst)
                 VALUES (@Id, @SleepStartTime, @SleepEndTime, @Note)
             """;
         ins.Parameters.AddWithValue("@Id", ParseGuid(r, 0));
-        ins.Parameters.AddWithValue("@SleepStartTime", DateTime.Parse(r.GetString(1)));
-        ins.Parameters.AddWithValue("@SleepEndTime", DateTime.Parse(r.GetString(2)));
+        ins.Parameters.Add(Dt2("@SleepStartTime", r.GetString(1)));
+        ins.Parameters.Add(Dt2("@SleepEndTime", r.GetString(2)));
         ins.Parameters.AddWithValue("@Note", NullOr(r, 3));
         ins.ExecuteNonQuery();
         n++;
@@ -198,24 +206,28 @@ static void MigrateBreastPumps(SqliteConnection src, SqlConnection dst)
     using var cmd = src.CreateCommand();
     cmd.CommandText = "SELECT Id, PumpTime, AmountML, Note, CareHolderId FROM BreastPumps";
     using var r = cmd.ExecuteReader();
-    int n = 0;
+    int n = 0, skipped = 0;
     while (r.Read())
     {
+        var careHolderId = ParseGuid(r, 4);
         using var ins = dst.CreateCommand();
         ins.CommandText = """
-            IF NOT EXISTS (SELECT 1 FROM BreastPumps WHERE Id = @Id)
+            IF (NOT EXISTS (SELECT 1 FROM BreastPumps WHERE Id = @Id)
+                AND EXISTS (SELECT 1 FROM CareHolders WHERE Id = @CareHolderId))
+            BEGIN
                 INSERT INTO BreastPumps (Id, PumpTime, AmountML, Note, CareHolderId)
                 VALUES (@Id, @PumpTime, @AmountML, @Note, @CareHolderId)
+            END
             """;
         ins.Parameters.AddWithValue("@Id", ParseGuid(r, 0));
-        ins.Parameters.AddWithValue("@PumpTime", DateTime.Parse(r.GetString(1)));
+        ins.Parameters.Add(Dt2("@PumpTime", r.GetString(1)));
         ins.Parameters.AddWithValue("@AmountML", r.GetInt32(2));
         ins.Parameters.AddWithValue("@Note", NullOr(r, 3));
-        ins.Parameters.AddWithValue("@CareHolderId", ParseGuid(r, 4));
-        ins.ExecuteNonQuery();
-        n++;
+        ins.Parameters.AddWithValue("@CareHolderId", careHolderId);
+        var affected = ins.ExecuteNonQuery();
+        if (affected > 0) n++; else skipped++;
     }
-    Console.WriteLine($"{n} rows.");
+    Console.WriteLine($"{n} rows. {(skipped > 0 ? $"({skipped} orphaned CareHolderId — skipped)" : "")}");
 }
 
 static void MigrateResetPasswordRequests(SqliteConnection src, SqlConnection dst)
@@ -224,23 +236,26 @@ static void MigrateResetPasswordRequests(SqliteConnection src, SqlConnection dst
     using var cmd = src.CreateCommand();
     cmd.CommandText = "SELECT Id, UserId, SecretCode, CreatedAtUtc FROM ResetPasswordRequests";
     using var r = cmd.ExecuteReader();
-    int n = 0;
+    int n = 0, skipped = 0;
     while (r.Read())
     {
         using var ins = dst.CreateCommand();
         ins.CommandText = """
-            IF NOT EXISTS (SELECT 1 FROM ResetPasswordRequests WHERE Id = @Id)
+            IF (NOT EXISTS (SELECT 1 FROM ResetPasswordRequests WHERE Id = @Id)
+                AND EXISTS (SELECT 1 FROM Users WHERE Id = @UserId))
+            BEGIN
                 INSERT INTO ResetPasswordRequests (Id, UserId, SecretCode, CreatedAtUtc)
                 VALUES (@Id, @UserId, @SecretCode, @CreatedAtUtc)
+            END
             """;
         ins.Parameters.AddWithValue("@Id", ParseGuid(r, 0));
         ins.Parameters.AddWithValue("@UserId", ParseGuid(r, 1));
         ins.Parameters.AddWithValue("@SecretCode", r.GetString(2));
-        ins.Parameters.AddWithValue("@CreatedAtUtc", DateTime.Parse(r.GetString(3)));
-        ins.ExecuteNonQuery();
-        n++;
+        ins.Parameters.Add(Dt2("@CreatedAtUtc", r.GetString(3)));
+        var affected = ins.ExecuteNonQuery();
+        if (affected > 0) n++; else skipped++;
     }
-    Console.WriteLine($"{n} rows.");
+    Console.WriteLine($"{n} rows. {(skipped > 0 ? $"({skipped} orphaned UserId — skipped)" : "")}");
 }
 
 static void MigrateBreastPumpSettings(SqliteConnection src, SqlConnection dst)
