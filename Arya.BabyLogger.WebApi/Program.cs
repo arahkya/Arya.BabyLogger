@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<BabyLoggerDbContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("BabyLoggerDb") ?? throw new InvalidOperationException("Connection string 'BabyLoggerDb' not found."));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BabyLoggerDb") ?? throw new InvalidOperationException("Connection string 'BabyLoggerDb' not found."));
 });
 builder.Services.AddControllers();
 

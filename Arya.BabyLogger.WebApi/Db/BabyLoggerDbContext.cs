@@ -22,29 +22,25 @@ public class BabyLoggerDbContext(DbContextOptions<BabyLoggerDbContext> options) 
 
         modelBuilder.Entity<BreastPumpEntity>().HasIndex(p => p.PumpTime);
         modelBuilder.Entity<BreastPumpEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<BreastPumpEntity>().Property(p => p.CareHolderId).HasConversion<string>();
         modelBuilder.Entity<BreastPumpEntity>().HasOne(p => p.CareHolder).WithMany().HasForeignKey(p => p.CareHolderId).IsRequired();
-        
+
         modelBuilder.Entity<UserEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<UserEntity>().Property(p => p.CareHolderId).HasConversion<string>();
         modelBuilder.Entity<UserEntity>().HasOne(p => p.CareHolder).WithMany().HasForeignKey(p => p.CareHolderId).IsRequired();
 
         modelBuilder.Entity<ResetPasswordRequestEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<ResetPasswordRequestEntity>().Property(p => p.Id).HasConversion<string>();
         modelBuilder.Entity<ResetPasswordRequestEntity>().Property(p => p.SecretCode).HasMaxLength(6).IsRequired();
         modelBuilder.Entity<ResetPasswordRequestEntity>()
             .HasOne(p => p.User)
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         modelBuilder.Entity<BreastPumpSettingEntity>().ToTable("BreastPumpSettings");
         modelBuilder.Entity<BreastPumpSettingEntity>().HasKey(p => new { p.CareHolderId });
         modelBuilder.Entity<BreastPumpSettingEntity>().HasOne(p => p.CareHolder).WithMany().HasForeignKey(p => p.CareHolderId).IsRequired();
-        
+
         modelBuilder.Entity<CareHolderEntity>().ToTable("CareHolders");
         modelBuilder.Entity<CareHolderEntity>().HasKey(p => p.Id);
-        modelBuilder.Entity<CareHolderEntity>().Property(p => p.Id).HasConversion<string>();
         modelBuilder.Entity<CareHolderEntity>().Property(p => p.Name).HasMaxLength(50);
         modelBuilder.Entity<CareHolderEntity>().Property(p => p.InviteCode).HasMaxLength(10);
         modelBuilder.Entity<CareHolderEntity>().Property(p => p.InviteUserEmail).HasMaxLength(70);
