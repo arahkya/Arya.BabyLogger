@@ -176,7 +176,7 @@ public class UserService(BabyLoggerDbContext dbContext, IConfiguration configura
     public async Task<BreastPumpSettingEntity> GetBreastPumpSettingsAsync(Guid userId)
     {
         var user = dbContext.Users.SingleOrDefault(u => u.Id == userId);
-        var careHolder = await dbContext.CareHolders.SingleAsync(p => p.Id.ToString().ToLower() == user!.CareHolderId.ToString().ToLower());
+        var careHolder = await dbContext.CareHolders.SingleAsync(p => p.Id == user!.CareHolderId);
 
         var settings = await dbContext.BreastPumpSettings.SingleOrDefaultAsync(p => p.CareHolderId == careHolder.Id);
 
