@@ -22,7 +22,7 @@ public class FeedController : ControllerBase
     {
         var entryId = await _feedService.CreateFeedEntryAsync(request);
 
-        return CreatedAtAction(nameof(CreateFeedEntry), new { id = entryId }, null);
+        return CreatedAtAction(nameof(GetFeedEntryById), new { id = entryId }, null);
     }
 
     [HttpGet]

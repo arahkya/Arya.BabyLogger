@@ -23,16 +23,14 @@ builder.Services.AddTransient<IBreastPumpService, BreastPumpService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-var jwtSection = builder.Configuration.GetSection("Jwt");
-var signingKey = jwtSection["SigningKey"];
-if (string.IsNullOrWhiteSpace(signingKey))
-{
-    throw new InvalidOperationException("JWT signing key is not configured. Set 'Jwt:SigningKey' in configuration or environment variables.");
-}
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        var jwtSection = builder.Configuration.GetSection("Jwt");
+        var signingKey = jwtSection["SigningKey"];
+        if (string.IsNullOrWhiteSpace(signingKey))
+            throw new InvalidOperationException("JWT signing key is not configured. Set 'Jwt:SigningKey' in configuration or environment variables.");
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -80,3 +78,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { }
