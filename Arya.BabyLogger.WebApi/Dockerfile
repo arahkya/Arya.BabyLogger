@@ -19,6 +19,4 @@ RUN dotnet publish "./Arya.BabyLogger.WebApi.csproj" -c Release -o /app/publish 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN mkdir /app/db
-COPY Arya.BabyLogger.WebApi/Db/BabyLoggerDb.sqlite ./db/BabyLoggerDb.sqlite
 ENTRYPOINT ["dotnet", "Arya.BabyLogger.WebApi.dll"]
